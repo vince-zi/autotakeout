@@ -29,6 +29,46 @@ const MOOD_MAP: Record<string, string> = {
     lonely: "感觉有些孤单，需要陪伴",
 };
 
+// 心情 -> 推荐食物类型映射（核心逻辑）
+const MOOD_FOOD_MAP: Record<string, { foods: string[]; style: string; reason: string }> = {
+    stressed: {
+        foods: ["麻辣烫", "火锅", "烧烤", "炸鸡", "麻辣香锅", "小龙虾", "辣子鸡"],
+        style: "重口味、辣的、解压型",
+        reason: "辣味能刺激多巴胺分泌，帮助释放压力"
+    },
+    homesick: {
+        foods: ["饺子", "馄饨", "面条", "砂锅", "粥", "红烧肉", "排骨汤", "米饭套餐"],
+        style: "家常菜、温暖的、妈妈的味道",
+        reason: "温热的家常味道能带来安慰和归属感"
+    },
+    finished_work: {
+        foods: ["寿司", "日料", "牛排", "披萨", "奶茶", "甜品", "蛋糕", "精致套餐"],
+        style: "品质稍高、享受型、犒劳自己",
+        reason: "忙碌后值得用美食奖励自己"
+    },
+    lonely: {
+        foods: ["关东煮", "便利店饭团", "一人食套餐", "拉面", "盖浇饭", "咖喱饭"],
+        style: "单人份、治愈系、暖心",
+        reason: "一人份的温暖食物，陪伴孤独时刻"
+    }
+};
+
+// 饥饿状态 -> 推荐食物类型映射
+const HUNGER_FOOD_MAP: Record<string, { foods: string[]; portion: string }> = {
+    culinary_hug: {
+        foods: ["甜品", "奶茶", "小食", "点心", "面包"],
+        portion: "小份，不求饱只求暖心"
+    },
+    crunch: {
+        foods: ["薯片", "坚果", "鸡米花", "炸物", "锅巴"],
+        portion: "零食型，嘎嘣脆的口感"
+    },
+    energy_needed: {
+        foods: ["大份套餐", "米饭", "面条", "盖浇饭", "快餐"],
+        portion: "份量足，快速补充能量"
+    }
+};
+
 const HUNGER_MAP: Record<string, string> = {
     culinary_hug: "想被美食安慰一下",
     crunch: "单纯想嚼点什么",
@@ -43,7 +83,23 @@ const BUDGET_MAP: Record<number, string> = {
     5: "今天不在乎价格",
 };
 
-// 构建 AI Prompt（优化版：支持定位、白天/夜晚、排除歇业）
+// 价格知识库：每个预算档位对应的价格区间（元）
+const PRICE_RANGES: Record<number, { min: number; max: number; keywords: string }> = {
+    1: { min: 5, max: 15, keywords: "优惠套餐 特价 折扣 小份" },      // 尽量省钱
+    2: { min: 15, max: 25, keywords: "套餐 单人餐 经济" },           // 经济实惠
+    3: { min: 25, max: 40, keywords: "招牌 热销" },                  // 正常消费
+    4: { min: 40, max: 80, keywords: "品质 甄选 双人餐" },           // 稍微奢侈
+    5: { min: 80, max: 200, keywords: "大餐 豪华 精选 多人餐" },     // 不在乎价格
+};
+
+// 平台价格系数（不同平台价格略有差异）
+const PLATFORM_PRICE_FACTOR: Record<string, number> = {
+    meituan: 1.0,
+    eleme: 1.0,
+    jd: 1.1,  // 京东秒送略贵
+};
+
+// 构建 AI Prompt（增强版：定位、时间感知、5个推荐）
 function buildPrompt(input: {
     time_of_day: string;
     mood: string;
@@ -52,6 +108,7 @@ function buildPrompt(input: {
     budget_level: number;
     location?: { latitude: number; longitude: number } | null;
     is_daytime?: boolean;
+    time_context?: { period: string; label: string; isNight: boolean };
 }): string {
     const timeDesc = TIME_MAP[input.time_of_day] || "未知时间";
     const moodDesc = MOOD_MAP[input.mood] || "一般";
@@ -66,57 +123,82 @@ function buildPrompt(input: {
     const minute = beijingTime.getUTCMinutes();
     const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-    // 判断白天/夜晚
-    const isDaytime = input.is_daytime !== undefined ? input.is_daytime : (hour >= 6 && hour < 22);
-    const periodName = isDaytime ? "白天" : "夜间";
+    // 判断是否白天
+    const isDaytime = input.is_daytime !== undefined ? input.is_daytime : (hour >= 6 && hour < 18);
 
-    // 场景词（白天不用"夜宵"）
-    const sceneOptions = isDaytime
-        ? "早餐/午餐/下午茶/加班餐"
-        : "夜宵/宵夜/深夜加餐";
+    // 场景描述（白天不要提"夜宵"）
+    let sceneLabel = input.time_context?.label || timeDesc;
+    if (isDaytime && sceneLabel.includes('夜')) {
+        sceneLabel = hour < 11 ? '早餐' : hour < 14 ? '午餐' : hour < 17 ? '下午茶' : '晚餐';
+    }
 
-    // 定位信息
+    // 位置信息
     const locationInfo = input.location
         ? `用户位置：纬度${input.location.latitude.toFixed(4)}，经度${input.location.longitude.toFixed(4)}（请优先推荐附近商家）`
-        : "用户位置：未知（推荐全国连锁或知名品牌）";
+        : '用户位置：未知（推荐全国连锁或常见商家）';
+
+    // 获取心情对应的食物推荐
+    const moodFood = MOOD_FOOD_MAP[input.mood] || MOOD_FOOD_MAP.stressed;
+    const hungerFood = HUNGER_FOOD_MAP[input.hunger_level] || HUNGER_FOOD_MAP.culinary_hug;
 
     const userInput = {
-        time: timeStr,
-        period: periodName,
-        scene: timeDesc,
+        current_time: timeStr,
+        scene: sceneLabel,
         mood: moodDesc,
+        mood_foods: moodFood.foods.join('、'),
         hunger: hungerDesc,
+        hunger_portion: hungerFood.portion,
         exercise: exerciseDesc,
-        budget: budgetDesc
+        budget: budgetDesc,
+        is_daytime: isDaytime
     };
 
-    return `你是一个外卖推荐专家，帮助用户做出不后悔的饮食决策。
+    // 获取价格区间
+    const priceRange = PRICE_RANGES[input.budget_level] || PRICE_RANGES[3];
+    const priceConstraint = `价格必须在 ${priceRange.min}-${priceRange.max} 元之间`;
 
-【当前时间】${timeStr}（${periodName}）
+    return `你是一个外卖推荐专家，帮助用户快速做出饮食决策。
+
+【当前时间】${timeStr}（${isDaytime ? '白天' : '夜间'}）
+【用户位置】${locationInfo}
 【用户状态】
 ${JSON.stringify(userInput, null, 2)}
 
-【定位信息】
-${locationInfo}
+【⚠️ 心情驱动的推荐（重要！）】
+用户心情：${moodDesc}
+推荐食物风格：${moodFood.style}
+推荐理由：${moodFood.reason}
+⭐ 优先推荐这些食物：${moodFood.foods.join('、')}
 
-【你的任务】
-根据用户状态，推荐1-3个真实可点的外卖或便利店商品。
+【饥饿状态】
+${hungerDesc}
+份量偏好：${hungerFood.portion}
+适合的食物类型：${hungerFood.foods.join('、')}
+
+【预算约束】⚠️ ${priceConstraint}
+用户选择了"${budgetDesc}"档位，推荐的菜品单价必须在 ${priceRange.min}-${priceRange.max} 元范围内。
+搜索时可附加关键词：${priceRange.keywords}
+
+【核心任务】
+根据用户的心情和饥饿状态，推荐5个真实可点的外卖或便利店商品。
 
 【输出要求】
-必须严格返回以下JSON格式，不要有任何其他文字或解释：
+必须严格返回以下JSON格式，不要有任何其他文字：
 
 {
-  "scene": "${sceneOptions}（选一个最合适的）",
+  "scene": "${sceneLabel}",
+  "budget_level": ${input.budget_level},
+  "price_range": "${priceRange.min}-${priceRange.max}元",
   "recommendations": [
     {
-      "food_name": "具体菜品名称，如：老坛酸菜鱼（小份）",
-      "restaurant": "商家名称，如：鱼你在一起（中关村店）",
+      "food_name": "具体菜品名称（如：香辣鸡腿堡套餐）",
+      "restaurant": "商家名称（如：肯德基 中关村店）",
       "platform": "meituan",
-      "estimated_price": 28,
-      "reason": "简要推荐理由，不超过20字",
-      "jump_keyword": "商家名+核心菜品，如：鱼你在一起 酸菜鱼",
+      "estimated_price": ${Math.round((priceRange.min + priceRange.max) / 2)},
+      "reason": "推荐理由，不超过15字",
+      "jump_keyword": "肯德基 香辣鸡腿堡 ${priceRange.keywords.split(' ')[0]}",
       "regret_score": 2,
-      "regret_reason": "后悔指数原因，如：份量适中，不会吃撑"
+      "regret_reason": "份量适中，快餐标准化"
     }
   ],
   "alternatives": [
@@ -124,29 +206,76 @@ ${locationInfo}
       "food_name": "备选菜品",
       "restaurant": "备选商家",
       "platform": "eleme",
+      "estimated_price": ${priceRange.min},
       "jump_keyword": "搜索关键词"
     }
   ]
 }
 
-【字段说明】
-- platform: 必须是 "meituan"、"eleme"、"taobao" 或 "jd" 之一
-  - meituan = 美团外卖
-  - eleme = 饿了么（推荐优先使用）
-  - jd = 京东秒送
-- estimated_price: 数字类型，单位元
-- regret_score: 1-5整数（1=几乎不后悔，5=明天绝对后悔）
-- jump_keyword: 用于App搜索的关键词，格式"商家名 菜品名"
+【关键规则】
+1. ⚠️ 必须推荐当前时间（${timeStr}）正在营业的商家
+2. ⚠️ 价格必须严格在 ${priceRange.min}-${priceRange.max} 元之间
+3. ⚠️ 优先推荐24小时营业或营业到凌晨的商家
+4. ⚠️ 推荐附近连锁店（肯德基、麦当劳、便利蜂、全家、永和大王、沙县小吃等）
+5. platform 必须是 "meituan"、"eleme" 或 "jd"（京东秒送）
+6. jump_keyword 格式："商家名 菜品名"，可附加：${priceRange.keywords}
+7. recommendations 必须给5个
+8. alternatives 给2个备选
+9. ${isDaytime ? '白天场景，不要提及"夜宵"或"深夜"等字眼' : '可以使用夜宵相关描述'}
+10. 只返回JSON，禁止任何解释文字`
+}
 
-【重要规则 - 必须遵守】
-1. ⚠️ 只推荐当前时间正在营业的商家，不要推荐歇业或打烊的店铺
-2. ⚠️ 白天场景(6:00-22:00)不要使用"夜宵"、"深夜"等词汇
-3. ⚠️ 有用户定位时，优先推荐附近的商家或全国连锁店
-4. 商家和菜品必须是中国一二线城市真实存在的
-5. 价格要符合实际（便利店5-15元，外卖15-40元）
-6. 深夜场景(22:00-6:00)优先推荐24小时营业的商家
-7. recommendations给2-3个，alternatives给1-2个
-8. 只返回JSON，不要任何其他文字`
+// 校准推荐结果：确保价格在合理范围内
+interface Recommendation {
+    food_name: string;
+    restaurant: string;
+    platform: string;
+    estimated_price: number;
+    reason: string;
+    jump_keyword: string;
+    regret_score: number;
+    regret_reason: string;
+}
+
+function calibrateRecommendations(
+    recommendations: Recommendation[],
+    budgetLevel: number
+): Recommendation[] {
+    const priceRange = PRICE_RANGES[budgetLevel] || PRICE_RANGES[3];
+    const platformFactor = PLATFORM_PRICE_FACTOR;
+
+    return recommendations.map((rec: Recommendation) => {
+        const factor = platformFactor[rec.platform] || 1.0;
+        let price = rec.estimated_price;
+
+        // 校准价格到合理范围
+        if (price < priceRange.min) {
+            price = priceRange.min + Math.random() * 5;
+        } else if (price > priceRange.max) {
+            price = priceRange.max - Math.random() * 5;
+        }
+        price = Math.round(price * factor);
+
+        // 优化搜索关键词
+        let keyword = rec.jump_keyword || `${rec.restaurant} ${rec.food_name}`;
+        if (budgetLevel <= 2) {
+            // 省钱模式：添加优惠关键词
+            if (!keyword.includes('优惠') && !keyword.includes('套餐')) {
+                keyword += ' 优惠';
+            }
+        } else if (budgetLevel >= 4) {
+            // 奢侈模式：添加品质关键词
+            if (!keyword.includes('品质') && !keyword.includes('甄选')) {
+                keyword += ' 品质';
+            }
+        }
+
+        return {
+            ...rec,
+            estimated_price: price,
+            jump_keyword: keyword,
+        };
+    });
 }
 
 // 调用 DeepSeek API
@@ -262,11 +391,33 @@ serve(async (req: Request) => {
         const prompt = buildPrompt(input);
         const aiResult = await callDeepSeekAI(prompt);
 
+        // 校准推荐结果（价格和关键词优化）
+        const calibratedRecommendations = calibrateRecommendations(
+            aiResult.recommendations,
+            input.budget_level
+        );
+
+        // 校准备选结果
+        const calibratedAlternatives = aiResult.alternatives ? calibrateRecommendations(
+            aiResult.alternatives.map((alt: { food_name: string; restaurant: string; platform: string; jump_keyword: string; estimated_price?: number }) => ({
+                ...alt,
+                estimated_price: alt.estimated_price || PRICE_RANGES[input.budget_level]?.min || 20,
+                reason: '',
+                regret_score: 3,
+                regret_reason: ''
+            })),
+            input.budget_level
+        ) : [];
+
         // 存储推荐结果
-        const recommendationsToInsert = aiResult.recommendations.map((rec) => ({
+        const recommendationsToInsert = calibratedRecommendations.map((rec: Recommendation) => ({
             decision_id: decision.id,
             food_name: rec.food_name,
-            explanation: rec.explanation,
+            restaurant: rec.restaurant,
+            platform: rec.platform,
+            estimated_price: rec.estimated_price,
+            jump_keyword: rec.jump_keyword,
+            explanation: rec.reason,
             regret_score: rec.regret_score,
         }));
 
@@ -279,11 +430,15 @@ serve(async (req: Request) => {
             // 不抛出错误，继续返回结果
         }
 
-        // 返回推荐结果
+        // 返回推荐结果（包含完整信息）
         return new Response(
             JSON.stringify({
                 decision_id: decision.id,
-                recommendations: aiResult.recommendations,
+                scene: aiResult.scene,
+                budget_level: input.budget_level,
+                price_range: aiResult.price_range || `${PRICE_RANGES[input.budget_level]?.min}-${PRICE_RANGES[input.budget_level]?.max}元`,
+                recommendations: calibratedRecommendations,
+                alternatives: calibratedAlternatives,
             }),
             {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },

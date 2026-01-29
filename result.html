@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>今晚就吃这个 - 饮食觉察</title>
+    <title>今晚就吃这个 - 吃什么</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
@@ -129,7 +129,7 @@
                 <div class="text-center space-y-3 mb-8">
                     <h1
                         class="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-main dark:text-white font-serif">
-                        今晚就吃这个
+                        现在就吃这个
                     </h1>
                     <p class="text-lg text-text-sub dark:text-[#bfae99] font-medium">
                         为此刻的你，精选了几个选择
@@ -140,17 +140,13 @@
                     <!-- Recommendations will be inserted here -->
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <!-- 重新生成按钮 -->
+                <div class="pt-4">
                     <a href="code.html"
-                        class="flex-1 h-14 bg-accent-cream dark:bg-[#4a3a2f] hover:bg-[#f5e6d8] dark:hover:bg-[#5c4a3d] text-text-main dark:text-white rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2">
+                        class="w-full h-14 bg-accent-cream dark:bg-[#4a3a2f] hover:bg-[#f5e6d8] dark:hover:bg-[#5c4a3d] text-text-main dark:text-white rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined">refresh</span>
-                        再想想
+                        不满意？重新选择
                     </a>
-                    <button id="confirm-btn"
-                        class="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined">check_circle</span>
-                        就这么定了
-                    </button>
                 </div>
             </div>
 
@@ -174,16 +170,7 @@
     </main>
 
     <footer class="py-6 text-center">
-        <div class="mb-4">
-            <a href="review.html"
-                class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-cream dark:bg-[#3a2e26] text-primary rounded-xl font-medium hover:bg-primary hover:text-white transition-all">
-                <span class="material-symbols-outlined">edit_note</span>
-                吃完后记录一下
-            </a>
-        </div>
         <div class="flex justify-center gap-6 text-sm font-medium text-text-sub/70 dark:text-[#bfae99]/50">
-            <a class="hover:text-primary transition-colors" href="review-history.html">📊 饮食报告</a>
-            <span>•</span>
             <a class="hover:text-primary transition-colors" href="#">隐私政策</a>
             <span>•</span>
             <a class="hover:text-primary transition-colors" href="#">服务条款</a>
@@ -191,65 +178,133 @@
     </footer>
 
     <script>
-        // 平台配置：App Scheme + 网页备用
+        // 平台配置：分级跳转链（App -> 备用App -> H5网页）
         const PLATFORM_CONFIG = {
             meituan: {
                 name: '美团外卖',
                 icon: '🟡',
-                // 美团外卖App专用Scheme，自动填入搜索词
-                app: (kw) => `meituanwaimai://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
+                // 优先：美团外卖App专用scheme
+                app: (kw) => `waimai://search?keyword=${encodeURIComponent(kw)}`,
+                // 备用：美团主App
+                fallbackApp: (kw) => `imeituan://www.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
+                // 兜底：网页版
                 web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`
             },
             eleme: {
-                name: '饿了么',  // 保持原名
+                name: '饿了么',
                 icon: '🔵',
-                // 使用淘宝闪购入口，能自动填入搜索词
-                app: (kw) => `taobao://s.taobao.com/search?q=${encodeURIComponent(kw + ' 闪购')}`,
-                web: (kw) => `https://s.taobao.com/search?initiative_id=staobaoz_20200101&q=${encodeURIComponent(kw + ' 闪购 即时配送')}`
-            },
-            taobao: {
-                name: '淘宝',
-                icon: '🟠',
-                app: (kw) => `taobao://s.taobao.com/search?q=${encodeURIComponent(kw)}`,
-                web: (kw) => `https://s.taobao.com/search?q=${encodeURIComponent(kw)}`
+                app: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`,
+                fallbackApp: (kw) => `eleme://homepage`,
+                web: (kw) => `https://h5.ele.me/search?keyword=${encodeURIComponent(kw)}`
             },
             jd: {
                 name: '京东秒送',
                 icon: '🔴',
-                // 京东秒送，添加"秒送"关键词优先展示即时配送
-                app: (kw) => `openapp.jdmobile://virtual?params={"category":"jump","des":"search","keyword":"${encodeURIComponent(kw + ' 秒送')}"}`,
-                web: (kw) => `https://search.jd.com/Search?keyword=${encodeURIComponent(kw + ' 秒送')}`
+                // 京东秒送：优先使用H5链接（京东App会自动拦截）
+                app: (kw) => `openapp.jdmobile://virtual?params=${encodeURIComponent(JSON.stringify({ category: 'jump', des: 'jdMartHome' }))}`,
+                fallbackApp: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}`,
+                web: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}`
             }
         };
 
-        // 智能跳转：先尝试App，失败则降级到网页
-        function smartJump(platform, keyword) {
-            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
-            const kw = keyword || '夜宵';
+        // 分级跳转：App -> 备用App -> 网页
+        let jumpInProgress = false;
 
-            // 检测是否为移动端
+        // 复制到剪贴板
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showCopyToast('✅ 已复制搜索词，到App粘贴搜索即可');
+                return true;
+            } catch (err) {
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showCopyToast('✅ 已复制搜索词，到App粘贴搜索即可');
+                return true;
+            }
+        }
+
+        // 显示复制成功提示
+        function showCopyToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg z-50 text-sm font-medium flex items-center gap-2';
+            toast.innerHTML = `<span class="material-symbols-outlined text-lg">content_paste</span>${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.3s, transform 0.3s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function smartJump(platform, keyword) {
+            if (jumpInProgress) return; // 防止重复触发
+
+            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
+            const kw = keyword || '外卖';
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+            // 移动端：复制关键词到剪贴板（方便用户粘贴搜索）
             if (isMobile) {
-                // 移动端：尝试打开App
-                const appUrl = config.app(kw);
-                const webUrl = config.web(kw);
+                copyToClipboard(kw);
+            }
 
-                // 使用隐藏iframe尝试打开App
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = appUrl;
-                document.body.appendChild(iframe);
-
-                // 2.5秒后如果App未启动，降级到网页
-                setTimeout(() => {
-                    document.body.removeChild(iframe);
-                    window.location.href = webUrl;
-                }, 2500);
-            } else {
+            if (!isMobile) {
                 // PC端：直接打开网页
                 window.open(config.web(kw), '_blank');
+                return;
             }
+
+            jumpInProgress = true;
+            let appOpened = false;
+
+            // 监听页面失焦（App打开成功的信号）
+            const blurHandler = () => {
+                appOpened = true;
+                jumpInProgress = false;
+            };
+            window.addEventListener('blur', blurHandler, { once: true });
+
+            // 第1步：尝试主App
+            const appUrl = config.app(kw);
+            window.location.href = appUrl;
+
+            // 第2步：1.5秒后检查，如果没打开则尝试备用
+            setTimeout(() => {
+                if (!appOpened && config.fallbackApp) {
+                    window.location.href = config.fallbackApp(kw);
+
+                    // 第3步：再1.5秒后，如果还没打开则降级到网页
+                    setTimeout(() => {
+                        if (!appOpened) {
+                            window.removeEventListener('blur', blurHandler);
+                            jumpInProgress = false;
+                            // 最终降级：打开网页版（新标签）
+                            window.open(config.web(kw), '_blank');
+                        }
+                    }, 1500);
+                }
+            }, 1500);
+
+            // 超时清理
+            setTimeout(() => {
+                window.removeEventListener('blur', blurHandler);
+                jumpInProgress = false;
+            }, 5000);
+        }
+
+        // 直接打开网页版（备用按钮）
+        function openWebVersion(platform, keyword) {
+            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
+            window.open(config.web(keyword || '外卖'), '_blank');
         }
 
         // 获取平台图标
@@ -260,6 +315,18 @@
         // 获取平台名称
         function getPlatformName(platform) {
             return PLATFORM_CONFIG[platform]?.name || '外卖平台';
+        }
+
+        // 全局存储当前推荐（用于点击时获取完整rec对象）
+        let currentRecommendations = [];
+        let currentAlternatives = [];
+
+        // 处理下单点击
+        function handleOrderClick(index, isAlternative = false) {
+            const rec = isAlternative ? currentAlternatives[index] : currentRecommendations[index];
+            if (!rec) return;
+            const keyword = rec.jump_keyword || `${rec.restaurant || ''} ${rec.food_name}`;
+            smartJump(rec.platform, keyword, rec);
         }
 
         // 推荐卡片模板（优化版：含商家名、智能跳转）
@@ -314,22 +381,29 @@
                         </div>
                         ${regret_reason ? `<p class="text-xs text-text-sub/70 dark:text-[#887860]">👉 ${regret_reason}</p>` : ''}
                         
-                        <!-- 去下单按钮（智能跳转：App优先） -->
-                        <button onclick="smartJump('${platform}', '${keyword.replace(/'/g, "\\'")}')"
-                           class="mt-2 w-full h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                            <span class="material-symbols-outlined text-lg">shopping_cart</span>
-                            去${getPlatformName(platform)}下单
-                        </button>
+                        <!-- 下单按钮组 -->
+                        <div class="mt-2 flex gap-2">
+                            <button onclick="handleOrderClick(${index})"
+                               class="flex-1 h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <span class="material-symbols-outlined text-lg">shopping_cart</span>
+                                去下单
+                            </button>
+                            <button onclick="confirmOrdered(${index})"
+                               class="flex-1 h-12 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-sm shadow-md shadow-green-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <span class="material-symbols-outlined text-lg">check_circle</span>
+                                我已下单
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
         // 替代选项卡片（含商家名和智能跳转）
-        function createAlternativeCard(alt) {
+        function createAlternativeCard(alt, index) {
             const keyword = alt.jump_keyword || `${alt.restaurant || ''} ${alt.food_name}`;
             return `
-                <button onclick="smartJump('${alt.platform}', '${keyword.replace(/'/g, "\\'")}')" 
+                <button onclick="handleOrderClick(${index}, true)" 
                    class="flex items-center gap-3 p-3 bg-accent-cream/50 dark:bg-[#3a2e26] rounded-xl hover:bg-accent-cream dark:hover:bg-[#4a3a2f] transition-colors cursor-pointer w-full text-left">
                     <span class="text-lg">${getPlatformIcon(alt.platform)}</span>
                     <div class="flex-1">
@@ -365,6 +439,10 @@
             const container = document.getElementById('recommendations-container');
             let html = '';
 
+            // 存储到全局变量（用于点击时获取完整对象）
+            currentRecommendations = data.recommendations || [];
+            currentAlternatives = data.alternatives || [];
+
             // 主推荐
             if (data.recommendations && data.recommendations.length > 0) {
                 html += data.recommendations.map((rec, i) => createRecommendationCard(rec, i)).join('');
@@ -378,7 +456,7 @@
                             <span class="material-symbols-outlined text-lg">lightbulb</span>
                             如果上面的不合口味，还可以试试
                         </h4>
-                        ${data.alternatives.map(alt => createAlternativeCard(alt)).join('')}
+                        ${data.alternatives.map((alt, i) => createAlternativeCard(alt, i)).join('')}
                     </div>
                 `;
             }
@@ -416,8 +494,169 @@
             document.getElementById('error-state').classList.remove('hidden');
         }
 
+        // ==========================================
+        // 游客ID系统 + 临时数据机制
+        // ==========================================
+
+        // 获取或生成游客ID
+        function getGuestId() {
+            let guestId = localStorage.getItem('guest_id');
+            if (!guestId) {
+                guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('guest_id', guestId);
+            }
+            return guestId;
+        }
+
+        // 临时选择数据
+        let tempSelection = null;
+        let confirmTimer = null;
+
+        // 用户点击推荐卡片时记录临时选择
+        function recordTempSelection(rec, platform, keyword) {
+            const guestId = getGuestId();
+
+            // 清除之前的确认定时器
+            if (confirmTimer) {
+                clearTimeout(confirmTimer);
+            }
+
+            // 记录临时选择
+            tempSelection = {
+                guest_id: guestId,
+                food_name: rec.food_name,
+                restaurant: rec.restaurant,
+                platform: platform,
+                keyword: keyword,
+                estimated_price: rec.estimated_price,
+                timestamp: Date.now(),
+                confirmed: false
+            };
+
+            // 存储到 sessionStorage（临时）
+            sessionStorage.setItem('temp_selection', JSON.stringify(tempSelection));
+
+            console.log('临时选择已记录，120秒后确认:', tempSelection);
+
+            // 120秒后自动确认为真实数据
+            confirmTimer = setTimeout(() => {
+                confirmSelection();
+            }, 120000); // 120秒
+        }
+
+        // 确认选择为真实数据
+        async function confirmSelection() {
+            const guestId = getGuestId();
+            const tempData = sessionStorage.getItem('temp_selection');
+
+            if (!tempData) return;
+
+            try {
+                const selection = JSON.parse(tempData);
+                selection.confirmed = true;
+                selection.confirmed_at = Date.now();
+
+                // 存储到 localStorage（持久化）
+                const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
+                history.push(selection);
+                // 只保留最近30条
+                if (history.length > 30) history.shift();
+                localStorage.setItem('selection_history', JSON.stringify(history));
+
+                // 清除临时数据
+                sessionStorage.removeItem('temp_selection');
+                console.log('选择已确认为真实数据:', selection);
+
+                // 可选：发送到后端
+                // await saveToBackend(selection);
+            } catch (e) {
+                console.error('确认选择失败:', e);
+            }
+        }
+
+        // "我已下单"按钮 - 立即确认并跳转到复盘页面
+        async function confirmOrdered(index, isAlternative = false) {
+            const rec = isAlternative ? currentAlternatives[index] : currentRecommendations[index];
+            if (!rec) {
+                alert('找不到选择的菜品');
+                return;
+            }
+
+            const guestId = getGuestId();
+            const userToken = localStorage.getItem('user_token') || generateUserToken();
+
+            // 生成用户token
+            function generateUserToken() {
+                const token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('user_token', token);
+                return token;
+            }
+
+            // 保存已下单记录到数据库
+            const orderData = {
+                user_token: userToken,
+                food_name: rec.food_name,
+                price: parseFloat(rec.estimated_price) || 0,
+                fullness: 2, // 默认刚好
+                mood: 'satisfied', // 默认满足
+                regret_score: rec.regret_score || 2,
+                note: `${rec.restaurant || '外卖'} - 通过${getPlatformName(rec.platform)}下单`,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    // 清除临时数据
+                    if (confirmTimer) clearTimeout(confirmTimer);
+                    sessionStorage.removeItem('temp_selection');
+
+                    // 显示成功提示
+                    alert(`✅ 已记录: ${rec.food_name}\n\n祝你吃得开心！`);
+
+                    // 跳转到复盘历史页
+                    window.location.href = 'review-history.html';
+                } else {
+                    const err = await response.text();
+                    console.error('保存失败:', err);
+                    alert('记录失败，请稍后再试');
+                }
+            } catch (error) {
+                console.error('网络错误:', error);
+                alert('网络错误，请检查连接');
+            }
+        }
+
+        // 修改 smartJump 函数，在跳转时记录选择
+        const originalSmartJump = smartJump;
+        smartJump = function (platform, keyword, rec) {
+            // 记录临时选择
+            if (rec) {
+                recordTempSelection(rec, platform, keyword);
+            }
+            // 执行原跳转逻辑
+            originalSmartJump(platform, keyword);
+        };
+
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function () {
+            // 初始化游客ID
+            const guestId = getGuestId();
+            console.log('游客ID:', guestId);
+
             const storedData = sessionStorage.getItem('recommendations');
 
             if (storedData) {
@@ -437,19 +676,19 @@
                     showError('请先完成问卷');
                 }, 1000);
             }
-        });
 
-        // 确认按钮
-        document.getElementById('confirm-btn').addEventListener('click', function () {
-            sessionStorage.removeItem('recommendations');
-            this.innerHTML = '<span class="material-symbols-outlined">favorite</span> 祝你吃得开心！';
-            this.disabled = true;
-            this.classList.add('bg-green-500', 'hover:bg-green-500');
-            this.classList.remove('bg-primary', 'hover:bg-primary-hover');
-
-            setTimeout(() => {
-                window.location.href = 'code.html';
-            }, 1500);
+            // 页面卸载前检查是否有待确认的选择
+            window.addEventListener('beforeunload', () => {
+                // 如果用户离开页面超过120秒，在下次访问时确认
+                const tempData = sessionStorage.getItem('temp_selection');
+                if (tempData) {
+                    const selection = JSON.parse(tempData);
+                    // 如果距离选择已超过120秒，立即确认
+                    if (Date.now() - selection.timestamp > 120000) {
+                        confirmSelection();
+                    }
+                }
+            });
         });
     </script>
 </body>

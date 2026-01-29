@@ -1,6 +1,6 @@
 /**
  * 饮食觉察 - 前端交互逻辑
- * 处理表单提交、API调用和页面跳转
+ * 处理表单提交、API调用、定位获取和页面跳转
  */
 
 // Supabase 配置
@@ -10,8 +10,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Edge Function URL
 const RECOMMEND_API = `${SUPABASE_URL}/functions/v1/recommend`;
 
+// 用户位置缓存
+let userLocation = null;
+
 /**
- * 获取用户定位
+ * 获取用户位置
  */
 async function getUserLocation() {
     return new Promise((resolve) => {
@@ -23,17 +26,19 @@ async function getUserLocation() {
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                resolve({
+                userLocation = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
-                });
+                };
+                console.log('获取位置成功:', userLocation);
+                resolve(userLocation);
             },
             (error) => {
-                console.log('获取定位失败:', error.message);
+                console.log('获取位置失败:', error.message);
                 resolve(null);
             },
             {
-                enableHighAccuracy: true,
+                enableHighAccuracy: false,
                 timeout: 5000,
                 maximumAge: 300000 // 5分钟缓存
             }
@@ -42,35 +47,31 @@ async function getUserLocation() {
 }
 
 /**
- * 判断当前是否为白天（根据页面UI线索）
+ * 判断当前是否是白天（6:00-18:00）
  */
 function isDaytime() {
-    // 检查页面是否包含"阳光正好"等白天关键词
-    const pageText = document.body.innerText || '';
-    const daytimeKeywords = ['阳光正好', '早安', '午安', '下午好', '早餐', '午餐', '下午茶'];
-    const nightKeywords = ['月色温柔', '晚安', '夜宵', '深夜', '凌晨'];
-
-    for (const kw of daytimeKeywords) {
-        if (pageText.includes(kw)) return true;
-    }
-    for (const kw of nightKeywords) {
-        if (pageText.includes(kw)) return false;
-    }
-
-    // 根据当前时间判断
     const hour = new Date().getHours();
-    return hour >= 6 && hour < 22;
+    return hour >= 6 && hour < 18;
 }
 
 /**
- * 收集表单数据
+ * 获取当前时段描述
  */
-async function collectFormData() {
+function getTimeContext() {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 11) return { period: 'morning', label: '早餐', isNight: false };
+    if (hour >= 11 && hour < 14) return { period: 'lunch', label: '午餐', isNight: false };
+    if (hour >= 14 && hour < 17) return { period: 'afternoon', label: '下午茶', isNight: false };
+    if (hour >= 17 && hour < 21) return { period: 'dinner', label: '晚餐', isNight: false };
+    return { period: 'nighttime', label: '夜宵', isNight: true };
+}
+
+/**
+ * 收集表单数据（含位置信息）
+ */
+function collectFormData() {
     const form = document.querySelector('form');
     if (!form) return null;
-
-    // 获取定位
-    const location = await getUserLocation();
 
     // 获取时间段
     const timeOfDay = form.querySelector('input[name="time_of_day"]:checked')?.value || 'nighttime';
@@ -89,8 +90,8 @@ async function collectFormData() {
     const budgetRange = form.querySelector('input[type="range"]');
     const budgetLevel = budgetRange ? parseInt(budgetRange.value) : 3;
 
-    // 判断白天/夜晚
-    const is_daytime = isDaytime();
+    // 获取时间上下文
+    const timeContext = getTimeContext();
 
     return {
         time_of_day: timeOfDay,
@@ -98,8 +99,10 @@ async function collectFormData() {
         hunger_level: hungerLevel,
         exercised_today: exercisedToday,
         budget_level: budgetLevel,
-        location: location,
-        is_daytime: is_daytime
+        // 新增字段
+        location: userLocation,
+        is_daytime: isDaytime(),
+        time_context: timeContext
     };
 }
 
@@ -139,13 +142,17 @@ function showLoading(button) {
 
     button.disabled = true;
     button.dataset.originalContent = button.innerHTML;
+
+    const timeContext = getTimeContext();
+    const loadingText = timeContext.isNight ? '正在为你寻找慰藉...' : '正在为你挑选美食...';
+
     button.innerHTML = `
         <span class="inline-flex items-center gap-2">
             <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            正在为你寻找慰藉...
+            ${loadingText}
         </span>
     `;
 }
@@ -164,7 +171,6 @@ function hideLoading(button) {
  * 显示错误提示
  */
 function showError(message) {
-    // 创建 toast 提示
     const toast = document.createElement('div');
     toast.className = 'fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl shadow-lg z-50 flex items-center gap-3';
     toast.innerHTML = `
@@ -174,7 +180,6 @@ function showError(message) {
 
     document.body.appendChild(toast);
 
-    // 3秒后自动移除
     setTimeout(() => {
         toast.style.transition = 'opacity 0.3s, transform 0.3s';
         toast.style.opacity = '0';
@@ -191,18 +196,17 @@ async function handleSubmit(event) {
 
     const submitButton = document.querySelector('button[type="button"]');
 
-    // 显示加载状态（获取定位可能需要时间）
-    showLoading(submitButton);
-
-    // 收集表单数据（包含定位）
-    const formData = await collectFormData();
+    // 收集表单数据
+    const formData = collectFormData();
     if (!formData) {
-        hideLoading(submitButton);
         showError('请完成所有选项');
         return;
     }
 
     console.log('提交数据:', formData);
+
+    // 显示加载状态
+    showLoading(submitButton);
 
     try {
         // 调用 API 获取推荐
@@ -210,6 +214,7 @@ async function handleSubmit(event) {
 
         // 存储结果到 sessionStorage
         sessionStorage.setItem('recommendations', JSON.stringify(result));
+        sessionStorage.setItem('timeContext', JSON.stringify(getTimeContext()));
 
         // 跳转到结果页
         window.location.href = 'result.html';
@@ -223,14 +228,37 @@ async function handleSubmit(event) {
 /**
  * 初始化
  */
-function init() {
+async function init() {
+    // 尝试获取用户位置（后台执行，不阻塞）
+    getUserLocation();
+
     // 绑定提交按钮事件
     const submitButton = document.querySelector('button[type="button"]');
     if (submitButton) {
         submitButton.addEventListener('click', handleSubmit);
     }
 
-    // 添加键盘快捷键支持（Enter 提交）
+    // 价格档位配置
+    const BUDGET_LABELS = {
+        1: { name: '尽量省钱', range: '约¥5-15' },
+        2: { name: '经济实惠', range: '约¥15-25' },
+        3: { name: '正常消费', range: '约¥25-40' },
+        4: { name: '稍微奢侈', range: '约¥40-80' },
+        5: { name: '今天不在乎', range: '¥80+' }
+    };
+
+    // 绑定预算滑块事件
+    const budgetRange = document.getElementById('budgetRange');
+    const priceLabel = document.getElementById('priceLabel');
+    if (budgetRange && priceLabel) {
+        budgetRange.addEventListener('input', (e) => {
+            const level = parseInt(e.target.value);
+            const label = BUDGET_LABELS[level] || BUDGET_LABELS[3];
+            priceLabel.textContent = `${label.name} · ${label.range}`;
+        });
+    }
+
+    // 添加键盘快捷键支持
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
             e.preventDefault();

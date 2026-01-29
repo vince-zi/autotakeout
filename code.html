@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>情绪化饮食决策输入 v2</title>
+    <title>吃什么 - 帮你做饮食决策</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
@@ -120,7 +120,7 @@
             <div class="text-center space-y-3 mt-4">
                 <h1
                     class="text-4xl sm:text-5xl font-extrabold tracking-tight text-text-main dark:text-white font-serif">
-                    今晚吃什么？
+                    现在吃什么？
                 </h1>
                 <p class="text-lg text-text-sub dark:text-[#bfae99] font-medium max-w-md mx-auto">
                     听从内心，拒绝遗憾
@@ -295,12 +295,17 @@
                                 </label>
                             </div>
                             <div class="relative pt-4 pb-2 px-2">
-                                <input class="w-full bg-transparent focus:outline-none" max="5" min="1" type="range"
-                                    value="3" />
+                                <input id="budgetRange" class="w-full bg-transparent focus:outline-none" max="5" min="1"
+                                    type="range" value="3" />
                                 <div class="flex justify-between text-xs font-bold text-text-sub mt-3">
-                                    <span>简单吃点</span>
-                                    <span>稍微奢侈</span>
+                                    <span>¥5-15</span>
+                                    <span>¥15-25</span>
+                                    <span>¥25-40</span>
+                                    <span>¥40-80</span>
+                                    <span>¥80+</span>
                                 </div>
+                                <div id="priceLabel" class="text-center mt-2 text-sm font-bold text-primary">正常消费 ·
+                                    约¥25-40</div>
                             </div>
                         </div>
                     </div>
@@ -322,6 +327,28 @@
             </div>
         </div>
     </main>
+
+    <!-- 底部导航 -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 bg-card-light dark:bg-card-dark border-t border-[#f0e6da] dark:border-[#4a3a2f] px-4 py-2 z-50">
+        <div class="max-w-md mx-auto flex justify-around">
+            <a href="code.html" class="flex flex-col items-center py-2 px-4 text-primary">
+                <span class="material-symbols-outlined text-xl">restaurant_menu</span>
+                <span class="text-xs mt-1 font-bold">想吃啥</span>
+            </a>
+            <a href="review.html"
+                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">rate_review</span>
+                <span class="text-xs mt-1">吃后复盘</span>
+            </a>
+            <a href="review-history.html"
+                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">analytics</span>
+                <span class="text-xs mt-1">数据报告</span>
+            </a>
+        </div>
+    </nav>
+
     <script src="app.js"></script>
 </body>
 

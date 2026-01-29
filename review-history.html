@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>饮食报告 - 饮食觉察</title>
+    <title>最近10次复盘报告 - 吃什么</title>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
@@ -18,15 +18,15 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#d4a574',
-                        'primary-hover': '#c49464',
-                        'bg-light': '#faf6f0',
-                        'bg-dark': '#1a1410',
+                        'primary': '#d48f6a',
+                        'primary-hover': '#c47f5a',
+                        'bg-light': '#faf8f5',
+                        'bg-dark': '#1a1512',
                         'card-light': '#ffffff',
-                        'card-dark': '#2a221c',
-                        'text-main': '#3d2e22',
-                        'text-sub': '#8b7355',
-                        'accent-cream': '#f5e6d3',
+                        'card-dark': '#2d231c',
+                        'text-main': '#3d2e24',
+                        'text-sub': '#8c7b6e',
+                        'accent-cream': '#f5ebe0',
                     }
                 }
             }
@@ -34,194 +34,391 @@
     </script>
 </head>
 
-<body class="bg-bg-light dark:bg-bg-dark min-h-screen">
-    <div class="max-w-md mx-auto px-4 py-6">
+<body class="bg-bg-light dark:bg-bg-dark min-h-screen flex flex-col pb-20">
+    <main class="flex-1 container mx-auto px-4 py-6 max-w-md">
         <!-- 头部 -->
-        <header class="flex items-center justify-between mb-6">
-            <a href="code.html" class="flex items-center gap-2 text-text-sub hover:text-primary transition-colors">
-                <span class="material-symbols-outlined">arrow_back</span>
-                <span class="text-sm">返回</span>
-            </a>
-            <h1 class="text-lg font-bold text-text-main dark:text-white">📊 7天饮食报告</h1>
-            <div class="w-16"></div>
-        </header>
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-text-main dark:text-white mb-2">📊 最近10次复盘报告</h1>
+            <p class="text-text-sub text-sm" id="dateRange">加载中...</p>
+        </div>
 
-        <!-- 主体 -->
-        <main class="space-y-6">
-            <!-- 统计概览 -->
-            <div class="grid grid-cols-3 gap-3">
-                <div class="bg-card-light dark:bg-card-dark rounded-xl p-4 text-center shadow-sm">
-                    <div class="text-2xl font-bold text-primary" id="total-meals">0</div>
-                    <div class="text-xs text-text-sub">记录餐数</div>
-                </div>
-                <div class="bg-card-light dark:bg-card-dark rounded-xl p-4 text-center shadow-sm">
-                    <div class="text-2xl font-bold text-red-500" id="total-spent">¥0</div>
-                    <div class="text-xs text-text-sub">总花费</div>
-                </div>
-                <div class="bg-card-light dark:bg-card-dark rounded-xl p-4 text-center shadow-sm">
-                    <div class="text-2xl font-bold text-yellow-500" id="avg-regret">0</div>
-                    <div class="text-xs text-text-sub">平均后悔指数</div>
-                </div>
-            </div>
-
-            <!-- 暴食预警 -->
-            <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl p-5 border border-red-200 dark:border-red-800">
-                <h2 class="font-bold text-red-700 dark:text-red-300 mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined">warning</span>
-                    最容易让你暴食的食物
-                </h2>
-                <div id="binge-foods" class="space-y-2">
-                    <p class="text-sm text-red-600 dark:text-red-400">暂无数据，继续记录吧～</p>
-                </div>
-            </div>
-
-            <!-- 性价比最低 -->
+        <!-- 概览卡片 -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
             <div
-                class="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-5 border border-yellow-200 dark:border-yellow-800">
-                <h2 class="font-bold text-yellow-700 dark:text-yellow-300 mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined">money_off</span>
-                    性价比最低的3次外卖
-                </h2>
-                <div id="low-value-meals" class="space-y-2">
-                    <p class="text-sm text-yellow-600 dark:text-yellow-400">暂无数据，继续记录吧～</p>
+                class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] text-center">
+                <div class="text-3xl font-bold text-primary" id="totalMeals">0</div>
+                <div class="text-sm text-text-sub mt-1">记录餐数</div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] text-center">
+                <div class="text-3xl font-bold text-primary" id="totalSpent">¥0</div>
+                <div class="text-sm text-text-sub mt-1">总花费</div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] text-center">
+                <div class="text-3xl font-bold text-yellow-500" id="avgRegret">0</div>
+                <div class="text-sm text-text-sub mt-1">平均后悔指数</div>
+            </div>
+            <div
+                class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] text-center">
+                <div class="text-3xl font-bold text-green-500" id="happyRate">0%</div>
+                <div class="text-sm text-text-sub mt-1">开心餐占比</div>
+            </div>
+        </div>
+
+        <!-- 最容易让你暴食的食物 -->
+        <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] mb-4">
+            <h3 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
+                <span class="text-xl">🍔</span>
+                最容易让你暴食的食物
+            </h3>
+            <div id="bingeList" class="space-y-2">
+                <div class="text-text-sub text-sm">暂无数据</div>
+            </div>
+        </div>
+
+        <!-- 性价比最低的3次外卖 -->
+        <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] mb-4">
+            <h3 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
+                <span class="text-xl">💸</span>
+                性价比最低的3次外卖
+            </h3>
+            <div id="worstValueList" class="space-y-2">
+                <div class="text-text-sub text-sm">暂无数据</div>
+            </div>
+        </div>
+
+        <!-- 最值得复购的食物 -->
+        <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] mb-4">
+            <h3 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
+                <span class="text-xl">⭐</span>
+                最值得复购的选择
+            </h3>
+            <div id="bestChoiceList" class="space-y-2">
+                <div class="text-text-sub text-sm">暂无数据</div>
+            </div>
+        </div>
+
+        <!-- 后悔趋势 -->
+        <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 border border-[#f0e6da] dark:border-[#4a3a2f] mb-4">
+            <h3 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
+                <span class="text-xl">📈</span>
+                10次后悔趋势
+            </h3>
+            <div id="trendChart" class="h-32 flex items-end justify-between gap-1">
+                <!-- 动态生成柱状图 -->
+            </div>
+            <div class="flex justify-between text-xs text-text-sub mt-2">
+                <span>7天前</span>
+                <span>今天</span>
+            </div>
+        </div>
+
+        <!-- AI 智能分析 -->
+        <div
+            class="bg-gradient-to-br from-primary/10 to-primary/5 dark:from-primary/20 dark:to-primary/10 rounded-2xl p-5 border border-primary/30 mb-4">
+            <h3 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
+                <span class="text-xl">🤖</span>
+                AI 智能分析
+            </h3>
+            <p class="text-sm text-text-sub mb-4">基于你最近10次的饮食记录，AI 为你提供个性化分析和建议</p>
+
+            <div id="aiAnalysisResult" class="hidden mb-4">
+                <div
+                    class="bg-white/80 dark:bg-card-dark rounded-xl p-4 text-sm text-text-main dark:text-white whitespace-pre-line leading-relaxed">
+                    <!-- AI 分析结果会显示在这里 -->
                 </div>
             </div>
 
-            <!-- 后悔最多 -->
-            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
-                <h2 class="font-bold text-text-main dark:text-white mb-3 flex items-center gap-2">
-                    <span class="material-symbols-outlined">sentiment_dissatisfied</span>
-                    后悔程度最高的餐食
-                </h2>
-                <div id="most-regret" class="space-y-2">
-                    <p class="text-sm text-text-sub">暂无数据，继续记录吧～</p>
-                </div>
-            </div>
+            <button id="aiAnalyzeBtn"
+                class="w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">psychology</span>
+                获取 AI 分析
+            </button>
+        </div>
+    </main>
 
-            <!-- 记录列表 -->
-            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
-                <h2 class="font-bold text-text-main dark:text-white mb-4 flex items-center justify-between">
-                    <span class="flex items-center gap-2">
-                        <span class="material-symbols-outlined">history</span>
-                        最近记录
-                    </span>
-                    <button id="clear-btn" class="text-xs text-red-500 hover:underline">清空数据</button>
-                </h2>
-                <div id="history-list" class="space-y-3">
-                    <p class="text-sm text-text-sub text-center py-4">暂无记录</p>
-                </div>
-            </div>
-
-            <!-- 去记录 -->
-            <a href="review.html"
-                class="block w-full h-14 bg-primary hover:bg-primary-hover text-white rounded-2xl font-bold text-lg shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined">add</span>
-                记录一餐
+    <!-- 底部导航 -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 bg-card-light dark:bg-card-dark border-t border-[#f0e6da] dark:border-[#4a3a2f] px-4 py-2">
+        <div class="max-w-md mx-auto flex justify-around">
+            <a href="code.html"
+                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">restaurant_menu</span>
+                <span class="text-xs mt-1">想吃啥</span>
             </a>
-        </main>
-    </div>
+            <a href="review.html"
+                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">rate_review</span>
+                <span class="text-xs mt-1">吃后复盘</span>
+            </a>
+            <a href="review-history.html" class="flex flex-col items-center py-2 px-4 text-primary">
+                <span class="material-symbols-outlined text-xl">analytics</span>
+                <span class="text-xs mt-1 font-bold">数据报告</span>
+            </a>
+        </div>
+    </nav>
 
     <script>
-        // 加载历史数据
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('meal_history') || '[]');
+        const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
-            // 只取最近7天
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const recentHistory = history.filter(r => new Date(r.timestamp) > sevenDaysAgo);
+        const userToken = localStorage.getItem('user_token') || generateUserToken();
 
-            // 统计概览
-            document.getElementById('total-meals').textContent = recentHistory.length;
+        // 如果没有用户token，生成一个
+        function generateUserToken() {
+            const token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('user_token', token);
+            return token;
+        }
 
-            const totalSpent = recentHistory.reduce((sum, r) => sum + (r.price || 0), 0);
-            document.getElementById('total-spent').textContent = '¥' + totalSpent.toFixed(0);
+        // 生成10条随机测试数据
+        async function generateTestData() {
+            const foods = [
+                { name: '麻辣烫', price: 28 },
+                { name: '肯德基套餐', price: 35 },
+                { name: '饺子', price: 22 },
+                { name: '奶茶+炸鸡', price: 42 },
+                { name: '拉面', price: 32 },
+                { name: '烧烤', price: 58 },
+                { name: '便利店关东煮', price: 18 },
+                { name: '披萨', price: 48 },
+                { name: '盖浇饭', price: 20 },
+                { name: '火锅外卖', price: 85 }
+            ];
+            const moods = ['happy', 'satisfied', 'neutral', 'regretful', 'guilty'];
+            const fullness = [1, 2, 3]; // 1=太撑 2=刚好 3=还想吃
 
-            const avgRegret = recentHistory.length > 0
-                ? (recentHistory.reduce((sum, r) => sum + (r.regret || 0), 0) / recentHistory.length).toFixed(1)
-                : '0';
-            document.getElementById('avg-regret').textContent = avgRegret;
+            const testReviews = foods.map((food, i) => ({
+                user_token: userToken,
+                food_name: food.name,
+                fullness: fullness[Math.floor(Math.random() * fullness.length)],
+                mood: moods[Math.floor(Math.random() * moods.length)],
+                regret_score: Math.floor(Math.random() * 5) + 1,
+                price: food.price,
+                note: `测试数据 #${i + 1}`,
+                created_at: new Date(Date.now() - i * 3600000 * 6).toISOString() // 每6小时一条
+            }));
 
-            // 暴食预警（饱腹感>=4的食物）
-            const bingeRecords = recentHistory.filter(r => parseInt(r.fullness) >= 4);
-            if (bingeRecords.length > 0) {
-                const bingeFoods = [...new Set(bingeRecords.map(r => r.food))];
-                document.getElementById('binge-foods').innerHTML = bingeFoods.map(food =>
-                    `<div class="flex items-center gap-2 text-red-600 dark:text-red-400">
-                        <span>🍔</span>
-                        <span class="text-sm font-medium">${food}</span>
-                    </div>`
-                ).join('');
-            }
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(testReviews)
+                });
 
-            // 性价比最低（后悔度高且价格高）
-            const scoredMeals = recentHistory
-                .filter(r => r.price && r.regret)
-                .map(r => ({
-                    ...r,
-                    valueScore: (r.regret * r.price) // 后悔度×价格=低性价比分数
-                }))
-                .sort((a, b) => b.valueScore - a.valueScore)
-                .slice(0, 3);
-
-            if (scoredMeals.length > 0) {
-                document.getElementById('low-value-meals').innerHTML = scoredMeals.map((meal, i) =>
-                    `<div class="flex items-center justify-between text-yellow-600 dark:text-yellow-400">
-                        <span class="text-sm">${i + 1}. ${meal.food}</span>
-                        <span class="text-sm font-bold">¥${meal.price} / 后悔${meal.regret}⭐</span>
-                    </div>`
-                ).join('');
-            }
-
-            // 后悔最多
-            const mostRegret = recentHistory
-                .filter(r => r.regret >= 4)
-                .sort((a, b) => b.regret - a.regret)
-                .slice(0, 3);
-
-            if (mostRegret.length > 0) {
-                document.getElementById('most-regret').innerHTML = mostRegret.map(meal =>
-                    `<div class="flex items-center justify-between">
-                        <span class="text-sm text-text-main dark:text-white">${meal.food}</span>
-                        <span class="text-sm text-red-500">${'⭐'.repeat(meal.regret)}</span>
-                    </div>`
-                ).join('');
-            }
-
-            // 历史列表
-            if (recentHistory.length > 0) {
-                document.getElementById('history-list').innerHTML = recentHistory
-                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                    .slice(0, 10)
-                    .map(record => {
-                        const date = new Date(record.timestamp);
-                        const timeStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
-                        return `
-                            <div class="flex items-center justify-between py-2 border-b border-accent-cream/50 dark:border-[#3a2e26] last:border-0">
-                                <div>
-                                    <div class="text-sm font-medium text-text-main dark:text-white">${record.food}</div>
-                                    <div class="text-xs text-text-sub">${timeStr}</div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-sm font-bold text-primary">${record.price ? '¥' + record.price : '-'}</div>
-                                    <div class="text-xs text-text-sub">${record.regret ? '⭐'.repeat(record.regret) : '-'}</div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
+                if (response.ok) {
+                    alert('✅ 已生成10条测试数据！正在刷新...');
+                    location.reload();
+                } else {
+                    const err = await response.text();
+                    alert('生成失败: ' + err);
+                }
+            } catch (error) {
+                alert('生成失败: ' + error.message);
             }
         }
 
-        // 清空数据
-        document.getElementById('clear-btn').addEventListener('click', () => {
-            if (confirm('确定要清空所有记录吗？此操作不可恢复。')) {
-                localStorage.removeItem('meal_history');
-                location.reload();
+        async function loadReportData() {
+            // 获取最近10条记录（不限日期）
+            document.getElementById('dateRange').textContent = '最近10次用餐记录';
+
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/meal_reviews?user_token=eq.${userToken}&order=created_at.desc&limit=10`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        }
+                    }
+                );
+
+                if (!response.ok) throw new Error('加载失败');
+
+                const reviews = await response.json();
+                cachedReviews = reviews; // 缓存用于AI分析
+                renderReport(reviews);
+            } catch (error) {
+                console.error(error);
+                document.getElementById('dateRange').textContent = '数据加载失败';
+            }
+        }
+
+        function renderReport(reviews) {
+            if (!reviews.length) {
+                document.getElementById('dateRange').textContent = '暂无记录，去记录第一餐吧！';
+                return;
+            }
+
+            // 概览数据
+            document.getElementById('totalMeals').textContent = reviews.length;
+
+            const totalSpent = reviews.reduce((sum, r) => sum + (r.price || 0), 0);
+            document.getElementById('totalSpent').textContent = `¥${totalSpent.toFixed(0)}`;
+
+            const avgRegret = reviews.reduce((sum, r) => sum + (r.regret_score || 3), 0) / reviews.length;
+            document.getElementById('avgRegret').textContent = avgRegret.toFixed(1);
+
+            const happyMeals = reviews.filter(r => ['happy', 'satisfied'].includes(r.mood)).length;
+            document.getElementById('happyRate').textContent = `${Math.round(happyMeals / reviews.length * 100)}%`;
+
+            // 暴食食物（饱腹感=1 太撑了）
+            const bingeEating = reviews.filter(r => r.fullness === 1);
+            if (bingeEating.length) {
+                document.getElementById('bingeList').innerHTML = bingeEating.slice(0, 3).map(r => `
+                    <div class="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                        <span class="text-sm text-text-main dark:text-white">${r.food_name}</span>
+                        <span class="text-xs text-red-500">😫 吃太撑</span>
+                    </div>
+                `).join('');
+            }
+
+            // 性价比最低（价格高 + 后悔度高）
+            const worstValue = reviews
+                .filter(r => r.price > 0)
+                .sort((a, b) => (b.price * b.regret_score) - (a.price * a.regret_score))
+                .slice(0, 3);
+            if (worstValue.length) {
+                document.getElementById('worstValueList').innerHTML = worstValue.map(r => `
+                    <div class="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                        <span class="text-sm text-text-main dark:text-white">${r.food_name}</span>
+                        <span class="text-xs text-yellow-600">¥${r.price} · 后悔${r.regret_score}星</span>
+                    </div>
+                `).join('');
+            }
+
+            // 最值得复购（后悔度低 + 心情好）
+            const bestChoice = reviews
+                .filter(r => r.regret_score <= 2 && ['happy', 'satisfied'].includes(r.mood))
+                .slice(0, 3);
+            if (bestChoice.length) {
+                document.getElementById('bestChoiceList').innerHTML = bestChoice.map(r => `
+                    <div class="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <span class="text-sm text-text-main dark:text-white">${r.food_name}</span>
+                        <span class="text-xs text-green-600">⭐ 值得复购</span>
+                    </div>
+                `).join('');
+            }
+
+            // 10次后悔趋势柱状图（显示每条记录）
+            const chartHtml = reviews.slice(0, 10).reverse().map((r, i) => {
+                const score = r.regret_score || 3;
+                const height = `${score * 20}%`;
+                const color = score > 3 ? 'bg-red-400' : score > 2 ? 'bg-yellow-400' : 'bg-green-400';
+                return `
+                    <div class="flex-1 flex flex-col items-center">
+                        <div class="w-full ${color} rounded-t-sm transition-all" style="height: ${height}"></div>
+                        <span class="text-xs text-text-sub mt-1">${score}</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('trendChart').innerHTML = chartHtml;
+        }
+
+        // 页面加载时获取数据
+        let cachedReviews = []; // 缓存评价数据用于AI分析
+
+        if (userToken) {
+            loadReportData();
+        } else {
+            document.getElementById('dateRange').textContent = '请先记录一餐再查看报告';
+        }
+
+        // AI 智能分析
+        document.getElementById('aiAnalyzeBtn').addEventListener('click', async function () {
+            if (cachedReviews.length === 0) {
+                alert('暂无饮食记录，请先记录几餐后再获取AI分析');
+                return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> AI 分析中...';
+
+            try {
+                // 调用 Edge Function 进行 AI 分析
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/review-analysis`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        reviews: cachedReviews,
+                        user_token: userToken
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('AI 分析失败');
+                }
+
+                const result = await response.json();
+
+                // 显示AI分析结果
+                const resultContainer = document.getElementById('aiAnalysisResult');
+                resultContainer.querySelector('div').textContent = result.analysis || '暂无分析结果';
+                resultContainer.classList.remove('hidden');
+
+                btn.innerHTML = '<span class="material-symbols-outlined text-lg">check_circle</span> 已完成分析';
+                btn.classList.replace('bg-primary', 'bg-green-500');
+
+            } catch (error) {
+                console.error('AI 分析错误:', error);
+
+                // 降级：使用本地简单分析
+                const localAnalysis = generateLocalAnalysis(cachedReviews);
+                const resultContainer = document.getElementById('aiAnalysisResult');
+                resultContainer.querySelector('div').textContent = localAnalysis;
+                resultContainer.classList.remove('hidden');
+
+                btn.innerHTML = '<span class="material-symbols-outlined text-lg">psychology</span> 重新分析';
+                btn.disabled = false;
             }
         });
 
-        // 初始化
-        loadHistory();
+        // 本地简单分析（AI调用失败时的降级方案）
+        function generateLocalAnalysis(reviews) {
+            const totalMeals = reviews.length;
+            const avgRegret = (reviews.reduce((sum, r) => sum + (r.regret_score || 3), 0) / totalMeals).toFixed(1);
+            const totalSpent = reviews.reduce((sum, r) => sum + (r.price || 0), 0);
+            const avgPrice = (totalSpent / totalMeals).toFixed(0);
+
+            const lateNightMeals = reviews.filter(r => {
+                const hour = new Date(r.created_at).getHours();
+                return hour >= 21 || hour < 6;
+            }).length;
+
+            const highRegretMeals = reviews.filter(r => r.regret_score >= 4);
+            const happyMeals = reviews.filter(r => ['happy', 'satisfied'].includes(r.mood));
+
+            let analysis = `📊 7天饮食总结\n\n`;
+            analysis += `你共记录了 ${totalMeals} 餐，平均花费 ¥${avgPrice}/餐\n`;
+            analysis += `平均后悔指数：${avgRegret}/5\n\n`;
+
+            if (lateNightMeals > 0) {
+                analysis += `🌙 深夜吃了 ${lateNightMeals} 次，占比 ${Math.round(lateNightMeals / totalMeals * 100)}%\n`;
+                analysis += `建议：尽量减少深夜进食，对睡眠和消化都更好\n\n`;
+            }
+
+            if (highRegretMeals.length > 0) {
+                analysis += `😅 高后悔餐食：${highRegretMeals.map(r => r.food_name).slice(0, 3).join('、')}\n`;
+                analysis += `建议：下次避开这些让你后悔的选择\n\n`;
+            }
+
+            if (happyMeals.length > 0) {
+                analysis += `😊 让你开心的餐食：${happyMeals.map(r => r.food_name).slice(0, 3).join('、')}\n`;
+                analysis += `建议：这些是值得复购的好选择！\n`;
+            }
+
+            return analysis;
+        }
     </script>
 </body>
 
