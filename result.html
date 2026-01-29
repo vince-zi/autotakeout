@@ -196,13 +196,14 @@
             meituan: {
                 name: '美团外卖',
                 icon: '🟡',
-                app: (kw) => `imeituan://www.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
+                // 美团外卖App专用Scheme，自动填入搜索词
+                app: (kw) => `meituanwaimai://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
                 web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`
             },
             eleme: {
-                name: '淘宝闪购',  // 饿了么已更名为淘宝闪购
-                icon: '🟠',
-                // 淘宝闪购可以直接打开商品搜索，用户只需加购
+                name: '饿了么',  // 保持原名
+                icon: '🔵',
+                // 使用淘宝闪购入口，能自动填入搜索词
                 app: (kw) => `taobao://s.taobao.com/search?q=${encodeURIComponent(kw + ' 闪购')}`,
                 web: (kw) => `https://s.taobao.com/search?initiative_id=staobaoz_20200101&q=${encodeURIComponent(kw + ' 闪购 即时配送')}`
             },

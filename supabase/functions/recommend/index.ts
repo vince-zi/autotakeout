@@ -132,7 +132,7 @@ ${locationInfo}
 【字段说明】
 - platform: 必须是 "meituan"、"eleme"、"taobao" 或 "jd" 之一
   - meituan = 美团外卖
-  - eleme = 淘宝闪购（原饿了么）
+  - eleme = 饿了么（推荐优先使用）
   - jd = 京东秒送
 - estimated_price: 数字类型，单位元
 - regret_score: 1-5整数（1=几乎不后悔，5=明天绝对后悔）
