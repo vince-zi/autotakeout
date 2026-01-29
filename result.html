@@ -182,39 +182,86 @@
     </footer>
 
     <script>
-        // 平台跳转生成器
-        function jumpToPlatform(platform, keyword) {
-            const encodedKeyword = encodeURIComponent(keyword || '夜宵');
+        // 平台配置：App Scheme + 网页备用
+        const PLATFORM_CONFIG = {
+            meituan: {
+                name: '美团外卖',
+                icon: '🟡',
+                app: (kw) => `imeituan://www.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
+                web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`
+            },
+            eleme: {
+                name: '饿了么',
+                icon: '🔵',
+                app: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`,
+                web: (kw) => `https://h5.ele.me/search?keyword=${encodeURIComponent(kw)}`
+            },
+            taobao: {
+                name: '淘宝',
+                icon: '🟠',
+                app: (kw) => `taobao://s.taobao.com/search?q=${encodeURIComponent(kw)}`,
+                web: (kw) => `https://s.taobao.com/search?q=${encodeURIComponent(kw)}`
+            },
+            jd: {
+                name: '京东',
+                icon: '🔴',
+                app: (kw) => `openapp.jdmobile://virtual?params={"category":"jump","des":"search","keyword":"${encodeURIComponent(kw)}"}`,
+                web: (kw) => `https://search.jd.com/Search?keyword=${encodeURIComponent(kw)}`
+            }
+        };
 
-            if (platform === 'meituan') {
-                return `https://waimai.meituan.com/search?keyword=${encodedKeyword}`;
+        // 智能跳转：先尝试App，失败则降级到网页
+        function smartJump(platform, keyword) {
+            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
+            const kw = keyword || '夜宵';
+
+            // 检测是否为移动端
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // 移动端：尝试打开App
+                const appUrl = config.app(kw);
+                const webUrl = config.web(kw);
+
+                // 使用隐藏iframe尝试打开App
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appUrl;
+                document.body.appendChild(iframe);
+
+                // 2.5秒后如果App未启动，降级到网页
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    window.location.href = webUrl;
+                }, 2500);
+            } else {
+                // PC端：直接打开网页
+                window.open(config.web(kw), '_blank');
             }
-            if (platform === 'taobao') {
-                return `https://s.taobao.com/search?q=${encodedKeyword}`;
-            }
-            if (platform === 'jd') {
-                return `https://search.jd.com/Search?keyword=${encodedKeyword}`;
-            }
-            // 默认美团
-            return `https://waimai.meituan.com/search?keyword=${encodedKeyword}`;
         }
 
-        // 平台图标映射
+        // 获取平台图标
         function getPlatformIcon(platform) {
-            const icons = {
-                'meituan': '🟡',
-                'taobao': '🟠',
-                'jd': '🔴'
-            };
-            return icons[platform] || '📦';
+            return PLATFORM_CONFIG[platform]?.icon || '📦';
         }
 
-        // 推荐卡片模板（包含去下单按钮）
-        function createRecommendationCard(rec, index) {
-            const { food_name, platform, search_keyword, source, price, discount, delivery_fee, reason, regret_score, regret_reason } = rec;
+        // 获取平台名称
+        function getPlatformName(platform) {
+            return PLATFORM_CONFIG[platform]?.name || '外卖平台';
+        }
 
-            // 生成跳转链接
-            const jumpUrl = jumpToPlatform(platform, search_keyword || food_name);
+        // 推荐卡片模板（优化版：含商家名、智能跳转）
+        function createRecommendationCard(rec, index) {
+            const {
+                food_name,
+                restaurant,
+                platform,
+                estimated_price,
+                reason,
+                jump_keyword,
+                regret_score,
+                regret_reason
+            } = rec;
 
             // 生成后悔指数星星
             let starsHtml = '';
@@ -222,6 +269,9 @@
                 const filled = i <= regret_score;
                 starsHtml += `<span class="material-symbols-outlined text-base ${filled ? 'text-primary' : 'text-[#e0d5ca] dark:text-[#5c4a3d]'}">star</span>`;
             }
+
+            const priceDisplay = estimated_price ? `¥${estimated_price}` : '';
+            const keyword = jump_keyword || `${restaurant} ${food_name}`;
 
             return `
                 <div class="recommendation-card bg-card-light dark:bg-card-dark rounded-2xl border border-[#f0e6da] dark:border-[#4a3a2f] p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
@@ -233,16 +283,14 @@
                                 </div>
                                 <div>
                                     <h3 class="text-lg font-bold text-text-main dark:text-white">${food_name}</h3>
-                                    <span class="text-xs text-text-sub bg-accent-cream dark:bg-[#4a3a2f] px-2 py-0.5 rounded-full">${source || '外卖平台'}</span>
+                                    <p class="text-xs text-text-sub">${restaurant || ''}</p>
+                                    <span class="text-xs text-text-sub bg-accent-cream dark:bg-[#4a3a2f] px-2 py-0.5 rounded-full">${getPlatformName(platform)}</span>
                                 </div>
                             </div>
                             <div class="text-right flex-shrink-0">
-                                <div class="text-lg font-bold text-primary">${price || ''}</div>
-                                ${delivery_fee ? `<div class="text-xs text-text-sub">配送 ${delivery_fee}</div>` : ''}
+                                <div class="text-xl font-bold text-primary">${priceDisplay}</div>
                             </div>
                         </div>
-                        
-                        ${discount ? `<div class="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-lg inline-block w-fit">🏷️ ${discount}</div>` : ''}
                         
                         <p class="text-text-sub dark:text-[#bfae99] text-sm">${reason || ''}</p>
                         
@@ -254,29 +302,30 @@
                         </div>
                         ${regret_reason ? `<p class="text-xs text-text-sub/70 dark:text-[#887860]">👉 ${regret_reason}</p>` : ''}
                         
-                        <!-- 去下单按钮 -->
-                        <a href="${jumpUrl}" target="_blank" 
-                           class="mt-2 w-full h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                        <!-- 去下单按钮（智能跳转：App优先） -->
+                        <button onclick="smartJump('${platform}', '${keyword.replace(/'/g, "\\'")}')"
+                           class="mt-2 w-full h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-lg">shopping_cart</span>
-                            去下单
-                        </a>
+                            去${getPlatformName(platform)}下单
+                        </button>
                     </div>
                 </div>
             `;
         }
 
-        // 替代选项卡片
+        // 替代选项卡片（含商家名和智能跳转）
         function createAlternativeCard(alt) {
-            const jumpUrl = jumpToPlatform(alt.platform, alt.search_keyword || alt.food_name);
+            const keyword = alt.jump_keyword || `${alt.restaurant || ''} ${alt.food_name}`;
             return `
-                <a href="${jumpUrl}" target="_blank" class="flex items-center gap-3 p-3 bg-accent-cream/50 dark:bg-[#3a2e26] rounded-xl hover:bg-accent-cream dark:hover:bg-[#4a3a2f] transition-colors cursor-pointer">
+                <button onclick="smartJump('${alt.platform}', '${keyword.replace(/'/g, "\\'")}')" 
+                   class="flex items-center gap-3 p-3 bg-accent-cream/50 dark:bg-[#3a2e26] rounded-xl hover:bg-accent-cream dark:hover:bg-[#4a3a2f] transition-colors cursor-pointer w-full text-left">
                     <span class="text-lg">${getPlatformIcon(alt.platform)}</span>
                     <div class="flex-1">
                         <span class="font-medium text-text-main dark:text-white text-sm">${alt.food_name}</span>
-                        <span class="text-xs text-text-sub ml-2">${alt.source || ''}</span>
+                        <span class="text-xs text-text-sub ml-2">${alt.restaurant || ''}</span>
                     </div>
                     <span class="material-symbols-outlined text-primary text-lg">arrow_forward</span>
-                </a>
+                </button>
             `;
         }
 

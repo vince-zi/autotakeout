@@ -43,7 +43,7 @@ const BUDGET_MAP: Record<number, string> = {
     5: "今天不在乎价格",
 };
 
-// 构建 AI Prompt
+// 构建 AI Prompt（优化版：结构化输出）
 function buildPrompt(input: {
     time_of_day: string;
     mood: string;
@@ -64,78 +64,62 @@ function buildPrompt(input: {
     const minute = beijingTime.getUTCMinutes();
     const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-    return `你是一个专业的深夜美食决策顾问，面向中国一二线城市18-35岁用户。
+    const userInput = {
+        time: timeStr,
+        scene: timeDesc,
+        mood: moodDesc,
+        hunger: hungerDesc,
+        exercise: exerciseDesc,
+        budget: budgetDesc
+    };
 
-【当前时间】${timeStr}
-【用户状态】
-- 时间场景：${timeDesc}
-- 情绪状态：${moodDesc}  
-- 身体感觉：${hungerDesc}
-- 运动情况：${exerciseDesc}
-- 预算偏好：${budgetDesc}
+    return `你是一个外卖推荐专家，专门帮助用户在深夜/加班时做出不后悔的饮食决策。
 
-【你必须严格按以下步骤分析，不可跳过】
+【用户当前状态】
+${JSON.stringify(userInput, null, 2)}
 
-Step 1｜判断用户状态
-- 这是夜宵场景还是下午茶/加班场景
-- 用户的负罪敏感度：怕胖？怕花钱？怕浪费？
+【你的任务】
+根据用户状态，推荐1-3个真实可点的外卖或便利店商品。
 
-Step 2｜模拟平台搜索
-- 模拟搜索美团外卖、淘宝闪送、京东外卖、便利店等平台
-- 关键词：夜宵、便利店、卤味、低脂、深夜营业
+【输出要求】
+必须严格返回以下JSON格式，不要有任何其他文字或解释：
 
-Step 3｜筛选规则（每个推荐必须同时满足至少3条）
-✅ 当前时间仍在营业
-✅ 有平台补贴/满减/配送费低
-✅ 单人份、价格不高（避免"买多吃多"）
-✅ 次日负罪感低（油脂/热量/心理层面）
-
-Step 4｜输出格式
-
-必须严格返回以下JSON格式，不要有任何其他文字：
 {
-  "current_time": "${timeStr}",
-  "scene": "夜宵场景/下午茶/加班",
-  "guilt_level": "轻度负罪感/中度负罪感/无负罪感",
+  "scene": "夜宵/加班/下午茶",
   "recommendations": [
     {
-      "food_name": "具体食物名称（如便利店煮玉米）",
-      "platform": "meituan 或 taobao 或 jd",
-      "search_keyword": "搜索关键词（如：煮玉米、卤味）",
-      "source": "来源描述（如：美团外卖、淘宝闪送、京东秒送）",
-      "price": "价格（如¥4.9）",
-      "discount": "优惠信息（如满15-8、免配送费）",
-      "delivery_fee": "配送费（如¥0）",
-      "reason": "推荐原因（从价格/份量/健康角度）",
-      "regret_score": 1-5的整数,
-      "regret_reason": "后悔指数的逻辑原因"
+      "food_name": "具体菜品名称，如：老坛酸菜鱼（小份）",
+      "restaurant": "商家名称，如：鱼你在一起（中关村店）",
+      "platform": "meituan",
+      "estimated_price": 28,
+      "reason": "简要推荐理由，不超过20字",
+      "jump_keyword": "商家名+核心菜品，如：鱼你在一起 酸菜鱼",
+      "regret_score": 2,
+      "regret_reason": "后悔指数原因，如：份量适中，不会吃撑"
     }
   ],
   "alternatives": [
     {
-      "food_name": "替代选项名称",
-      "platform": "meituan 或 taobao 或 jd",
-      "search_keyword": "搜索关键词",
-      "source": "来源平台"
-    }
-  ],
-  "not_recommended": [
-    {
-      "food_name": "不推荐的食物",
-      "reason": "为什么不推荐"
+      "food_name": "备选菜品",
+      "restaurant": "备选商家",
+      "platform": "eleme",
+      "jump_keyword": "搜索关键词"
     }
   ]
 }
 
-【重要】
-- platform 字段只能是：meituan / taobao / jd 三选一
-- search_keyword 是用于在对应平台搜索的关键词
-- 食物必须是中国常见的、真实可点的
-- 价格要合理真实（便利店食品5-15元，外卖15-30元）
-- recommendations 给2-3个
-- alternatives 给1-2个
-- not_recommended 给1-2个
-- 后悔指数要有逻辑依据`
+【字段说明】
+- platform: 必须是 "meituan"、"eleme"、"taobao" 或 "jd" 之一
+- estimated_price: 数字类型，单位元
+- regret_score: 1-5整数（1=几乎不后悔，5=明天绝对后悔）
+- jump_keyword: 用于App搜索的关键词，格式"商家名 菜品名"
+
+【重要规则】
+1. 商家和菜品必须是中国一二线城市真实存在的
+2. 价格要符合实际（便利店5-15元，外卖15-40元）
+3. 深夜场景优先推荐24小时营业的商家
+4. recommendations给2-3个，alternatives给1-2个
+5. 只返回JSON，不要任何其他文字`
 }
 
 // 调用 DeepSeek API
