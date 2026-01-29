@@ -174,7 +174,16 @@
     </main>
 
     <footer class="py-6 text-center">
+        <div class="mb-4">
+            <a href="review.html"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-cream dark:bg-[#3a2e26] text-primary rounded-xl font-medium hover:bg-primary hover:text-white transition-all">
+                <span class="material-symbols-outlined">edit_note</span>
+                吃完后记录一下
+            </a>
+        </div>
         <div class="flex justify-center gap-6 text-sm font-medium text-text-sub/70 dark:text-[#bfae99]/50">
+            <a class="hover:text-primary transition-colors" href="review-history.html">📊 饮食报告</a>
+            <span>•</span>
             <a class="hover:text-primary transition-colors" href="#">隐私政策</a>
             <span>•</span>
             <a class="hover:text-primary transition-colors" href="#">服务条款</a>
@@ -191,10 +200,11 @@
                 web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`
             },
             eleme: {
-                name: '饿了么',
-                icon: '🔵',
-                app: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`,
-                web: (kw) => `https://h5.ele.me/search?keyword=${encodeURIComponent(kw)}`
+                name: '淘宝闪购',  // 饿了么已更名为淘宝闪购
+                icon: '🟠',
+                // 淘宝闪购可以直接打开商品搜索，用户只需加购
+                app: (kw) => `taobao://s.taobao.com/search?q=${encodeURIComponent(kw + ' 闪购')}`,
+                web: (kw) => `https://s.taobao.com/search?initiative_id=staobaoz_20200101&q=${encodeURIComponent(kw + ' 闪购 即时配送')}`
             },
             taobao: {
                 name: '淘宝',
@@ -203,10 +213,11 @@
                 web: (kw) => `https://s.taobao.com/search?q=${encodeURIComponent(kw)}`
             },
             jd: {
-                name: '京东',
+                name: '京东秒送',
                 icon: '🔴',
-                app: (kw) => `openapp.jdmobile://virtual?params={"category":"jump","des":"search","keyword":"${encodeURIComponent(kw)}"}`,
-                web: (kw) => `https://search.jd.com/Search?keyword=${encodeURIComponent(kw)}`
+                // 京东秒送，添加"秒送"关键词优先展示即时配送
+                app: (kw) => `openapp.jdmobile://virtual?params={"category":"jump","des":"search","keyword":"${encodeURIComponent(kw + ' 秒送')}"}`,
+                web: (kw) => `https://search.jd.com/Search?keyword=${encodeURIComponent(kw + ' 秒送')}`
             }
         };
 

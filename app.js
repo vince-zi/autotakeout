@@ -11,11 +11,66 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const RECOMMEND_API = `${SUPABASE_URL}/functions/v1/recommend`;
 
 /**
+ * 获取用户定位
+ */
+async function getUserLocation() {
+    return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+            console.log('浏览器不支持定位');
+            resolve(null);
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                });
+            },
+            (error) => {
+                console.log('获取定位失败:', error.message);
+                resolve(null);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 300000 // 5分钟缓存
+            }
+        );
+    });
+}
+
+/**
+ * 判断当前是否为白天（根据页面UI线索）
+ */
+function isDaytime() {
+    // 检查页面是否包含"阳光正好"等白天关键词
+    const pageText = document.body.innerText || '';
+    const daytimeKeywords = ['阳光正好', '早安', '午安', '下午好', '早餐', '午餐', '下午茶'];
+    const nightKeywords = ['月色温柔', '晚安', '夜宵', '深夜', '凌晨'];
+
+    for (const kw of daytimeKeywords) {
+        if (pageText.includes(kw)) return true;
+    }
+    for (const kw of nightKeywords) {
+        if (pageText.includes(kw)) return false;
+    }
+
+    // 根据当前时间判断
+    const hour = new Date().getHours();
+    return hour >= 6 && hour < 22;
+}
+
+/**
  * 收集表单数据
  */
-function collectFormData() {
+async function collectFormData() {
     const form = document.querySelector('form');
     if (!form) return null;
+
+    // 获取定位
+    const location = await getUserLocation();
 
     // 获取时间段
     const timeOfDay = form.querySelector('input[name="time_of_day"]:checked')?.value || 'nighttime';
@@ -34,12 +89,17 @@ function collectFormData() {
     const budgetRange = form.querySelector('input[type="range"]');
     const budgetLevel = budgetRange ? parseInt(budgetRange.value) : 3;
 
+    // 判断白天/夜晚
+    const is_daytime = isDaytime();
+
     return {
         time_of_day: timeOfDay,
         mood: mood,
         hunger_level: hungerLevel,
         exercised_today: exercisedToday,
-        budget_level: budgetLevel
+        budget_level: budgetLevel,
+        location: location,
+        is_daytime: is_daytime
     };
 }
 
@@ -131,17 +191,18 @@ async function handleSubmit(event) {
 
     const submitButton = document.querySelector('button[type="button"]');
 
-    // 收集表单数据
-    const formData = collectFormData();
+    // 显示加载状态（获取定位可能需要时间）
+    showLoading(submitButton);
+
+    // 收集表单数据（包含定位）
+    const formData = await collectFormData();
     if (!formData) {
+        hideLoading(submitButton);
         showError('请完成所有选项');
         return;
     }
 
     console.log('提交数据:', formData);
-
-    // 显示加载状态
-    showLoading(submitButton);
 
     try {
         // 调用 API 获取推荐

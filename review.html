@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>吃后复盘 - 饮食觉察</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#d4a574',
+                        'primary-hover': '#c49464',
+                        'bg-light': '#faf6f0',
+                        'bg-dark': '#1a1410',
+                        'card-light': '#ffffff',
+                        'card-dark': '#2a221c',
+                        'text-main': '#3d2e22',
+                        'text-sub': '#8b7355',
+                        'accent-cream': '#f5e6d3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .emoji-btn {
+            transition: all 0.2s;
+        }
+
+        .emoji-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .emoji-btn.selected {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.4);
+        }
+    </style>
+</head>
+
+<body class="bg-bg-light dark:bg-bg-dark min-h-screen">
+    <div class="max-w-md mx-auto px-4 py-6">
+        <!-- 头部 -->
+        <header class="flex items-center justify-between mb-6">
+            <a href="code.html" class="flex items-center gap-2 text-text-sub hover:text-primary transition-colors">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span class="text-sm">返回</span>
+            </a>
+            <h1 class="text-lg font-bold text-text-main dark:text-white">🍜 吃后复盘</h1>
+            <div class="w-16"></div>
+        </header>
+
+        <!-- 主体 -->
+        <main class="space-y-6">
+            <!-- 今天吃了什么 -->
+            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-text-main dark:text-white mb-4">刚才吃了什么？</h2>
+                <input type="text" id="food-input" placeholder="如：麦当劳双层吉士汉堡套餐"
+                    class="w-full px-4 py-3 rounded-xl bg-accent-cream/50 dark:bg-[#3a2e26] border-none text-text-main dark:text-white placeholder:text-text-sub/60 focus:outline-none focus:ring-2 focus:ring-primary">
+                <div class="flex gap-2 mt-3 flex-wrap" id="quick-foods">
+                    <button
+                        class="quick-food px-3 py-1.5 text-sm bg-accent-cream dark:bg-[#3a2e26] rounded-full text-text-sub hover:bg-primary hover:text-white transition-colors">🍔
+                        汉堡</button>
+                    <button
+                        class="quick-food px-3 py-1.5 text-sm bg-accent-cream dark:bg-[#3a2e26] rounded-full text-text-sub hover:bg-primary hover:text-white transition-colors">🍜
+                        面条</button>
+                    <button
+                        class="quick-food px-3 py-1.5 text-sm bg-accent-cream dark:bg-[#3a2e26] rounded-full text-text-sub hover:bg-primary hover:text-white transition-colors">🍕
+                        披萨</button>
+                    <button
+                        class="quick-food px-3 py-1.5 text-sm bg-accent-cream dark:bg-[#3a2e26] rounded-full text-text-sub hover:bg-primary hover:text-white transition-colors">🥗
+                        轻食</button>
+                    <button
+                        class="quick-food px-3 py-1.5 text-sm bg-accent-cream dark:bg-[#3a2e26] rounded-full text-text-sub hover:bg-primary hover:text-white transition-colors">🍱
+                        便当</button>
+                </div>
+            </div>
+
+            <!-- 饱腹感 -->
+            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-text-main dark:text-white mb-4">饱腹感</h2>
+                <div class="flex justify-between" id="fullness-options">
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="1">
+                        <span class="text-3xl">😢</span>
+                        <span class="text-xs text-text-sub">还饿</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="2">
+                        <span class="text-3xl">😐</span>
+                        <span class="text-xs text-text-sub">刚好</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="3">
+                        <span class="text-3xl">😊</span>
+                        <span class="text-xs text-text-sub">满足</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="4">
+                        <span class="text-3xl">🥴</span>
+                        <span class="text-xs text-text-sub">有点撑</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="5">
+                        <span class="text-3xl">🤢</span>
+                        <span class="text-xs text-text-sub">撑爆了</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 情绪 -->
+            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-text-main dark:text-white mb-4">吃完后心情</h2>
+                <div class="flex justify-between" id="mood-options">
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="happy">
+                        <span class="text-3xl">😄</span>
+                        <span class="text-xs text-text-sub">开心</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="satisfied">
+                        <span class="text-3xl">😌</span>
+                        <span class="text-xs text-text-sub">满足</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="neutral">
+                        <span class="text-3xl">😐</span>
+                        <span class="text-xs text-text-sub">一般</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="guilty">
+                        <span class="text-3xl">😓</span>
+                        <span class="text-xs text-text-sub">有点愧疚</span>
+                    </button>
+                    <button class="emoji-btn flex flex-col items-center gap-2 p-3 rounded-xl" data-value="regret">
+                        <span class="text-3xl">😭</span>
+                        <span class="text-xs text-text-sub">后悔</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 后悔度 -->
+            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-text-main dark:text-white mb-4">后悔指数</h2>
+                <p class="text-sm text-text-sub mb-4">如果明天醒来，你会后悔今天这顿吗？</p>
+                <div class="flex justify-center gap-2" id="regret-options">
+                    <button class="regret-star text-3xl text-[#e0d5ca] dark:text-[#5c4a3d] transition-colors"
+                        data-value="1">⭐</button>
+                    <button class="regret-star text-3xl text-[#e0d5ca] dark:text-[#5c4a3d] transition-colors"
+                        data-value="2">⭐</button>
+                    <button class="regret-star text-3xl text-[#e0d5ca] dark:text-[#5c4a3d] transition-colors"
+                        data-value="3">⭐</button>
+                    <button class="regret-star text-3xl text-[#e0d5ca] dark:text-[#5c4a3d] transition-colors"
+                        data-value="4">⭐</button>
+                    <button class="regret-star text-3xl text-[#e0d5ca] dark:text-[#5c4a3d] transition-colors"
+                        data-value="5">⭐</button>
+                </div>
+                <p class="text-center text-xs text-text-sub mt-2" id="regret-label">点击选择后悔程度</p>
+            </div>
+
+            <!-- 花了多少钱 -->
+            <div class="bg-card-light dark:bg-card-dark rounded-2xl p-5 shadow-sm">
+                <h2 class="font-bold text-text-main dark:text-white mb-4">花了多少钱？</h2>
+                <div class="flex items-center gap-2">
+                    <span class="text-xl text-primary">¥</span>
+                    <input type="number" id="price-input" placeholder="0" min="0" step="0.1"
+                        class="flex-1 px-4 py-3 rounded-xl bg-accent-cream/50 dark:bg-[#3a2e26] border-none text-text-main dark:text-white text-xl font-bold text-center focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+            </div>
+
+            <!-- 提交按钮 -->
+            <button id="submit-btn"
+                class="w-full h-14 bg-primary hover:bg-primary-hover text-white rounded-2xl font-bold text-lg shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">save</span>
+                记录这顿
+            </button>
+
+            <!-- 历史记录入口 -->
+            <a href="review-history.html" class="block text-center text-primary text-sm hover:underline">
+                📊 查看我的饮食报告
+            </a>
+        </main>
+    </div>
+
+    <script>
+        // 状态管理
+        const state = {
+            food: '',
+            fullness: null,
+            mood: null,
+            regret: null,
+            price: null
+        };
+
+        // 快捷食物按钮
+        document.querySelectorAll('.quick-food').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('food-input').value = btn.textContent.trim();
+                state.food = btn.textContent.trim();
+            });
+        });
+
+        // 食物输入
+        document.getElementById('food-input').addEventListener('input', (e) => {
+            state.food = e.target.value;
+        });
+
+        // 价格输入
+        document.getElementById('price-input').addEventListener('input', (e) => {
+            state.price = parseFloat(e.target.value) || null;
+        });
+
+        // 通用选择器初始化
+        function initEmojiSelector(containerId, stateKey) {
+            const container = document.getElementById(containerId);
+            container.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected', 'bg-accent-cream', 'dark:bg-[#3a2e26]'));
+                    btn.classList.add('selected', 'bg-accent-cream', 'dark:bg-[#3a2e26]');
+                    state[stateKey] = btn.dataset.value;
+                });
+            });
+        }
+
+        initEmojiSelector('fullness-options', 'fullness');
+        initEmojiSelector('mood-options', 'mood');
+
+        // 后悔星星
+        const regretLabels = {
+            1: '完全不后悔 👍',
+            2: '有一点点 🤏',
+            3: '有些后悔 😅',
+            4: '比较后悔 😓',
+            5: '非常后悔 😭'
+        };
+
+        document.querySelectorAll('.regret-star').forEach(star => {
+            star.addEventListener('click', () => {
+                const value = parseInt(star.dataset.value);
+                state.regret = value;
+
+                document.querySelectorAll('.regret-star').forEach(s => {
+                    const v = parseInt(s.dataset.value);
+                    s.style.color = v <= value ? '#d4a574' : '';
+                });
+
+                document.getElementById('regret-label').textContent = regretLabels[value];
+            });
+        });
+
+        // 提交
+        document.getElementById('submit-btn').addEventListener('click', async () => {
+            if (!state.food) {
+                alert('请输入你吃了什么');
+                return;
+            }
+
+            const record = {
+                ...state,
+                timestamp: new Date().toISOString(),
+                user_token: localStorage.getItem('user_token') || generateUserToken()
+            };
+
+            // 保存到本地存储（后续可以同步到服务器）
+            const history = JSON.parse(localStorage.getItem('meal_history') || '[]');
+            history.push(record);
+            localStorage.setItem('meal_history', JSON.stringify(history));
+
+            // 显示成功提示
+            alert('✅ 记录成功！坚持记录，7天后可以看到你的饮食报告');
+
+            // 重置表单
+            location.reload();
+        });
+
+        // 生成匿名用户token
+        function generateUserToken() {
+            const token = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('user_token', token);
+            return token;
+        }
+    </script>
+</body>
+
+</html>

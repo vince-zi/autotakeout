@@ -43,13 +43,15 @@ const BUDGET_MAP: Record<number, string> = {
     5: "今天不在乎价格",
 };
 
-// 构建 AI Prompt（优化版：结构化输出）
+// 构建 AI Prompt（优化版：支持定位、白天/夜晚、排除歇业）
 function buildPrompt(input: {
     time_of_day: string;
     mood: string;
     hunger_level: string;
     exercised_today: boolean;
     budget_level: number;
+    location?: { latitude: number; longitude: number } | null;
+    is_daytime?: boolean;
 }): string {
     const timeDesc = TIME_MAP[input.time_of_day] || "未知时间";
     const moodDesc = MOOD_MAP[input.mood] || "一般";
@@ -64,8 +66,23 @@ function buildPrompt(input: {
     const minute = beijingTime.getUTCMinutes();
     const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
+    // 判断白天/夜晚
+    const isDaytime = input.is_daytime !== undefined ? input.is_daytime : (hour >= 6 && hour < 22);
+    const periodName = isDaytime ? "白天" : "夜间";
+
+    // 场景词（白天不用"夜宵"）
+    const sceneOptions = isDaytime
+        ? "早餐/午餐/下午茶/加班餐"
+        : "夜宵/宵夜/深夜加餐";
+
+    // 定位信息
+    const locationInfo = input.location
+        ? `用户位置：纬度${input.location.latitude.toFixed(4)}，经度${input.location.longitude.toFixed(4)}（请优先推荐附近商家）`
+        : "用户位置：未知（推荐全国连锁或知名品牌）";
+
     const userInput = {
         time: timeStr,
+        period: periodName,
         scene: timeDesc,
         mood: moodDesc,
         hunger: hungerDesc,
@@ -73,10 +90,14 @@ function buildPrompt(input: {
         budget: budgetDesc
     };
 
-    return `你是一个外卖推荐专家，专门帮助用户在深夜/加班时做出不后悔的饮食决策。
+    return `你是一个外卖推荐专家，帮助用户做出不后悔的饮食决策。
 
-【用户当前状态】
+【当前时间】${timeStr}（${periodName}）
+【用户状态】
 ${JSON.stringify(userInput, null, 2)}
+
+【定位信息】
+${locationInfo}
 
 【你的任务】
 根据用户状态，推荐1-3个真实可点的外卖或便利店商品。
@@ -85,7 +106,7 @@ ${JSON.stringify(userInput, null, 2)}
 必须严格返回以下JSON格式，不要有任何其他文字或解释：
 
 {
-  "scene": "夜宵/加班/下午茶",
+  "scene": "${sceneOptions}（选一个最合适的）",
   "recommendations": [
     {
       "food_name": "具体菜品名称，如：老坛酸菜鱼（小份）",
@@ -110,16 +131,22 @@ ${JSON.stringify(userInput, null, 2)}
 
 【字段说明】
 - platform: 必须是 "meituan"、"eleme"、"taobao" 或 "jd" 之一
+  - meituan = 美团外卖
+  - eleme = 淘宝闪购（原饿了么）
+  - jd = 京东秒送
 - estimated_price: 数字类型，单位元
 - regret_score: 1-5整数（1=几乎不后悔，5=明天绝对后悔）
 - jump_keyword: 用于App搜索的关键词，格式"商家名 菜品名"
 
-【重要规则】
-1. 商家和菜品必须是中国一二线城市真实存在的
-2. 价格要符合实际（便利店5-15元，外卖15-40元）
-3. 深夜场景优先推荐24小时营业的商家
-4. recommendations给2-3个，alternatives给1-2个
-5. 只返回JSON，不要任何其他文字`
+【重要规则 - 必须遵守】
+1. ⚠️ 只推荐当前时间正在营业的商家，不要推荐歇业或打烊的店铺
+2. ⚠️ 白天场景(6:00-22:00)不要使用"夜宵"、"深夜"等词汇
+3. ⚠️ 有用户定位时，优先推荐附近的商家或全国连锁店
+4. 商家和菜品必须是中国一二线城市真实存在的
+5. 价格要符合实际（便利店5-15元，外卖15-40元）
+6. 深夜场景(22:00-6:00)优先推荐24小时营业的商家
+7. recommendations给2-3个，alternatives给1-2个
+8. 只返回JSON，不要任何其他文字`
 }
 
 // 调用 DeepSeek API
