@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>今晚就吃这个 - 饮食觉察</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff9478",
+                        "primary-hover": "#ff7e5f",
+                        "background-light": "#fff9f2",
+                        "background-dark": "#2d231e",
+                        "card-light": "#ffffff",
+                        "card-dark": "#3a2e26",
+                        "text-main": "#4a3b32",
+                        "text-sub": "#9c8676",
+                        "accent-cream": "#faefe6",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+                        "serif": ["Noto Serif SC", "serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .recommendation-card {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .recommendation-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .recommendation-card:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .recommendation-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .regret-star {
+            transition: all 0.2s ease;
+        }
+
+        .pulse-soft {
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseSoft {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-[#ede0d4] font-display min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300 selection:bg-primary/20">
+    <header
+        class="w-full border-b border-[#f0e6da] dark:border-[#4a3a2f] bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-primary">
+                    <span class="material-symbols-outlined text-3xl">local_dining</span>
+                </div>
+                <h2 class="text-lg font-bold tracking-tight text-[#5c4a3d] dark:text-[#e0d0c0]">饮食觉察</h2>
+            </div>
+            <a href="code.html"
+                class="text-sm font-medium text-text-sub hover:text-primary transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                重新选择
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-10">
+        <div class="w-full max-w-2xl flex flex-col items-center gap-8">
+
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center space-y-6 py-12">
+                <div class="relative inline-flex">
+                    <span class="material-symbols-outlined text-6xl text-primary pulse-soft">restaurant</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-text-main dark:text-white font-serif">正在寻找慰藉...</h2>
+                    <p class="text-text-sub">让我想想什么最适合此刻的你</p>
+                </div>
+            </div>
+
+            <!-- Result State -->
+            <div id="result-state" class="hidden w-full">
+                <div class="text-center space-y-3 mb-8">
+                    <h1
+                        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-main dark:text-white font-serif">
+                        今晚就吃这个
+                    </h1>
+                    <p class="text-lg text-text-sub dark:text-[#bfae99] font-medium">
+                        为此刻的你，精选了几个选择
+                    </p>
+                </div>
+
+                <div id="recommendations-container" class="space-y-4 mb-8">
+                    <!-- Recommendations will be inserted here -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                    <a href="code.html"
+                        class="flex-1 h-14 bg-accent-cream dark:bg-[#4a3a2f] hover:bg-[#f5e6d8] dark:hover:bg-[#5c4a3d] text-text-main dark:text-white rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">refresh</span>
+                        再想想
+                    </a>
+                    <button id="confirm-btn"
+                        class="flex-1 h-14 bg-primary hover:bg-primary-hover text-white rounded-2xl font-bold text-base shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        就这么定了
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden text-center space-y-6 py-12">
+                <div class="relative inline-flex">
+                    <span class="material-symbols-outlined text-6xl text-text-sub">sentiment_dissatisfied</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-text-main dark:text-white font-serif">出了点小问题</h2>
+                    <p id="error-message" class="text-text-sub">请稍后再试</p>
+                </div>
+                <a href="code.html"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold transition-all">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    返回重试
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center">
+        <div class="flex justify-center gap-6 text-sm font-medium text-text-sub/70 dark:text-[#bfae99]/50">
+            <a class="hover:text-primary transition-colors" href="#">隐私政策</a>
+            <span>•</span>
+            <a class="hover:text-primary transition-colors" href="#">服务条款</a>
+        </div>
+    </footer>
+
+    <script>
+        // 平台跳转生成器
+        function jumpToPlatform(platform, keyword) {
+            const encodedKeyword = encodeURIComponent(keyword || '夜宵');
+
+            if (platform === 'meituan') {
+                return `https://waimai.meituan.com/search?keyword=${encodedKeyword}`;
+            }
+            if (platform === 'taobao') {
+                return `https://s.taobao.com/search?q=${encodedKeyword}`;
+            }
+            if (platform === 'jd') {
+                return `https://search.jd.com/Search?keyword=${encodedKeyword}`;
+            }
+            // 默认美团
+            return `https://waimai.meituan.com/search?keyword=${encodedKeyword}`;
+        }
+
+        // 平台图标映射
+        function getPlatformIcon(platform) {
+            const icons = {
+                'meituan': '🟡',
+                'taobao': '🟠',
+                'jd': '🔴'
+            };
+            return icons[platform] || '📦';
+        }
+
+        // 推荐卡片模板（包含去下单按钮）
+        function createRecommendationCard(rec, index) {
+            const { food_name, platform, search_keyword, source, price, discount, delivery_fee, reason, regret_score, regret_reason } = rec;
+
+            // 生成跳转链接
+            const jumpUrl = jumpToPlatform(platform, search_keyword || food_name);
+
+            // 生成后悔指数星星
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                const filled = i <= regret_score;
+                starsHtml += `<span class="material-symbols-outlined text-base ${filled ? 'text-primary' : 'text-[#e0d5ca] dark:text-[#5c4a3d]'}">star</span>`;
+            }
+
+            return `
+                <div class="recommendation-card bg-card-light dark:bg-card-dark rounded-2xl border border-[#f0e6da] dark:border-[#4a3a2f] p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-accent-cream dark:bg-[#4a3a2f] flex items-center justify-center flex-shrink-0 text-xl">
+                                    ${getPlatformIcon(platform)}
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-text-main dark:text-white">${food_name}</h3>
+                                    <span class="text-xs text-text-sub bg-accent-cream dark:bg-[#4a3a2f] px-2 py-0.5 rounded-full">${source || '外卖平台'}</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-lg font-bold text-primary">${price || ''}</div>
+                                ${delivery_fee ? `<div class="text-xs text-text-sub">配送 ${delivery_fee}</div>` : ''}
+                            </div>
+                        </div>
+                        
+                        ${discount ? `<div class="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-lg inline-block w-fit">🏷️ ${discount}</div>` : ''}
+                        
+                        <p class="text-text-sub dark:text-[#bfae99] text-sm">${reason || ''}</p>
+                        
+                        <div class="flex items-center justify-between pt-2 border-t border-[#f0e6da] dark:border-[#4a3a2f]">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-medium text-text-sub">后悔指数</span>
+                                <div class="flex gap-0.5">${starsHtml}</div>
+                            </div>
+                        </div>
+                        ${regret_reason ? `<p class="text-xs text-text-sub/70 dark:text-[#887860]">👉 ${regret_reason}</p>` : ''}
+                        
+                        <!-- 去下单按钮 -->
+                        <a href="${jumpUrl}" target="_blank" 
+                           class="mt-2 w-full h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-lg">shopping_cart</span>
+                            去下单
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 替代选项卡片
+        function createAlternativeCard(alt) {
+            const jumpUrl = jumpToPlatform(alt.platform, alt.search_keyword || alt.food_name);
+            return `
+                <a href="${jumpUrl}" target="_blank" class="flex items-center gap-3 p-3 bg-accent-cream/50 dark:bg-[#3a2e26] rounded-xl hover:bg-accent-cream dark:hover:bg-[#4a3a2f] transition-colors cursor-pointer">
+                    <span class="text-lg">${getPlatformIcon(alt.platform)}</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-text-main dark:text-white text-sm">${alt.food_name}</span>
+                        <span class="text-xs text-text-sub ml-2">${alt.source || ''}</span>
+                    </div>
+                    <span class="material-symbols-outlined text-primary text-lg">arrow_forward</span>
+                </a>
+            `;
+        }
+
+        // 不推荐项卡片
+        function createNotRecommendedCard(item) {
+            return `
+                <div class="flex items-center gap-3 p-3 bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/20">
+                    <span class="material-symbols-outlined text-red-400">block</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-text-main dark:text-white text-sm">${item.food_name}</span>
+                    </div>
+                    <span class="text-xs text-red-500">${item.reason || ''}</span>
+                </div>
+            `;
+        }
+
+        // 显示不同状态
+        function showLoading() {
+            document.getElementById('loading-state').classList.remove('hidden');
+            document.getElementById('result-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+        }
+
+        function showResult(data) {
+            const container = document.getElementById('recommendations-container');
+            let html = '';
+
+            // 主推荐
+            if (data.recommendations && data.recommendations.length > 0) {
+                html += data.recommendations.map((rec, i) => createRecommendationCard(rec, i)).join('');
+            }
+
+            // 替代选项
+            if (data.alternatives && data.alternatives.length > 0) {
+                html += `
+                    <div class="mt-6 space-y-2">
+                        <h4 class="text-sm font-bold text-text-sub flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">lightbulb</span>
+                            如果上面的不合口味，还可以试试
+                        </h4>
+                        ${data.alternatives.map(alt => createAlternativeCard(alt)).join('')}
+                    </div>
+                `;
+            }
+
+            // 不推荐项
+            if (data.not_recommended && data.not_recommended.length > 0) {
+                html += `
+                    <div class="mt-6 space-y-2">
+                        <h4 class="text-sm font-bold text-text-sub flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">warning</span>
+                            今晚不太建议
+                        </h4>
+                        ${data.not_recommended.map(item => createNotRecommendedCard(item)).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            // 更新页面标题信息
+            if (data.current_time) {
+                document.querySelector('#result-state p').innerHTML =
+                    `当前 ${data.current_time} · ${data.scene || '夜宵场景'} · ${data.guilt_level || ''}`;
+            }
+
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('result-state').classList.remove('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message || '请稍后再试';
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('result-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            const storedData = sessionStorage.getItem('recommendations');
+
+            if (storedData) {
+                try {
+                    const data = JSON.parse(storedData);
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        setTimeout(() => showResult(data), 800);
+                    } else {
+                        showError('没有找到推荐结果');
+                    }
+                } catch (e) {
+                    console.error('解析错误:', e);
+                    showError('数据解析失败');
+                }
+            } else {
+                setTimeout(() => {
+                    showError('请先完成问卷');
+                }, 1000);
+            }
+        });
+
+        // 确认按钮
+        document.getElementById('confirm-btn').addEventListener('click', function () {
+            sessionStorage.removeItem('recommendations');
+            this.innerHTML = '<span class="material-symbols-outlined">favorite</span> 祝你吃得开心！';
+            this.disabled = true;
+            this.classList.add('bg-green-500', 'hover:bg-green-500');
+            this.classList.remove('bg-primary', 'hover:bg-primary-hover');
+
+            setTimeout(() => {
+                window.location.href = 'code.html';
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>
