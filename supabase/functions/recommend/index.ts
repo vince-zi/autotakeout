@@ -99,7 +99,7 @@ const PLATFORM_PRICE_FACTOR: Record<string, number> = {
     jd: 1.1,  // 京东秒送略贵
 };
 
-// 构建 AI Prompt（增强版：定位、时间感知、5个推荐）
+// 构建 AI Prompt（增强版：定位、时间感知、5个推荐、排除已推荐食品）
 function buildPrompt(input: {
     time_of_day: string;
     mood: string;
@@ -109,6 +109,7 @@ function buildPrompt(input: {
     location?: { latitude: number; longitude: number } | null;
     is_daytime?: boolean;
     time_context?: { period: string; label: string; isNight: boolean };
+    excluded_foods?: string[];  // 排除列表：推荐过但没下单的食品
 }): string {
     const timeDesc = TIME_MAP[input.time_of_day] || "未知时间";
     const moodDesc = MOOD_MAP[input.mood] || "一般";
@@ -222,7 +223,8 @@ ${hungerDesc}
 7. recommendations 必须给5个
 8. alternatives 给2个备选
 9. ${isDaytime ? '白天场景，不要提及"夜宵"或"深夜"等字眼' : '可以使用夜宵相关描述'}
-10. 只返回JSON，禁止任何解释文字`
+10. 只返回JSON，禁止任何解释文字
+11. ⚠️ 【重要】以下食品用户已经看过但没下单，禁止推荐：${input.excluded_foods?.length ? input.excluded_foods.join('、') : '无'}`
 }
 
 // 校准推荐结果：确保价格在合理范围内

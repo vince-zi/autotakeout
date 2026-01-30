@@ -286,22 +286,39 @@
 
             <!-- 用餐反馈按钮（点击开炫后显示） -->
             <div class="feedback-section" id="feedbackSection" style="display: none; margin-top: 24px;">
-                <p style="font-size: 14px; color: var(--label-tertiary); margin-bottom: 12px;">下单后记得反馈哦 👇</p>
-                <a href="review.html" class="feedback-btn" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 14px 28px;
-                    background: linear-gradient(135deg, #34C759, #2DB84C);
-                    color: white;
-                    border-radius: 14px;
-                    font-size: 16px;
-                    font-weight: 600;
-                    text-decoration: none;
-                    box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
-                ">
-                    📝 用餐反馈
-                </a>
+                <p style="font-size: 14px; color: var(--label-tertiary); margin-bottom: 12px;">下单了吗？</p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="review.html" class="feedback-btn" style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 14px 24px;
+                        background: linear-gradient(135deg, #34C759, #2DB84C);
+                        color: white;
+                        border-radius: 14px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+                    ">
+                        ✅ 已下单，去反馈
+                    </a>
+                    <button onclick="reRecommend()" style="
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        padding: 14px 24px;
+                        background: #f0f0f5;
+                        color: var(--label-secondary);
+                        border: none;
+                        border-radius: 14px;
+                        font-size: 15px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">
+                        🔄 没下单，换一个
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -492,6 +509,9 @@
             actionBtn.style.background = 'linear-gradient(135deg, #34C759, #2DB84C)';
             actionBtn.onclick = null; // 禁用再次点击
 
+            // 用户确认要跳转，清除排除列表（下单的食品下次可以再推）
+            sessionStorage.removeItem('excludedFoods');
+
             // 跳转到饿了么
             jumpToEleme(currentKeyword);
         }
@@ -499,6 +519,13 @@
         // 显示准备就绪状态
         function showReady(keyword) {
             currentKeyword = keyword;
+
+            // 保存已推荐的食品到排除列表（用于“换一个”时排除）
+            const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
+            if (keyword && !excludedFoods.includes(keyword)) {
+                excludedFoods.push(keyword);
+                sessionStorage.setItem('excludedFoods', JSON.stringify(excludedFoods));
+            }
 
             // 隐藏加载动画
             document.getElementById('loader').style.display = 'none';
@@ -533,13 +560,19 @@
             const defaultKeyword = moodKeywords[userChoices.mood] || '外卖';
 
             try {
+                // 获取排除列表（推荐过但没下单的食品）
+                const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
+
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/recommend`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
                     },
-                    body: JSON.stringify(userChoices)
+                    body: JSON.stringify({
+                        ...userChoices,
+                        excluded_foods: excludedFoods  // 传递排除列表给 AI
+                    })
                 });
 
                 if (response.ok) {
@@ -588,131 +621,28 @@
             getRecommendation();
         });
 
-        // 检查是否有待确认的订单
-        function checkPendingOrder() {
-            const pending = sessionStorage.getItem('pendingOrder');
-            if (!pending) return;
+        // ========== 重新推荐 ==========
+        function reRecommend() {
+            // 隐藏反馈区域
+            document.getElementById('feedbackSection').style.display = 'none';
 
-            try {
-                const order = JSON.parse(pending);
-                // 检查是否在5分钟内（防止过期的订单）
-                if (Date.now() - order.timestamp > 5 * 60 * 1000) {
-                    sessionStorage.removeItem('pendingOrder');
-                    return;
-                }
+            // 恢复加载状态
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('readyState').classList.remove('active');
 
-                // 延迟显示确认对话框（让页面先加载）
-                setTimeout(() => {
-                    showOrderConfirmation(order.keyword);
-                }, 500);
-            } catch (e) {
-                sessionStorage.removeItem('pendingOrder');
-            }
-        }
+            // 恢复按钮状态
+            const actionBtn = document.getElementById('actionBtn');
+            actionBtn.innerHTML = '🍜 开炫吧';
+            actionBtn.style.background = 'linear-gradient(135deg, var(--system-blue), var(--system-indigo))';
+            actionBtn.onclick = goToEleme;
 
-        // 显示订单确认对话框
-        function showOrderConfirmation(keyword) {
-            // 创建确认弹窗
-            const overlay = document.createElement('div');
-            overlay.id = 'confirmOverlay';
-            overlay.innerHTML = `
-                <div style="
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0,0,0,0.5);
-                    z-index: 1000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 20px;
-                ">
-                    <div style="
-                        background: white;
-                        border-radius: 20px;
-                        padding: 24px;
-                        max-width: 320px;
-                        width: 100%;
-                        text-align: center;
-                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    ">
-                        <div style="font-size: 48px; margin-bottom: 16px;">🍜</div>
-                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #000;">下单了吗？</h3>
-                        <p style="font-size: 15px; color: #666; margin-bottom: 24px;">记录一下，方便以后复盘分析</p>
-                        <div style="display: flex; gap: 12px;">
-                            <button onclick="confirmOrderPlaced('${keyword.replace(/'/g, "\\'")}')" style="
-                                flex: 1;
-                                padding: 14px;
-                                background: linear-gradient(135deg, #34C759, #2DB84C);
-                                color: white;
-                                border: none;
-                                border-radius: 12px;
-                                font-size: 16px;
-                                font-weight: 600;
-                                cursor: pointer;
-                            ">✅ 已下单</button>
-                            <button onclick="cancelOrder()" style="
-                                flex: 1;
-                                padding: 14px;
-                                background: #f0f0f0;
-                                color: #666;
-                                border: none;
-                                border-radius: 12px;
-                                font-size: 16px;
-                                font-weight: 600;
-                                cursor: pointer;
-                            ">❌ 没下单</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(overlay);
-        }
+            // 更新提示文字
+            document.getElementById('title').textContent = '换一个试试...';
+            document.getElementById('subtitle').textContent = '正在寻找其他美食';
+            document.getElementById('loaderText').textContent = '正在重新推荐...';
 
-        // 确认已下单
-        async function confirmOrderPlaced(keyword) {
-            const userToken = localStorage.getItem('user_token') || generateToken();
-
-            try {
-                await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Prefer': 'return=minimal'
-                    },
-                    body: JSON.stringify({
-                        user_token: userToken,
-                        food_name: keyword,
-                        price: 0,
-                        fullness: 2,
-                        mood: 'satisfied',
-                        regret_score: 2,
-                        note: `用户确认下单 - ${choiceLabels.mood || ''} - 饿了么`,
-                        created_at: new Date().toISOString()
-                    })
-                });
-            } catch (e) {
-                console.log('保存失败:', e);
-            }
-
-            // 清除待确认订单
-            sessionStorage.removeItem('pendingOrder');
-
-            // 关闭弹窗并跳转到复盘页面
-            document.getElementById('confirmOverlay')?.remove();
-            window.location.href = 'review.html';
-        }
-
-        // 取消订单
-        function cancelOrder() {
-            sessionStorage.removeItem('pendingOrder');
-            document.getElementById('confirmOverlay')?.remove();
-            // 返回首页重新选择
-            window.location.href = 'index.html';
+            // 重新调用 AI
+            getRecommendation();
         }
     </script>
 </body>
