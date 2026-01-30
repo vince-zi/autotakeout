@@ -1,0 +1,679 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>浠婃櫄灏卞悆杩欎釜 - 鍚冧粈涔?/title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff9478",
+                        "primary-hover": "#ff7e5f",
+                        "background-light": "#fff9f2",
+                        "background-dark": "#2d231e",
+                        "card-light": "#ffffff",
+                        "card-dark": "#3a2e26",
+                        "text-main": "#4a3b32",
+                        "text-sub": "#9c8676",
+                        "accent-cream": "#faefe6",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+                        "serif": ["Noto Serif SC", "serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .recommendation-card {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .recommendation-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .recommendation-card:nth-child(2) {
+            animation-delay: 0.25s;
+        }
+
+        .recommendation-card:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .regret-star {
+            transition: all 0.2s ease;
+        }
+
+        .pulse-soft {
+            animation: pulseSoft 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseSoft {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-[#ede0d4] font-display min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300 selection:bg-primary/20">
+    <header
+        class="w-full border-b border-[#f0e6da] dark:border-[#4a3a2f] bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-primary">
+                    <span class="material-symbols-outlined text-3xl">local_dining</span>
+                </div>
+                <h2 class="text-lg font-bold tracking-tight text-[#5c4a3d] dark:text-[#e0d0c0]">楗瑙夊療</h2>
+            </div>
+            <a href="code.html"
+                class="text-sm font-medium text-text-sub hover:text-primary transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                閲嶆柊閫夋嫨
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-10">
+        <div class="w-full max-w-2xl flex flex-col items-center gap-8">
+
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center space-y-6 py-12">
+                <div class="relative inline-flex">
+                    <span class="material-symbols-outlined text-6xl text-primary pulse-soft">restaurant</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-text-main dark:text-white font-serif">姝ｅ湪瀵绘壘鎱拌棄...</h2>
+                    <p class="text-text-sub">璁╂垜鎯虫兂浠€涔堟渶閫傚悎姝ゅ埢鐨勪綘</p>
+                </div>
+            </div>
+
+            <!-- Result State -->
+            <div id="result-state" class="hidden w-full">
+                <div class="text-center space-y-3 mb-8">
+                    <h1
+                        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-text-main dark:text-white font-serif">
+                        鐜板湪灏卞悆杩欎釜
+                    </h1>
+                    <p class="text-lg text-text-sub dark:text-[#bfae99] font-medium">
+                        涓烘鍒荤殑浣狅紝绮鹃€変簡鍑犱釜閫夋嫨
+                    </p>
+                </div>
+
+                <div id="recommendations-container" class="space-y-4 mb-8">
+                    <!-- Recommendations will be inserted here -->
+                </div>
+
+                <!-- 閲嶆柊鐢熸垚鎸夐挳 -->
+                <div class="pt-4">
+                    <a href="code.html"
+                        class="w-full h-14 bg-accent-cream dark:bg-[#4a3a2f] hover:bg-[#f5e6d8] dark:hover:bg-[#5c4a3d] text-text-main dark:text-white rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">refresh</span>
+                        涓嶆弧鎰忥紵閲嶆柊閫夋嫨
+                    </a>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden text-center space-y-6 py-12">
+                <div class="relative inline-flex">
+                    <span class="material-symbols-outlined text-6xl text-text-sub">sentiment_dissatisfied</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-text-main dark:text-white font-serif">鍑轰簡鐐瑰皬闂</h2>
+                    <p id="error-message" class="text-text-sub">璇风◢鍚庡啀璇?/p>
+                </div>
+                <a href="code.html"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold transition-all">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    杩斿洖閲嶈瘯
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center">
+        <div class="flex justify-center gap-6 text-sm font-medium text-text-sub/70 dark:text-[#bfae99]/50">
+            <a class="hover:text-primary transition-colors" href="#">闅愮鏀跨瓥</a>
+            <span>鈥?/span>
+            <a class="hover:text-primary transition-colors" href="#">鏈嶅姟鏉℃</a>
+        </div>
+    </footer>
+
+    <script>
+        // 骞冲彴閰嶇疆锛氬垎绾ц烦杞摼锛圓pp -> 澶囩敤App -> H5缃戦〉锛?        const PLATFORM_CONFIG = {
+            meituan: {
+                name: '缇庡洟澶栧崠',
+                icon: '馃煛',
+                // 浼樺厛锛氱編鍥㈠鍗朅pp涓撶敤scheme
+                app: (kw) => `waimai://search?keyword=${encodeURIComponent(kw)}`,
+                // 澶囩敤锛氱編鍥富App
+                fallbackApp: (kw) => `imeituan://www.meituan.com/search?keyword=${encodeURIComponent(kw)}`,
+                // 鍏滃簳锛氱綉椤电増
+                web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}`
+            },
+            eleme: {
+                name: '楗夸簡涔?,
+                icon: '馃數',
+                app: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`,
+                fallbackApp: (kw) => `eleme://homepage`,
+                web: (kw) => `https://h5.ele.me/search?keyword=${encodeURIComponent(kw)}`
+            },
+            jd: {
+                name: '浜笢绉掗€?,
+                icon: '馃敶',
+                // 浜笢绉掗€侊細浼樺厛浣跨敤H5閾炬帴锛堜含涓淎pp浼氳嚜鍔ㄦ嫤鎴級
+                app: (kw) => `openapp.jdmobile://virtual?params=${encodeURIComponent(JSON.stringify({ category: 'jump', des: 'jdMartHome' }))}`,
+                fallbackApp: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}`,
+                web: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}`
+            }
+        };
+
+        // 鍒嗙骇璺宠浆锛欰pp -> 澶囩敤App -> 缃戦〉
+        let jumpInProgress = false;
+
+        // 澶嶅埗鍒板壀璐存澘
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showCopyToast('鉁?宸插鍒舵悳绱㈣瘝锛屽埌App绮樿创鎼滅储鍗冲彲');
+                return true;
+            } catch (err) {
+                // 闄嶇骇鏂规
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showCopyToast('鉁?宸插鍒舵悳绱㈣瘝锛屽埌App绮樿创鎼滅储鍗冲彲');
+                return true;
+            }
+        }
+
+        // 鏄剧ず澶嶅埗鎴愬姛鎻愮ず
+        function showCopyToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg z-50 text-sm font-medium flex items-center gap-2';
+            toast.innerHTML = `<span class="material-symbols-outlined text-lg">content_paste</span>${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.3s, transform 0.3s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function smartJump(platform, keyword) {
+            if (jumpInProgress) return; // 闃叉閲嶅瑙﹀彂
+
+            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
+            const kw = keyword || '澶栧崠';
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            // 绉诲姩绔細澶嶅埗鍏抽敭璇嶅埌鍓创鏉匡紙鏂逛究鐢ㄦ埛绮樿创鎼滅储锛?            if (isMobile) {
+                copyToClipboard(kw);
+            }
+
+            if (!isMobile) {
+                // PC绔細鐩存帴鎵撳紑缃戦〉
+                window.open(config.web(kw), '_blank');
+                return;
+            }
+
+            jumpInProgress = true;
+            let appOpened = false;
+
+            // 鐩戝惉椤甸潰澶辩劍锛圓pp鎵撳紑鎴愬姛鐨勪俊鍙凤級
+            const blurHandler = () => {
+                appOpened = true;
+                jumpInProgress = false;
+            };
+            window.addEventListener('blur', blurHandler, { once: true });
+
+            // 绗?姝ワ細灏濊瘯涓籄pp
+            const appUrl = config.app(kw);
+            window.location.href = appUrl;
+
+            // 绗?姝ワ細1.5绉掑悗妫€鏌ワ紝濡傛灉娌℃墦寮€鍒欏皾璇曞鐢?            setTimeout(() => {
+                if (!appOpened && config.fallbackApp) {
+                    window.location.href = config.fallbackApp(kw);
+
+                    // 绗?姝ワ細鍐?.5绉掑悗锛屽鏋滆繕娌℃墦寮€鍒欓檷绾у埌缃戦〉
+                    setTimeout(() => {
+                        if (!appOpened) {
+                            window.removeEventListener('blur', blurHandler);
+                            jumpInProgress = false;
+                            // 鏈€缁堥檷绾э細鎵撳紑缃戦〉鐗堬紙鏂版爣绛撅級
+                            window.open(config.web(kw), '_blank');
+                        }
+                    }, 1500);
+                }
+            }, 1500);
+
+            // 瓒呮椂娓呯悊
+            setTimeout(() => {
+                window.removeEventListener('blur', blurHandler);
+                jumpInProgress = false;
+            }, 5000);
+        }
+
+        // 鐩存帴鎵撳紑缃戦〉鐗堬紙澶囩敤鎸夐挳锛?        function openWebVersion(platform, keyword) {
+            const config = PLATFORM_CONFIG[platform] || PLATFORM_CONFIG.meituan;
+            window.open(config.web(keyword || '澶栧崠'), '_blank');
+        }
+
+        // 鑾峰彇骞冲彴鍥炬爣
+        function getPlatformIcon(platform) {
+            return PLATFORM_CONFIG[platform]?.icon || '馃摝';
+        }
+
+        // 鑾峰彇骞冲彴鍚嶇О
+        function getPlatformName(platform) {
+            return PLATFORM_CONFIG[platform]?.name || '澶栧崠骞冲彴';
+        }
+
+        // 鍏ㄥ眬瀛樺偍褰撳墠鎺ㄨ崘锛堢敤浜庣偣鍑绘椂鑾峰彇瀹屾暣rec瀵硅薄锛?        let currentRecommendations = [];
+        let currentAlternatives = [];
+
+        // 澶勭悊涓嬪崟鐐瑰嚮
+        function handleOrderClick(index, isAlternative = false) {
+            const rec = isAlternative ? currentAlternatives[index] : currentRecommendations[index];
+            if (!rec) return;
+            const keyword = rec.jump_keyword || `${rec.restaurant || ''} ${rec.food_name}`;
+            smartJump(rec.platform, keyword, rec);
+        }
+
+        // 鎺ㄨ崘鍗＄墖妯℃澘锛堜紭鍖栫増锛氬惈鍟嗗鍚嶃€佹櫤鑳借烦杞級
+        function createRecommendationCard(rec, index) {
+            const {
+                food_name,
+                restaurant,
+                platform,
+                estimated_price,
+                reason,
+                jump_keyword,
+                regret_score,
+                regret_reason
+            } = rec;
+
+            // 鐢熸垚鍚庢倲鎸囨暟鏄熸槦
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                const filled = i <= regret_score;
+                starsHtml += `<span class="material-symbols-outlined text-base ${filled ? 'text-primary' : 'text-[#e0d5ca] dark:text-[#5c4a3d]'}">star</span>`;
+            }
+
+            const priceDisplay = estimated_price ? `楼${estimated_price}` : '';
+            const keyword = jump_keyword || `${restaurant} ${food_name}`;
+
+            return `
+                <div class="recommendation-card bg-card-light dark:bg-card-dark rounded-2xl border border-[#f0e6da] dark:border-[#4a3a2f] p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-accent-cream dark:bg-[#4a3a2f] flex items-center justify-center flex-shrink-0 text-xl">
+                                    ${getPlatformIcon(platform)}
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-text-main dark:text-white">${food_name}</h3>
+                                    <p class="text-xs text-text-sub">${restaurant || ''}</p>
+                                    <span class="text-xs text-text-sub bg-accent-cream dark:bg-[#4a3a2f] px-2 py-0.5 rounded-full">${getPlatformName(platform)}</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0">
+                                <div class="text-xl font-bold text-primary">${priceDisplay}</div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-text-sub dark:text-[#bfae99] text-sm">${reason || ''}</p>
+                        
+                        <div class="flex items-center justify-between pt-2 border-t border-[#f0e6da] dark:border-[#4a3a2f]">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-medium text-text-sub">鍚庢倲鎸囨暟</span>
+                                <div class="flex gap-0.5">${starsHtml}</div>
+                            </div>
+                        </div>
+                        ${regret_reason ? `<p class="text-xs text-text-sub/70 dark:text-[#887860]">馃憠 ${regret_reason}</p>` : ''}
+                        
+                        <!-- 涓嬪崟鎸夐挳缁?-->
+                        <div class="mt-2 flex gap-2">
+                            <button onclick="handleOrderClick(${index})"
+                               class="flex-1 h-12 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md shadow-primary/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <span class="material-symbols-outlined text-lg">shopping_cart</span>
+                                鍘讳笅鍗?                            </button>
+                            <button onclick="confirmOrdered(${index})"
+                               class="flex-1 h-12 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-sm shadow-md shadow-green-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                                <span class="material-symbols-outlined text-lg">check_circle</span>
+                                鎴戝凡涓嬪崟
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 鏇夸唬閫夐」鍗＄墖锛堝惈鍟嗗鍚嶅拰鏅鸿兘璺宠浆锛?        function createAlternativeCard(alt, index) {
+            const keyword = alt.jump_keyword || `${alt.restaurant || ''} ${alt.food_name}`;
+            return `
+                <button onclick="handleOrderClick(${index}, true)" 
+                   class="flex items-center gap-3 p-3 bg-accent-cream/50 dark:bg-[#3a2e26] rounded-xl hover:bg-accent-cream dark:hover:bg-[#4a3a2f] transition-colors cursor-pointer w-full text-left">
+                    <span class="text-lg">${getPlatformIcon(alt.platform)}</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-text-main dark:text-white text-sm">${alt.food_name}</span>
+                        <span class="text-xs text-text-sub ml-2">${alt.restaurant || ''}</span>
+                    </div>
+                    <span class="material-symbols-outlined text-primary text-lg">arrow_forward</span>
+                </button>
+            `;
+        }
+
+        // 涓嶆帹鑽愰」鍗＄墖
+        function createNotRecommendedCard(item) {
+            return `
+                <div class="flex items-center gap-3 p-3 bg-red-50/50 dark:bg-red-900/10 rounded-xl border border-red-100 dark:border-red-900/20">
+                    <span class="material-symbols-outlined text-red-400">block</span>
+                    <div class="flex-1">
+                        <span class="font-medium text-text-main dark:text-white text-sm">${item.food_name}</span>
+                    </div>
+                    <span class="text-xs text-red-500">${item.reason || ''}</span>
+                </div>
+            `;
+        }
+
+        // 鏄剧ず涓嶅悓鐘舵€?        function showLoading() {
+            document.getElementById('loading-state').classList.remove('hidden');
+            document.getElementById('result-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+        }
+
+        function showResult(data) {
+            const container = document.getElementById('recommendations-container');
+            let html = '';
+
+            // 瀛樺偍鍒板叏灞€鍙橀噺锛堢敤浜庣偣鍑绘椂鑾峰彇瀹屾暣瀵硅薄锛?            currentRecommendations = data.recommendations || [];
+            currentAlternatives = data.alternatives || [];
+
+            // 涓绘帹鑽?            if (data.recommendations && data.recommendations.length > 0) {
+                html += data.recommendations.map((rec, i) => createRecommendationCard(rec, i)).join('');
+            }
+
+            // 鏇夸唬閫夐」
+            if (data.alternatives && data.alternatives.length > 0) {
+                html += `
+                    <div class="mt-6 space-y-2">
+                        <h4 class="text-sm font-bold text-text-sub flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">lightbulb</span>
+                            濡傛灉涓婇潰鐨勪笉鍚堝彛鍛筹紝杩樺彲浠ヨ瘯璇?                        </h4>
+                        ${data.alternatives.map((alt, i) => createAlternativeCard(alt, i)).join('')}
+                    </div>
+                `;
+            }
+
+            // 涓嶆帹鑽愰」
+            if (data.not_recommended && data.not_recommended.length > 0) {
+                html += `
+                    <div class="mt-6 space-y-2">
+                        <h4 class="text-sm font-bold text-text-sub flex items-center gap-2">
+                            <span class="material-symbols-outlined text-lg">warning</span>
+                            浠婃櫄涓嶅お寤鸿
+                        </h4>
+                        ${data.not_recommended.map(item => createNotRecommendedCard(item)).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            // 鏇存柊椤甸潰鏍囬淇℃伅
+            if (data.current_time) {
+                document.querySelector('#result-state p').innerHTML =
+                    `褰撳墠 ${data.current_time} 路 ${data.scene || '澶滃鍦烘櫙'} 路 ${data.guilt_level || ''}`;
+            }
+
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('result-state').classList.remove('hidden');
+            document.getElementById('error-state').classList.add('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message || '璇风◢鍚庡啀璇?;
+            document.getElementById('loading-state').classList.add('hidden');
+            document.getElementById('result-state').classList.add('hidden');
+            document.getElementById('error-state').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 娓稿ID绯荤粺 + 涓存椂鏁版嵁鏈哄埗
+        // ==========================================
+
+        // 鑾峰彇鎴栫敓鎴愭父瀹D
+        function getGuestId() {
+            let guestId = localStorage.getItem('guest_id');
+            if (!guestId) {
+                guestId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('guest_id', guestId);
+            }
+            return guestId;
+        }
+
+        // 涓存椂閫夋嫨鏁版嵁
+        let tempSelection = null;
+        let confirmTimer = null;
+
+        // 鐢ㄦ埛鐐瑰嚮鎺ㄨ崘鍗＄墖鏃惰褰曚复鏃堕€夋嫨
+        function recordTempSelection(rec, platform, keyword) {
+            const guestId = getGuestId();
+
+            // 娓呴櫎涔嬪墠鐨勭‘璁ゅ畾鏃跺櫒
+            if (confirmTimer) {
+                clearTimeout(confirmTimer);
+            }
+
+            // 璁板綍涓存椂閫夋嫨
+            tempSelection = {
+                guest_id: guestId,
+                food_name: rec.food_name,
+                restaurant: rec.restaurant,
+                platform: platform,
+                keyword: keyword,
+                estimated_price: rec.estimated_price,
+                timestamp: Date.now(),
+                confirmed: false
+            };
+
+            // 瀛樺偍鍒?sessionStorage锛堜复鏃讹級
+            sessionStorage.setItem('temp_selection', JSON.stringify(tempSelection));
+
+            console.log('涓存椂閫夋嫨宸茶褰曪紝120绉掑悗纭:', tempSelection);
+
+            // 120绉掑悗鑷姩纭涓虹湡瀹炴暟鎹?            confirmTimer = setTimeout(() => {
+                confirmSelection();
+            }, 120000); // 120绉?        }
+
+        // 纭閫夋嫨涓虹湡瀹炴暟鎹?        async function confirmSelection() {
+            const guestId = getGuestId();
+            const tempData = sessionStorage.getItem('temp_selection');
+
+            if (!tempData) return;
+
+            try {
+                const selection = JSON.parse(tempData);
+                selection.confirmed = true;
+                selection.confirmed_at = Date.now();
+
+                // 瀛樺偍鍒?localStorage锛堟寔涔呭寲锛?                const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
+                history.push(selection);
+                // 鍙繚鐣欐渶杩?0鏉?                if (history.length > 30) history.shift();
+                localStorage.setItem('selection_history', JSON.stringify(history));
+
+                // 娓呴櫎涓存椂鏁版嵁
+                sessionStorage.removeItem('temp_selection');
+                console.log('閫夋嫨宸茬‘璁や负鐪熷疄鏁版嵁:', selection);
+
+                // 鍙€夛細鍙戦€佸埌鍚庣
+                // await saveToBackend(selection);
+            } catch (e) {
+                console.error('纭閫夋嫨澶辫触:', e);
+            }
+        }
+
+        // "鎴戝凡涓嬪崟"鎸夐挳 - 绔嬪嵆纭骞惰烦杞埌澶嶇洏椤甸潰
+        async function confirmOrdered(index, isAlternative = false) {
+            const rec = isAlternative ? currentAlternatives[index] : currentRecommendations[index];
+            if (!rec) {
+                alert('鎵句笉鍒伴€夋嫨鐨勮彍鍝?);
+                return;
+            }
+
+            const guestId = getGuestId();
+            const userToken = localStorage.getItem('user_token') || generateUserToken();
+
+            // 鐢熸垚鐢ㄦ埛token
+            function generateUserToken() {
+                const token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('user_token', token);
+                return token;
+            }
+
+            // 淇濆瓨宸蹭笅鍗曡褰曞埌鏁版嵁搴?            const orderData = {
+                user_token: userToken,
+                food_name: rec.food_name,
+                price: parseFloat(rec.estimated_price) || 0,
+                fullness: 2, // 榛樿鍒氬ソ
+                mood: 'satisfied', // 榛樿婊¤冻
+                regret_score: rec.regret_score || 2,
+                note: `${rec.restaurant || '澶栧崠'} - 閫氳繃${getPlatformName(rec.platform)}涓嬪崟`,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    // 娓呴櫎涓存椂鏁版嵁
+                    if (confirmTimer) clearTimeout(confirmTimer);
+                    sessionStorage.removeItem('temp_selection');
+
+                    // 鏄剧ず鎴愬姛鎻愮ず
+                    alert(`鉁?宸茶褰? ${rec.food_name}\n\n绁濅綘鍚冨緱寮€蹇冿紒`);
+
+                    // 璺宠浆鍒板鐩樺巻鍙查〉
+                    window.location.href = 'review-history.html';
+                } else {
+                    const err = await response.text();
+                    console.error('淇濆瓨澶辫触:', err);
+                    alert('璁板綍澶辫触锛岃绋嶅悗鍐嶈瘯');
+                }
+            } catch (error) {
+                console.error('缃戠粶閿欒:', error);
+                alert('缃戠粶閿欒锛岃妫€鏌ヨ繛鎺?);
+            }
+        }
+
+        // 淇敼 smartJump 鍑芥暟锛屽湪璺宠浆鏃惰褰曢€夋嫨
+        const originalSmartJump = smartJump;
+        smartJump = function (platform, keyword, rec) {
+            // 璁板綍涓存椂閫夋嫨
+            if (rec) {
+                recordTempSelection(rec, platform, keyword);
+            }
+            // 鎵ц鍘熻烦杞€昏緫
+            originalSmartJump(platform, keyword);
+        };
+
+        // 椤甸潰鍔犺浇鏃跺垵濮嬪寲
+        document.addEventListener('DOMContentLoaded', function () {
+            // 鍒濆鍖栨父瀹D
+            const guestId = getGuestId();
+            console.log('娓稿ID:', guestId);
+
+            const storedData = sessionStorage.getItem('recommendations');
+
+            if (storedData) {
+                try {
+                    const data = JSON.parse(storedData);
+                    if (data.recommendations && data.recommendations.length > 0) {
+                        setTimeout(() => showResult(data), 800);
+                    } else {
+                        showError('娌℃湁鎵惧埌鎺ㄨ崘缁撴灉');
+                    }
+                } catch (e) {
+                    console.error('瑙ｆ瀽閿欒:', e);
+                    showError('鏁版嵁瑙ｆ瀽澶辫触');
+                }
+            } else {
+                setTimeout(() => {
+                    showError('璇峰厛瀹屾垚闂嵎');
+                }, 1000);
+            }
+
+            // 椤甸潰鍗歌浇鍓嶆鏌ユ槸鍚︽湁寰呯‘璁ょ殑閫夋嫨
+            window.addEventListener('beforeunload', () => {
+                // 濡傛灉鐢ㄦ埛绂诲紑椤甸潰瓒呰繃120绉掞紝鍦ㄤ笅娆¤闂椂纭
+                const tempData = sessionStorage.getItem('temp_selection');
+                if (tempData) {
+                    const selection = JSON.parse(tempData);
+                    // 濡傛灉璺濈閫夋嫨宸茶秴杩?20绉掞紝绔嬪嵆纭
+                    if (Date.now() - selection.timestamp > 120000) {
+                        confirmSelection();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
