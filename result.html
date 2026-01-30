@@ -4,22 +4,21 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <title>正在寻找慰藉 - 饮食觉察</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <title>正在寻找 - 饮食觉察</title>
     <style>
         :root {
-            /* 更鲜艳的色彩 */
-            --primary: #E91E8C;
-            --primary-soft: #FF6EB4;
-            --secondary: #7C3AED;
-            --background: #FFE4F0;
-            --background-dark: #FFD6E8;
-            --text-main: #6D1052;
-            --text-sub: #8B2469;
+            /* Apple Design System */
+            --system-bg: #F2F2F7;
+            --system-gray: #8E8E93;
+            --label-primary: #000000;
+            --label-secondary: #3C3C43;
+            --label-tertiary: rgba(60, 60, 67, 0.6);
+            --system-blue: #007AFF;
+            --system-pink: #FF2D55;
+            --system-purple: #AF52DE;
+            --system-indigo: #5856D6;
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.5);
         }
 
         * {
@@ -29,19 +28,29 @@
         }
 
         body {
-            font-family: 'Raleway', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(160deg, var(--background) 0%, var(--background-dark) 50%, #F8D4E8 100%);
-            overflow: hidden;
-            position: relative;
+            background: var(--system-bg);
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 更强烈的光晕背景 */
-        .glow-bg {
+        /* 渐变背景 */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #F2F2F7 0%, #E8E8ED 100%);
+            z-index: 0;
+        }
+
+        /* 光晕 */
+        .glow-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -56,65 +65,68 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
-            animation: breathe 4s ease-in-out infinite;
+            animation: float 6s ease-in-out infinite;
         }
 
         .glow-orb-1 {
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(255, 110, 180, 0.85) 0%, rgba(255, 110, 180, 0.3) 50%, transparent 70%);
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #FF2D55, #FF9500);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            opacity: 0.5;
         }
 
         .glow-orb-2 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.65) 0%, rgba(124, 58, 237, 0.2) 50%, transparent 70%);
-            top: 10%;
-            right: -5%;
-            animation-delay: -1.5s;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #5856D6, #AF52DE);
+            top: 20%;
+            right: -50px;
+            opacity: 0.4;
+            animation-delay: -2s;
         }
 
         .glow-orb-3 {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(233, 30, 140, 0.75) 0%, rgba(233, 30, 140, 0.25) 50%, transparent 70%);
-            bottom: 10%;
-            left: -5%;
-            animation-delay: -3s;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #007AFF, #5AC8FA);
+            bottom: 15%;
+            left: -50px;
+            opacity: 0.4;
+            animation-delay: -4s;
         }
 
-        @keyframes breathe {
+        @keyframes float {
 
             0%,
             100% {
-                transform: scale(1);
-                opacity: 0.8;
+                transform: translateY(0) scale(1);
+                opacity: 0.4;
             }
 
             50% {
-                transform: scale(1.3);
-                opacity: 1;
+                transform: translateY(-20px) scale(1.1);
+                opacity: 0.6;
             }
         }
 
         .glow-orb-1 {
-            animation-name: breathe-center;
+            animation-name: float-center;
         }
 
-        @keyframes breathe-center {
+        @keyframes float-center {
 
             0%,
             100% {
                 transform: translate(-50%, -50%) scale(1);
-                opacity: 0.8;
+                opacity: 0.4;
             }
 
             50% {
-                transform: translate(-50%, -50%) scale(1.3);
-                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 0.6;
             }
         }
 
@@ -123,61 +135,43 @@
             position: relative;
             z-index: 1;
             text-align: center;
-            max-width: 400px;
-            padding: 2rem;
+            max-width: 380px;
+            padding: 24px;
         }
 
-        /* 情感图标 - 更大更亮 */
-        .emotion-icon {
-            font-size: 6rem;
-            margin-bottom: 2.5rem;
-            display: inline-block;
-            animation: icon-pulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 30px rgba(233, 30, 140, 0.6));
+        /* 图标 */
+        .icon {
+            font-size: 80px;
+            margin-bottom: 32px;
+            display: block;
         }
 
-        @keyframes icon-pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 30px rgba(233, 30, 140, 0.6));
-            }
-
-            50% {
-                transform: scale(1.1);
-                filter: drop-shadow(0 0 50px rgba(233, 30, 140, 0.9));
-            }
-        }
-
-        /* 主文案 - 更醒目 */
-        .main-copy {
-            font-family: 'Lora', serif;
-            font-size: 1.65rem;
+        /* 主标题 */
+        .title {
+            font-size: 28px;
             font-weight: 600;
-            color: var(--text-main);
-            line-height: 2;
-            margin-bottom: 1.5rem;
+            color: var(--label-primary);
+            line-height: 1.4;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
             opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.3s forwards;
-            text-shadow: 0 2px 12px rgba(233, 30, 140, 0.2);
+            animation: fadeIn 0.6s ease-out 0.2s forwards;
         }
 
-        /* 副文案 */
-        .sub-copy {
-            font-family: 'Raleway', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--text-sub);
-            margin-bottom: 3.5rem;
+        /* 副标题 */
+        .subtitle {
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--label-tertiary);
+            margin-bottom: 48px;
             opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+            animation: fadeIn 0.6s ease-out 0.4s forwards;
         }
 
-        @keyframes fadeInUp {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(25px);
+                transform: translateY(16px);
             }
 
             to {
@@ -186,214 +180,203 @@
             }
         }
 
-        /* 加载指示器 - 更明显 */
-        .loading-container {
+        /* 加载器 - Apple风格 */
+        .loader {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 20px;
             opacity: 0;
-            animation: fadeInUp 0.8s ease-out 0.9s forwards;
+            animation: fadeIn 0.6s ease-out 0.6s forwards;
         }
 
-        .loading-dots {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .loading-dot {
-            width: 16px;
-            height: 16px;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 122, 255, 0.2);
+            border-top: 3px solid var(--system-blue);
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            animation: bounce 1.2s ease-in-out infinite;
-            box-shadow: 0 4px 20px rgba(233, 30, 140, 0.5);
+            animation: spin 1s linear infinite;
         }
 
-        .loading-dot:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .loading-dot:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes bounce {
-
-            0%,
-            80%,
-            100% {
-                transform: scale(0.5) translateY(0);
-                opacity: 0.4;
-            }
-
-            40% {
-                transform: scale(1.2) translateY(-15px);
-                opacity: 1;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
             }
         }
 
-        .loading-text {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-sub);
-            letter-spacing: 0.08em;
+        .loader-text {
+            font-size: 15px;
+            color: var(--label-tertiary);
         }
 
         /* 错误状态 */
         .error-state {
             display: none;
+            opacity: 0;
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         .error-state.show {
             display: block;
-            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .error-text {
+            font-size: 15px;
+            color: var(--label-tertiary);
+            margin-bottom: 24px;
         }
 
         .retry-btn {
-            margin-top: 1.5rem;
-            padding: 1.1rem 2.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: inline-block;
+            padding: 14px 28px;
+            background: var(--system-blue);
             color: white;
             border: none;
-            border-radius: 20px;
-            font-family: 'Raleway', sans-serif;
-            font-size: 1.05rem;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(233, 30, 140, 0.4);
+            transition: all 0.2s ease;
         }
 
         .retry-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 45px rgba(233, 30, 140, 0.5);
+            transform: scale(1.02);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
         }
 
         .retry-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.98);
+        }
+
+        /* 手动跳转按钮 */
+        .manual-jump {
+            margin-top: 32px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out 1.5s forwards;
+        }
+
+        .jump-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(88, 86, 214, 0.3);
+        }
+
+        .jump-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(88, 86, 214, 0.4);
+        }
+
+        .jump-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 
 <body>
-    <!-- 渐变光晕背景 -->
-    <div class="glow-bg">
+    <div class="gradient-bg"></div>
+
+    <div class="glow-container">
         <div class="glow-orb glow-orb-1"></div>
         <div class="glow-orb glow-orb-2"></div>
         <div class="glow-orb glow-orb-3"></div>
     </div>
 
     <div class="container">
-        <!-- 情感图标 -->
-        <div class="emotion-icon" id="emotionIcon">🍜</div>
+        <span class="icon" id="icon">🍜</span>
+        <h1 class="title" id="title">正在为你寻找慰藉...</h1>
+        <p class="subtitle" id="subtitle">让美食治愈今天的疲惫</p>
 
-        <!-- 主文案 -->
-        <div class="main-copy" id="mainCopy">
-            夜深了，你还在扛着。<br>
-            一份温热的外卖正在路上。
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <span class="loader-text">AI正在分析你的状态...</span>
         </div>
 
-        <!-- 副文案 -->
-        <div class="sub-copy" id="subCopy">
-            让它替你说一声：辛苦了。
-        </div>
-
-        <!-- 加载指示 -->
-        <div class="loading-container" id="loadingContainer">
-            <div class="loading-dots">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-            </div>
-            <div class="loading-text">正在为你匹配最合适的选择...</div>
-        </div>
-
-        <!-- 错误状态 -->
         <div class="error-state" id="errorState">
-            <p style="color: var(--text-sub); margin-bottom: 1rem;">获取推荐时遇到了问题</p>
-            <button class="retry-btn" onclick="window.location.href='index.html'">重新开始</button>
+            <p class="error-text">获取推荐时遇到问题</p>
+            <button class="retry-btn" onclick="location.href='index.html'">重新开始</button>
+        </div>
+
+        <!-- 手动跳转按钮 -->
+        <div class="manual-jump" id="manualJump">
+            <a class="jump-btn" id="jumpBtn" href="#">
+                <span>打开饿了么</span>
+                <span>→</span>
+            </a>
         </div>
     </div>
 
     <script>
-        // Supabase 配置
         const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
-        // 心情关键词映射 - 用于饿了么搜索
+        // 心情对应的搜索关键词
         const moodKeywords = {
             stressed: '麻辣烫',
             homesick: '家常菜',
             finished_work: '火锅',
-            lonely: '一人食'
+            lonely: '粥'
         };
 
-        // 文案模板库
+        // 文案模板
         const copyTemplates = {
-            'nighttime_stressed': {
-                icon: '🌙',
-                main: '夜深了，你还在扛着。<br>一份温热的外卖正在路上。',
-                sub: '让它替你说一声：辛苦了。'
-            },
-            'nighttime_homesick': {
-                icon: '🏠',
-                main: '想家的夜晚，格外漫长。<br>熟悉的味道，能治愈一切。',
-                sub: '妈妈的味道，正在飞奔而来。'
-            },
-            'nighttime_finished_work': {
-                icon: '🎉',
-                main: '终于可以歇口气了。<br>夜宵时间，你值得拥有。',
-                sub: '犒劳自己，从这一口开始。'
-            },
-            'nighttime_lonely': {
-                icon: '🍵',
-                main: '一个人的夜晚，也可以温暖。<br>热腾腾的食物，是最好的陪伴。',
-                sub: '今晚，让美食陪伴你。'
-            },
-            'daytime_stressed': {
-                icon: '☕',
-                main: '忙碌的一天，别忘了犒劳自己。<br>吃饱了，才有力气继续战斗。',
-                sub: '给自己一点喘息的时间。'
-            },
-            'daytime_homesick': {
-                icon: '🥘',
-                main: '想家的时候，吃一口熟悉的味道。<br>家的感觉，其实从未远离。',
-                sub: '一碗家常菜，温暖你的胃和心。'
-            },
-            'daytime_finished_work': {
-                icon: '✨',
-                main: '完成了！<br>是时候好好犒劳一下自己了。',
-                sub: '你值得最棒的那一口。'
-            },
-            'daytime_lonely': {
-                icon: '🍽️',
-                main: '一个人吃饭，也是一种享受。<br>好好对待自己的胃。',
-                sub: '一人食，也可以很幸福。'
-            },
-            'default': {
-                icon: '🍜',
-                main: '美食正在路上...<br>稍等片刻，温暖即将送达。',
-                sub: '好饭不怕晚。'
-            }
+            'nighttime_stressed': { icon: '🌙', title: '夜深了，你还在扛着', subtitle: '一份温热的外卖正在路上' },
+            'nighttime_homesick': { icon: '🏠', title: '想家的夜晚', subtitle: '熟悉的味道能治愈一切' },
+            'nighttime_finished_work': { icon: '🎉', title: '终于忙完了', subtitle: '夜宵时间，你值得拥有' },
+            'nighttime_lonely': { icon: '🍵', title: '一个人的夜晚', subtitle: '让美食陪伴你' },
+            'daytime_stressed': { icon: '☕', title: '忙碌的一天', subtitle: '别忘了犒劳自己' },
+            'daytime_homesick': { icon: '🥘', title: '想家了', subtitle: '一碗家常菜温暖你' },
+            'daytime_finished_work': { icon: '✨', title: '完成了！', subtitle: '是时候犒劳自己了' },
+            'daytime_lonely': { icon: '🍽️', title: '一人食', subtitle: '也可以很幸福' },
+            'default': { icon: '🍜', title: '正在为你寻找慰藉', subtitle: '让美食治愈今天的疲惫' }
         };
 
-        // 获取用户选择
         const userChoices = JSON.parse(sessionStorage.getItem('userChoices') || '{}');
         const choiceLabels = JSON.parse(sessionStorage.getItem('choiceLabels') || '{}');
 
         // 生成文案
-        function generateCopy() {
+        function updateCopy() {
             const key = `${userChoices.time_of_day || 'daytime'}_${userChoices.mood || 'stressed'}`;
-            const template = copyTemplates[key] || copyTemplates['default'];
+            const copy = copyTemplates[key] || copyTemplates['default'];
 
-            document.getElementById('emotionIcon').textContent = template.icon;
-            document.getElementById('mainCopy').innerHTML = template.main;
-            document.getElementById('subCopy').textContent = template.sub;
+            document.getElementById('icon').textContent = copy.icon;
+            document.getElementById('title').textContent = copy.title;
+            document.getElementById('subtitle').textContent = copy.subtitle;
         }
 
-        // 调用 AI 推荐并跳转
+        // 生成饿了么链接 - 使用多种方式确保能打开
+        function getElemeUrl(keyword) {
+            // 方式1: 支付宝小程序 (最可靠)
+            // return `alipays://platformapi/startapp?appId=2018070960500498&page=pages/search/index&query=keyword%3D${encodeURIComponent(keyword)}`;
+
+            // 方式2: 饿了么 URL Scheme (需要安装APP)
+            // return `eleme://search?keyword=${encodeURIComponent(keyword)}`;
+
+            // 方式3: 通用网页版 (兼容性最好)
+            return `https://www.ele.me/search/${encodeURIComponent(keyword)}`;
+        }
+
+        // 调用AI推荐
         async function getRecommendation() {
+            const keyword = moodKeywords[userChoices.mood] || '外卖';
+            const elemeUrl = getElemeUrl(keyword);
+
+            // 设置手动跳转按钮
+            document.getElementById('jumpBtn').href = elemeUrl;
+
             try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/recommend`, {
                     method: 'POST',
@@ -404,59 +387,40 @@
                     body: JSON.stringify(userChoices)
                 });
 
-                if (!response.ok) throw new Error('推荐失败');
+                if (response.ok) {
+                    const data = await response.json();
 
-                const data = await response.json();
+                    // 保存记录
+                    saveRecommendation(data);
 
-                // 保存推荐到后台
-                saveRecommendation(data);
+                    // 使用AI返回的关键词
+                    const aiKeyword = data.recommendations?.[0]?.jump_keyword ||
+                        data.recommendations?.[0]?.food_name ||
+                        keyword;
 
-                // 获取关键词 - 优先使用AI返回的，否则用心情映射
-                const firstRec = data.recommendations?.[0];
-                let keyword = firstRec?.jump_keyword || firstRec?.food_name;
+                    const finalUrl = getElemeUrl(aiKeyword);
+                    document.getElementById('jumpBtn').href = finalUrl;
 
-                // 如果没有关键词，用心情映射
-                if (!keyword) {
-                    keyword = moodKeywords[userChoices.mood] || '外卖';
+                    // 2.5秒后自动跳转
+                    setTimeout(() => {
+                        window.location.href = finalUrl;
+                    }, 2500);
+                } else {
+                    throw new Error('API failed');
                 }
-
-                // 跳转饿了么
-                jumpToEleme(keyword);
-
             } catch (error) {
-                console.error('获取推荐失败:', error);
-                // 即使失败也跳转，用心情关键词
-                const keyword = moodKeywords[userChoices.mood] || '外卖';
-                jumpToEleme(keyword);
+                console.log('AI推荐失败，使用默认关键词:', error);
+                // 即使失败也在2.5秒后跳转
+                setTimeout(() => {
+                    window.location.href = elemeUrl;
+                }, 2500);
             }
         }
 
-        // 跳转饿了么
-        function jumpToEleme(keyword) {
-            // 饿了么H5搜索链接
-            const elemeUrl = `https://h5.ele.me/msite/search/?query=${encodeURIComponent(keyword)}`;
-
-            // 延迟跳转让用户看文案
-            setTimeout(() => {
-                window.location.href = elemeUrl;
-            }, 2500);
-        }
-
-        // 保存推荐到数据库
+        // 保存推荐记录
         async function saveRecommendation(data) {
             try {
-                const userToken = localStorage.getItem('user_token') || generateUserToken();
-
-                const record = {
-                    user_token: userToken,
-                    food_name: data.recommendations?.[0]?.food_name || '待选择',
-                    price: parseFloat(data.recommendations?.[0]?.estimated_price) || 0,
-                    fullness: 2,
-                    mood: 'satisfied',
-                    regret_score: data.recommendations?.[0]?.regret_score || 2,
-                    note: `AI推荐 - ${choiceLabels.mood || ''} - ${choiceLabels.hunger || ''}`,
-                    created_at: new Date().toISOString()
-                };
+                const userToken = localStorage.getItem('user_token') || generateToken();
 
                 fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
                     method: 'POST',
@@ -466,27 +430,36 @@
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Prefer': 'return=minimal'
                     },
-                    body: JSON.stringify(record)
+                    body: JSON.stringify({
+                        user_token: userToken,
+                        food_name: data.recommendations?.[0]?.food_name || '待选择',
+                        price: parseFloat(data.recommendations?.[0]?.estimated_price) || 0,
+                        fullness: 2,
+                        mood: 'satisfied',
+                        regret_score: data.recommendations?.[0]?.regret_score || 2,
+                        note: `AI推荐 - ${choiceLabels.mood || ''}`,
+                        created_at: new Date().toISOString()
+                    })
                 });
             } catch (e) {
-                console.error('保存记录失败:', e);
+                console.log('保存失败:', e);
             }
         }
 
-        function generateUserToken() {
+        function generateToken() {
             const token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('user_token', token);
             return token;
         }
 
-        // 页面加载
+        // 页面初始化
         document.addEventListener('DOMContentLoaded', () => {
             if (!userChoices.time_of_day) {
                 window.location.href = 'index.html';
                 return;
             }
 
-            generateCopy();
+            updateCopy();
             getRecommendation();
         });
     </script>

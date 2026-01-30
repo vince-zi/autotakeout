@@ -5,45 +5,64 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>饮食觉察</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
     <style>
         :root {
-            /* 更鲜艳的色彩方案 */
-            --primary: #E91E8C;
-            --primary-soft: #FF6EB4;
-            --secondary: #7C3AED;
-            --background: #FFE4F0;
-            --background-dark: #FFD6E8;
-            --text-main: #6D1052;
-            --text-sub: #8B2469;
-            --border: #FFB8D8;
+            /* Apple Design System Colors */
+            --system-bg: #F2F2F7;
+            --system-bg-secondary: #FFFFFF;
+            --system-gray: #8E8E93;
+            --system-gray-2: #636366;
+            --system-gray-3: #48484A;
+            --system-gray-4: #3A3A3C;
+            --system-gray-5: #2C2C2E;
+            --system-gray-6: #1C1C1E;
+            --label-primary: #000000;
+            --label-secondary: #3C3C43;
+            --label-tertiary: rgba(60, 60, 67, 0.6);
+            --fill-primary: rgba(120, 120, 128, 0.2);
+            --system-blue: #007AFF;
+            --system-pink: #FF2D55;
+            --system-purple: #AF52DE;
+            --system-indigo: #5856D6;
 
-            /* 强化阴影 */
-            --shadow-soft: 0 8px 32px rgba(233, 30, 140, 0.2);
-            --shadow-hover: 0 12px 48px rgba(233, 30, 140, 0.35);
+            /* Vibrancy */
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.5);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Raleway', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(160deg, var(--background) 0%, var(--background-dark) 50%, #F8D4E8 100%);
+            background: var(--system-bg);
             overflow: hidden;
             position: relative;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* 更强烈的渐变光晕背景 */
-        .glow-bg {
+        /* Apple风格渐变背景 */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: linear-gradient(180deg,
+                    #F2F2F7 0%,
+                    #E8E8ED 100%);
+        }
+
+        /* 流动光晕 - Apple风格 */
+        .glow-container {
             position: fixed;
             top: 0;
             left: 0;
@@ -57,49 +76,49 @@
         .glow-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(60px);
-            animation: breathe 4s ease-in-out infinite;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
         }
 
         .glow-orb-1 {
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(255, 110, 180, 0.8) 0%, rgba(255, 110, 180, 0.3) 50%, transparent 70%);
-            top: -180px;
-            right: -120px;
-            animation-delay: 0s;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #FF2D55 0%, #FF9500 100%);
+            top: -100px;
+            right: -100px;
         }
 
         .glow-orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.6) 0%, rgba(124, 58, 237, 0.2) 50%, transparent 70%);
-            bottom: -200px;
-            left: -180px;
-            animation-delay: -1.5s;
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #5856D6 0%, #AF52DE 100%);
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -2s;
         }
 
         .glow-orb-3 {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(233, 30, 140, 0.7) 0%, rgba(233, 30, 140, 0.2) 50%, transparent 70%);
-            top: 35%;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
+            top: 40%;
             left: 50%;
             transform: translateX(-50%);
-            animation-delay: -3s;
+            animation-delay: -4s;
         }
 
-        @keyframes breathe {
+        @keyframes float {
 
             0%,
             100% {
-                transform: scale(1) translateY(0);
-                opacity: 0.7;
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
             }
 
             50% {
-                transform: scale(1.25) translateY(-25px);
-                opacity: 1;
+                transform: translateY(-30px) scale(1.1);
+                opacity: 0.7;
             }
         }
 
@@ -113,17 +132,17 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 24px;
         }
 
         /* 问题卡片 */
         .question-card {
             text-align: center;
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
             opacity: 0;
-            transform: translateY(40px) scale(0.95);
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
             position: absolute;
         }
@@ -137,206 +156,178 @@
 
         .question-card.exit {
             opacity: 0;
-            transform: translateY(-40px) scale(0.95);
+            transform: translateY(-20px) scale(0.98);
         }
 
-        /* Logo区域 - 更醒目 */
+        /* Logo - Apple风格 */
         .logo {
-            margin-bottom: 2.5rem;
+            margin-bottom: 40px;
         }
 
         .logo-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            animation: bounce-glow 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(233, 30, 140, 0.5));
-        }
-
-        @keyframes bounce-glow {
-
-            0%,
-            100% {
-                transform: translateY(0) scale(1);
-                filter: drop-shadow(0 0 20px rgba(233, 30, 140, 0.5));
-            }
-
-            50% {
-                transform: translateY(-12px) scale(1.05);
-                filter: drop-shadow(0 0 35px rgba(233, 30, 140, 0.8));
-            }
+            font-size: 72px;
+            margin-bottom: 16px;
+            display: block;
         }
 
         .logo-text {
-            font-family: 'Lora', serif;
-            font-size: 2.2rem;
+            font-size: 34px;
             font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: 0.2em;
-            text-shadow: 0 2px 10px rgba(233, 30, 140, 0.2);
+            color: var(--label-primary);
+            letter-spacing: -0.02em;
         }
 
-        /* 问题文字 - 更醒目 */
+        /* 问题文字 - SF Pro Display */
         .question-text {
-            font-family: 'Lora', serif;
-            font-size: 1.8rem;
+            font-size: 28px;
             font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 2.5rem;
-            line-height: 1.7;
-            text-shadow: 0 2px 8px rgba(233, 30, 140, 0.15);
+            color: var(--label-primary);
+            margin-bottom: 32px;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
         }
 
-        /* 选项按钮 - 更立体 */
+        /* 选项网格 */
         .options {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 12px;
         }
 
         .options.two-col {
             flex-direction: row;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            gap: 12px;
         }
 
+        /* Apple风格按钮 - 毛玻璃 */
         .option-btn {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 184, 216, 0.8);
-            border-radius: 20px;
-            padding: 1.3rem 2rem;
-            font-family: 'Raleway', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-main);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 0.5px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 18px 24px;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--label-primary);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            box-shadow: var(--shadow-soft);
+            justify-content: flex-start;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .options.two-col .option-btn {
             flex: 1;
-            min-width: 155px;
-            max-width: 175px;
+            justify-content: center;
         }
 
         .option-btn:hover {
-            background: rgba(255, 255, 255, 1);
-            border-color: var(--primary);
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: var(--shadow-hover);
+            transform: scale(1.02);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
         }
 
         .option-btn:active {
-            transform: scale(0.96);
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.85);
         }
 
         .option-btn.selected {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
             color: white;
             border-color: transparent;
-            box-shadow: 0 12px 40px rgba(233, 30, 140, 0.5);
-            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(88, 86, 214, 0.3);
         }
 
         .option-emoji {
-            font-size: 1.8rem;
+            font-size: 28px;
         }
 
         .option-text {
             text-align: left;
+            letter-spacing: -0.01em;
         }
 
-        /* 进度指示器 - 更明显 */
-        .progress-dots {
+        /* 进度指示器 - Apple Capsule风格 */
+        .progress-bar {
             position: fixed;
-            bottom: 3rem;
+            bottom: 48px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 1rem;
+            gap: 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 0.5px solid var(--glass-border);
             z-index: 10;
         }
 
         .progress-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: rgba(233, 30, 140, 0.25);
-            transition: all 0.4s ease;
-            box-shadow: 0 2px 8px rgba(233, 30, 140, 0.1);
+            width: 8px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--fill-primary);
+            transition: all 0.3s ease;
         }
 
         .progress-dot.active {
-            background: var(--primary);
-            transform: scale(1.4);
-            box-shadow: 0 0 25px rgba(233, 30, 140, 0.7);
-            animation: dot-pulse 1.5s ease-in-out infinite;
+            width: 24px;
+            background: var(--system-blue);
         }
 
         .progress-dot.done {
-            background: var(--primary);
-            box-shadow: 0 0 15px rgba(233, 30, 140, 0.5);
-        }
-
-        @keyframes dot-pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 25px rgba(233, 30, 140, 0.7);
-            }
-
-            50% {
-                box-shadow: 0 0 40px rgba(233, 30, 140, 1);
-            }
+            background: var(--system-blue);
         }
 
         @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .progress-dots {
-                bottom: calc(2rem + env(safe-area-inset-bottom));
+            .progress-bar {
+                bottom: calc(32px + env(safe-area-inset-bottom));
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- 渐变光晕背景 -->
-    <div class="glow-bg">
+    <!-- 渐变背景 -->
+    <div class="gradient-bg"></div>
+
+    <!-- 光晕效果 -->
+    <div class="glow-container">
         <div class="glow-orb glow-orb-1"></div>
         <div class="glow-orb glow-orb-2"></div>
         <div class="glow-orb glow-orb-3"></div>
     </div>
 
     <div class="container">
-        <!-- 问题1: 白天还是夜晚 -->
+        <!-- 问题1 -->
         <div class="question-card active" id="q1">
             <div class="logo">
-                <div class="logo-icon">🍽️</div>
+                <span class="logo-icon">🍽️</span>
                 <div class="logo-text">饮食觉察</div>
             </div>
-            <div class="question-text">你看到的是白天还是夜晚？</div>
+            <div class="question-text">现在是白天还是夜晚？</div>
             <div class="options two-col">
-                <button class="option-btn" data-value="daytime" onclick="selectOption('time_of_day', 'daytime', 1)">
+                <button class="option-btn" onclick="selectOption('time_of_day', 'daytime', 1)">
                     <span class="option-emoji">☀️</span>
-                    <span class="option-text">阳光正好</span>
+                    <span class="option-text">白天</span>
                 </button>
-                <button class="option-btn" data-value="nighttime" onclick="selectOption('time_of_day', 'nighttime', 1)">
+                <button class="option-btn" onclick="selectOption('time_of_day', 'nighttime', 1)">
                     <span class="option-emoji">🌙</span>
-                    <span class="option-text">夜幕降临</span>
+                    <span class="option-text">夜晚</span>
                 </button>
             </div>
         </div>
 
-        <!-- 问题2: 心情情绪 -->
+        <!-- 问题2 -->
         <div class="question-card" id="q2">
-            <div class="question-text">此刻的心情情绪颜色是？</div>
+            <div class="question-text">此刻你的心情是？</div>
             <div class="options">
                 <button class="option-btn" onclick="selectOption('mood', 'stressed', 2)">
                     <span class="option-emoji">😫</span>
@@ -357,70 +348,70 @@
             </div>
         </div>
 
-        <!-- 问题3: 身体状态 -->
+        <!-- 问题3 -->
         <div class="question-card" id="q3">
-            <div class="question-text">此刻你的身体在说什么？</div>
+            <div class="question-text">你的身体在说什么？</div>
             <div class="options">
                 <button class="option-btn" onclick="selectOption('hunger_level', 'culinary_hug', 3)">
                     <span class="option-emoji">🤗</span>
-                    <span class="option-text">想被美食摸摸头</span>
+                    <span class="option-text">想被美食治愈</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('hunger_level', 'crunch', 3)">
                     <span class="option-emoji">😋</span>
-                    <span class="option-text">单纯想嚼点什么</span>
+                    <span class="option-text">想嚼点什么</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('hunger_level', 'energy_needed', 3)">
                     <span class="option-emoji">⚡</span>
-                    <span class="option-text">急需能量补给</span>
+                    <span class="option-text">急需能量</span>
                 </button>
             </div>
         </div>
 
-        <!-- 问题4: 运动 -->
+        <!-- 问题4 -->
         <div class="question-card" id="q4">
-            <div class="question-text">今天有没有运动？</div>
+            <div class="question-text">今天运动了吗？</div>
             <div class="options two-col">
                 <button class="option-btn" onclick="selectOption('exercised_today', true, 4)">
                     <span class="option-emoji">🏃</span>
-                    <span class="option-text">动了动</span>
+                    <span class="option-text">运动了</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('exercised_today', false, 4)">
                     <span class="option-emoji">🛋️</span>
-                    <span class="option-text">没怎么动</span>
+                    <span class="option-text">没运动</span>
                 </button>
             </div>
         </div>
 
-        <!-- 问题5: 预算 -->
+        <!-- 问题5 -->
         <div class="question-card" id="q5">
-            <div class="question-text">今天想花多少钱？</div>
+            <div class="question-text">今天的预算是？</div>
             <div class="options">
                 <button class="option-btn" onclick="selectOption('budget_level', 1, 5)">
                     <span class="option-emoji">💰</span>
-                    <span class="option-text">省点花 (5-15元)</span>
+                    <span class="option-text">5-15元</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('budget_level', 2, 5)">
                     <span class="option-emoji">💵</span>
-                    <span class="option-text">经济实惠 (15-25元)</span>
+                    <span class="option-text">15-25元</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('budget_level', 3, 5)">
                     <span class="option-emoji">💳</span>
-                    <span class="option-text">正常消费 (25-40元)</span>
+                    <span class="option-text">25-40元</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('budget_level', 4, 5)">
                     <span class="option-emoji">💎</span>
-                    <span class="option-text">稍微奢侈 (40-80元)</span>
+                    <span class="option-text">40-80元</span>
                 </button>
                 <button class="option-btn" onclick="selectOption('budget_level', 5, 5)">
                     <span class="option-emoji">👑</span>
-                    <span class="option-text">随便花 (80元以上)</span>
+                    <span class="option-text">80元以上</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 进度指示器 -->
-    <div class="progress-dots">
+    <!-- 进度条 -->
+    <div class="progress-bar">
         <div class="progress-dot active" id="dot1"></div>
         <div class="progress-dot" id="dot2"></div>
         <div class="progress-dot" id="dot3"></div>
@@ -438,46 +429,44 @@
         };
 
         const choiceLabels = {
-            time_of_day: { daytime: '阳光正好', nighttime: '夜幕降临' },
+            time_of_day: { daytime: '白天', nighttime: '夜晚' },
             mood: { stressed: '压力山大', homesick: '有点想家', finished_work: '终于忙完了', lonely: '有些孤单' },
-            hunger_level: { culinary_hug: '想被美食摸摸头', crunch: '单纯想嚼点什么', energy_needed: '急需能量补给' },
-            exercised_today: { true: '今天运动了', false: '今天没运动' },
-            budget_level: { 1: '省点花', 2: '经济实惠', 3: '正常消费', 4: '稍微奢侈', 5: '随便花' }
+            hunger_level: { culinary_hug: '想被美食治愈', crunch: '想嚼点什么', energy_needed: '急需能量' },
+            exercised_today: { true: '运动了', false: '没运动' },
+            budget_level: { 1: '5-15元', 2: '15-25元', 3: '25-40元', 4: '40-80元', 5: '80元以上' }
         };
 
         let currentQuestion = 1;
-        const totalQuestions = 5;
 
-        function selectOption(field, value, questionNum) {
+        function selectOption(field, value, qNum) {
             userChoices[field] = value;
 
-            const currentCard = document.getElementById('q' + questionNum);
-            currentCard.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            const card = document.getElementById('q' + qNum);
+            card.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
 
             setTimeout(() => {
-                if (questionNum < totalQuestions) {
-                    goToQuestion(questionNum + 1);
+                if (qNum < 5) {
+                    goToQuestion(qNum + 1);
                 } else {
                     submitChoices();
                 }
-            }, 450);
+            }, 400);
         }
 
         function goToQuestion(num) {
-            const currentCard = document.getElementById('q' + currentQuestion);
-            currentCard.classList.remove('active');
-            currentCard.classList.add('exit');
+            const curr = document.getElementById('q' + currentQuestion);
+            curr.classList.remove('active');
+            curr.classList.add('exit');
 
             document.getElementById('dot' + currentQuestion).classList.remove('active');
             document.getElementById('dot' + currentQuestion).classList.add('done');
 
             setTimeout(() => {
                 currentQuestion = num;
-                const nextCard = document.getElementById('q' + num);
-                nextCard.classList.add('active');
+                document.getElementById('q' + num).classList.add('active');
                 document.getElementById('dot' + num).classList.add('active');
-            }, 350);
+            }, 300);
         }
 
         function submitChoices() {
@@ -489,7 +478,6 @@
                 exercise: choiceLabels.exercised_today[userChoices.exercised_today],
                 budget: choiceLabels.budget_level[userChoices.budget_level]
             }));
-
             window.location.href = 'result.html';
         }
     </script>
