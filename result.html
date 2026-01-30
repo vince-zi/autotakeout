@@ -4,17 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <title>推荐结果 - 饮食觉察</title>
+    <title>正在寻找 - 饮食觉察</title>
     <style>
         :root {
             --system-bg: #F2F2F7;
-            --system-gray: #8E8E93;
             --label-primary: #000000;
             --label-secondary: #3C3C43;
             --label-tertiary: rgba(60, 60, 67, 0.6);
             --system-blue: #007AFF;
-            --system-green: #34C759;
-            --system-orange: #FF9500;
             --system-pink: #FF2D55;
             --system-purple: #AF52DE;
             --system-indigo: #5856D6;
@@ -31,9 +28,12 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
             min-height: 100vh;
+            min-height: 100dvh;
             background: var(--system-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             -webkit-font-smoothing: antialiased;
-            padding-bottom: 100px;
         }
 
         .gradient-bg {
@@ -43,29 +43,128 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(180deg, #F2F2F7 0%, #E8E8ED 100%);
-            z-index: -1;
+            z-index: 0;
+        }
+
+        .glow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .glow-orb-1 {
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #FF2D55, #FF9500);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.5;
+        }
+
+        .glow-orb-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #5856D6, #AF52DE);
+            top: 20%;
+            right: -50px;
+            opacity: 0.4;
+            animation-delay: -2s;
+        }
+
+        .glow-orb-3 {
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(135deg, #007AFF, #5AC8FA);
+            bottom: 15%;
+            left: -50px;
+            opacity: 0.4;
+            animation-delay: -4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateY(-30px) scale(1.1);
+                opacity: 0.7;
+            }
         }
 
         .container {
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 24px 16px;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 24px;
+            max-width: 360px;
         }
 
-        /* 加载状态 */
-        .loading-state {
-            text-align: center;
-            padding: 60px 20px;
+        .icon {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--label-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 17px;
+            color: var(--label-secondary);
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
         }
 
         .spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid var(--glass-border);
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
             border-top-color: var(--system-blue);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 24px;
         }
 
         @keyframes spin {
@@ -74,247 +173,13 @@
             }
         }
 
-        .loading-text {
-            font-size: 17px;
-            color: var(--label-secondary);
-        }
-
-        /* 结果状态 */
-        .result-state {
-            display: none;
-        }
-
-        .result-state.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 8px;
-            color: var(--label-primary);
-        }
-
-        .page-subtitle {
-            font-size: 15px;
-            color: var(--label-tertiary);
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        /* 推荐卡片 */
-        .rec-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 0.5px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-        }
-
-        .rec-card.featured {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-            border: 2px solid var(--system-blue);
-        }
-
-        .rec-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .rec-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--label-primary);
-        }
-
-        .rec-restaurant {
+        .loader-text {
             font-size: 14px;
             color: var(--label-tertiary);
-            margin-top: 4px;
         }
 
-        .rec-price {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--system-orange);
-        }
-
-        .rec-reason {
-            font-size: 14px;
-            color: var(--label-secondary);
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .rec-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .rec-tag {
-            font-size: 12px;
-            padding: 4px 10px;
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--system-blue);
-            border-radius: 12px;
-        }
-
-        /* 按钮组 */
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-order {
-            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
-            color: white;
-        }
-
-        .btn-confirm {
-            background: linear-gradient(135deg, var(--system-green), #2DB84C);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        /* 替代选项 */
-        .alternatives-section {
-            margin-top: 32px;
-        }
-
-        .alt-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--label-tertiary);
-            margin-bottom: 12px;
-        }
-
-        .alt-card {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 14px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .alt-card:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateX(4px);
-        }
-
-        .alt-info {
-            flex: 1;
-        }
-
-        .alt-name {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--label-primary);
-        }
-
-        .alt-meta {
-            font-size: 13px;
-            color: var(--label-tertiary);
-            margin-top: 2px;
-        }
-
-        .alt-price {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--system-orange);
-        }
-
-        /* 底部操作栏 */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-top: 0.5px solid var(--glass-border);
-            padding: 12px 16px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-        }
-
-        .regen-btn {
-            width: 100%;
-            max-width: 420px;
-            margin: 0 auto;
-            display: block;
-            padding: 16px;
-            background: rgba(0, 0, 0, 0.05);
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--label-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .regen-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        /* 错误状态 */
         .error-state {
             display: none;
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .error-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
         }
 
         .error-text {
@@ -333,49 +198,117 @@
             font-weight: 600;
             cursor: pointer;
         }
+
+        /* 准备就绪状态 */
+        .ready-state {
+            display: none;
+            margin-top: 32px;
+        }
+
+        .ready-state.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(88, 86, 214, 0.4);
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(88, 86, 214, 0.5);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-hint {
+            font-size: 13px;
+            color: var(--label-tertiary);
+            margin-top: 16px;
+        }
     </style>
 </head>
 
 <body>
     <div class="gradient-bg"></div>
 
+    <div class="glow-container">
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
+    </div>
+
     <div class="container">
-        <!-- 加载状态 -->
-        <div class="loading-state" id="loadingState">
+        <span class="icon" id="icon">🍜</span>
+        <h1 class="title" id="title">正在为你寻找慰藉...</h1>
+        <p class="subtitle" id="subtitle">让美食治愈今天的疲惫</p>
+
+        <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p class="loading-text">正在为你匹配最佳选择...</p>
+            <span class="loader-text" id="loaderText">正在匹配最适合你的选择...</span>
         </div>
 
-        <!-- 结果状态 -->
-        <div class="result-state" id="resultState">
-            <h1 class="page-title">🍽️ 现在就吃这个</h1>
-            <p class="page-subtitle" id="userContext">为此刻的你准备</p>
+        <!-- 准备就绪状态 -->
+        <div class="ready-state" id="readyState">
+            <button class="action-btn" id="actionBtn" onclick="goToEleme()">
+                🍜 开炫吧
+            </button>
+            <p class="action-hint">点击前往饿了么</p>
 
-            <div id="recommendationsContainer">
-                <!-- 推荐卡片会动态插入 -->
-            </div>
-
-            <div class="alternatives-section" id="alternativesSection">
-                <p class="alt-title">👀 其他选择</p>
-                <div id="alternativesContainer">
-                    <!-- 替代选项会动态插入 -->
-                </div>
+            <!-- 用餐反馈按钮（点击开炫后显示） -->
+            <div class="feedback-section" id="feedbackSection" style="display: none; margin-top: 24px;">
+                <p style="font-size: 14px; color: var(--label-tertiary); margin-bottom: 12px;">下单后记得反馈哦 👇</p>
+                <a href="review.html" class="feedback-btn" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 14px 28px;
+                    background: linear-gradient(135deg, #34C759, #2DB84C);
+                    color: white;
+                    border-radius: 14px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    text-decoration: none;
+                    box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
+                ">
+                    📝 用餐反馈
+                </a>
             </div>
         </div>
 
-        <!-- 错误状态 -->
         <div class="error-state" id="errorState">
-            <div class="error-icon">😅</div>
             <p class="error-text">获取推荐时遇到问题</p>
             <button class="retry-btn" onclick="location.href='index.html'">重新开始</button>
         </div>
-    </div>
-
-    <!-- 底部栏 -->
-    <div class="bottom-bar">
-        <button class="regen-btn" onclick="location.href='index.html'">
-            🔄 不满意？重新选择
-        </button>
     </div>
 
     <script>
@@ -385,132 +318,121 @@
         const userChoices = JSON.parse(sessionStorage.getItem('userChoices') || '{}');
         const choiceLabels = JSON.parse(sessionStorage.getItem('choiceLabels') || '{}');
 
-        let currentRecommendations = [];
-        let currentAlternatives = [];
+        // ========== 动态文案生成 ==========
+        // 根据用户选择生成情感化等待文案
+        const copyTemplates = {
+            // 夜晚 + 各种心情
+            'nighttime_stressed': {
+                icon: '🌙',
+                title: '夜深了，你还在扛着',
+                subtitle: '放下那些沉重，让一份热腾腾的美食温暖你',
+                loader: '正在寻找能治愈你的味道...'
+            },
+            'nighttime_homesick': {
+                icon: '🏠',
+                title: '想家的夜晚',
+                subtitle: '虽然回不去，但熟悉的味道能带你回家',
+                loader: '正在寻找那份温暖...'
+            },
+            'nighttime_finished_work': {
+                icon: '🎉',
+                title: '终于熬完了！',
+                subtitle: '夜宵时间，你值得好好犒劳自己',
+                loader: '正在准备你的奖励...'
+            },
+            'nighttime_lonely': {
+                icon: '🌃',
+                title: '一个人的夜晚',
+                subtitle: '美食不会让你孤单，它会静静陪着你',
+                loader: '正在寻找陪伴你的味道...'
+            },
 
-        // 平台配置
-        const PLATFORMS = {
-            eleme: {
-                name: '饿了么',
-                app: keyword => `eleme://search?keyword=${encodeURIComponent(keyword)}`,
-                fallback: keyword => `alipays://platformapi/startapp?appId=2018070960500498&page=pages/search/index&query=keyword%3D${encodeURIComponent(keyword)}`,
-                web: keyword => `https://www.ele.me/search/${encodeURIComponent(keyword)}`
+            // 白天 + 各种心情
+            'daytime_stressed': {
+                icon: '😮‍💨',
+                title: '今天有点累了',
+                subtitle: '停下来，用美食给自己按个暂停键',
+                loader: '正在寻找能让你喘口气的选择...'
             },
-            meituan: {
-                name: '美团外卖',
-                app: keyword => `meituanwaimai://search?keyword=${encodeURIComponent(keyword)}`,
-                fallback: keyword => `imeituan://www.meituan.com/search?q=${encodeURIComponent(keyword)}`,
-                web: keyword => `https://waimai.meituan.com/search/${encodeURIComponent(keyword)}`
+            'daytime_homesick': {
+                icon: '🥘',
+                title: '突然想家了',
+                subtitle: '一碗家常的味道，也许能填补那份想念',
+                loader: '正在寻找家的味道...'
             },
-            jd: {
-                name: '京东到家',
-                app: keyword => `openapp.jdmobile://virtual?params={"category":"jump","des":"search","keyWord":"${encodeURIComponent(keyword)}"}`,
-                fallback: keyword => `https://daojia.jd.com/search?keyword=${encodeURIComponent(keyword)}`,
-                web: keyword => `https://daojia.jd.com/search?keyword=${encodeURIComponent(keyword)}`
+            'daytime_finished_work': {
+                icon: '✨',
+                title: '忙完了！',
+                subtitle: '是时候犒劳一下辛苦的自己了',
+                loader: '正在准备你的庆功宴...'
+            },
+            'daytime_lonely': {
+                icon: '🍽️',
+                title: '一人食',
+                subtitle: '独处也可以是一种享受，慢慢来',
+                loader: '正在挑选适合独享的美味...'
+            },
+
+            // 默认
+            'default': {
+                icon: '🍜',
+                title: '正在为你寻找慰藉',
+                subtitle: '让美食治愈此刻的你',
+                loader: '正在匹配最适合你的选择...'
             }
         };
 
-        // 智能跳转 - 分层尝试
-        function smartJump(platform, keyword) {
-            const config = PLATFORMS[platform] || PLATFORMS.eleme;
+        // 根据饥饿程度添加额外文案
+        const hungerModifiers = {
+            'culinary_hug': '温柔地',
+            'crunch': '酥脆地',
+            'energy_needed': '快速地'
+        };
 
-            // 尝试App Scheme
-            const appUrl = config.app(keyword);
-            const startTime = Date.now();
+        // 更新页面文案
+        function updateCopywriting() {
+            const time = userChoices.time_of_day || 'daytime';
+            const mood = userChoices.mood || 'stressed';
+            const key = `${time}_${mood}`;
 
-            // 创建隐藏iframe尝试打开App
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appUrl;
-            document.body.appendChild(iframe);
+            const copy = copyTemplates[key] || copyTemplates['default'];
 
-            // 2秒后检查是否成功
-            setTimeout(() => {
-                document.body.removeChild(iframe);
-
-                // 如果页面还在，说明App没打开，尝试fallback
-                if (Date.now() - startTime < 2500) {
-                    // 尝试fallback
-                    window.location.href = config.fallback(keyword);
-
-                    // 再等1.5秒，如果还在就打开web版
-                    setTimeout(() => {
-                        window.location.href = config.web(keyword);
-                    }, 1500);
-                }
-            }, 2000);
+            document.getElementById('icon').textContent = copy.icon;
+            document.getElementById('title').textContent = copy.title;
+            document.getElementById('subtitle').textContent = copy.subtitle;
+            document.getElementById('loaderText').textContent = copy.loader;
         }
 
-        // 生成推荐卡片
-        function createRecCard(rec, index, isFeatured = false) {
-            const price = rec.estimated_price ? `¥${rec.estimated_price}` : '';
-            const platform = rec.platform || 'eleme';
-            const platformName = PLATFORMS[platform]?.name || '饿了么';
-            const keyword = rec.jump_keyword || rec.food_name;
-
-            return `
-                <div class="rec-card ${isFeatured ? 'featured' : ''}">
-                    <div class="rec-header">
-                        <div>
-                            <div class="rec-title">${rec.food_name}</div>
-                            <div class="rec-restaurant">${rec.restaurant || platformName}</div>
-                        </div>
-                        <div class="rec-price">${price}</div>
-                    </div>
-                    ${rec.reason ? `<p class="rec-reason">${rec.reason}</p>` : ''}
-                    <div class="rec-tags">
-                        <span class="rec-tag">${platformName}</span>
-                        ${rec.regret_score ? `<span class="rec-tag">后悔指数 ${rec.regret_score}/5</span>` : ''}
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-order" onclick="smartJump('${platform}', '${keyword.replace(/'/g, "\\'")}')">
-                            🛒 去下单
-                        </button>
-                        <button class="btn btn-confirm" onclick="confirmOrdered(${index})">
-                            ✅ 我已下单
-                        </button>
-                    </div>
-                </div>
-            `;
+        // ========== 饿了么跳转 ==========
+        function getElemeUrl(keyword) {
+            // 使用网页版确保兼容性
+            return `https://h5.ele.me/msite/search?keyword=${encodeURIComponent(keyword)}`;
         }
 
-        // 生成替代选项
-        function createAltCard(alt, index) {
-            const price = alt.estimated_price ? `¥${alt.estimated_price}` : '';
-            const platform = alt.platform || 'eleme';
-            const keyword = alt.jump_keyword || alt.food_name;
+        // 尝试打开饿了么App（只打开一次，不自动fallback）
+        function jumpToEleme(keyword) {
+            // 保存关键词供返回后使用
+            sessionStorage.setItem('pendingOrder', JSON.stringify({
+                keyword: keyword,
+                timestamp: Date.now()
+            }));
 
-            return `
-                <div class="alt-card" onclick="smartJump('${platform}', '${keyword.replace(/'/g, "\\'")}')">
-                    <div class="alt-info">
-                        <div class="alt-name">${alt.food_name}</div>
-                        <div class="alt-meta">${alt.restaurant || ''}</div>
-                    </div>
-                    <div class="alt-price">${price}</div>
-                </div>
-            `;
+            // 尝试打开App（iOS/Android都支持）
+            const appScheme = `eleme://search?keyword=${encodeURIComponent(keyword)}`;
+
+            // 直接跳转，不做fallback（避免二次跳转）
+            window.location.href = appScheme;
         }
 
-        // 确认已下单
-        async function confirmOrdered(index) {
-            const rec = currentRecommendations[index];
-            if (!rec) return;
-
-            const userToken = localStorage.getItem('user_token') || generateToken();
-
-            const orderData = {
-                user_token: userToken,
-                food_name: rec.food_name,
-                price: parseFloat(rec.estimated_price) || 0,
-                fullness: 2,
-                mood: 'satisfied',
-                regret_score: rec.regret_score || 2,
-                note: `${rec.restaurant || '外卖'} - ${PLATFORMS[rec.platform]?.name || '饿了么'}`,
-                created_at: new Date().toISOString()
-            };
-
+        // ========== 保存推荐记录 ==========
+        async function saveRecommendation(data) {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+                const userToken = localStorage.getItem('user_token') || generateToken();
+                const rec = data.recommendations?.[0];
+
+                if (!rec) return;
+
+                await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -518,18 +440,19 @@
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Prefer': 'return=minimal'
                     },
-                    body: JSON.stringify(orderData)
+                    body: JSON.stringify({
+                        user_token: userToken,
+                        food_name: rec.food_name || '待选择',
+                        price: parseFloat(rec.estimated_price) || 0,
+                        fullness: 2,
+                        mood: 'satisfied',
+                        regret_score: rec.regret_score || 2,
+                        note: `AI推荐 - ${choiceLabels.mood || ''} - ${rec.restaurant || '饿了么'}`,
+                        created_at: new Date().toISOString()
+                    })
                 });
-
-                if (response.ok) {
-                    alert(`✅ 已记录: ${rec.food_name}\n\n祝你吃得开心！`);
-                    window.location.href = 'review-history.html';
-                } else {
-                    alert('记录失败，请稍后再试');
-                }
-            } catch (error) {
-                console.error('保存失败:', error);
-                alert('网络错误，请检查连接');
+            } catch (e) {
+                console.log('保存记录失败:', e);
             }
         }
 
@@ -539,45 +462,76 @@
             return token;
         }
 
-        // 显示结果
-        function showResult(data) {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('resultState').classList.add('active');
+        // 存储当前关键词供按钮使用
+        let currentKeyword = '外卖';
 
-            // 设置用户上下文
-            const context = [];
-            if (choiceLabels.mood) context.push(choiceLabels.mood);
-            if (choiceLabels.hunger) context.push(choiceLabels.hunger);
-            document.getElementById('userContext').textContent = context.join(' · ') || '为此刻的你准备';
+        // 按钮文案（根据心情）
+        const actionButtonTexts = {
+            stressed: '🔥 释放一下',
+            homesick: '🏠 回味家的味道',
+            finished_work: '🎉 开炫吧',
+            lonely: '🥣 温暖一下'
+        };
 
-            // 渲染推荐
-            currentRecommendations = data.recommendations || [];
-            currentAlternatives = data.alternatives || [];
+        // 点击按钮跳转饿了么
+        function goToEleme() {
+            // 保存当前推荐信息供review页面使用
+            sessionStorage.setItem('currentRecommendation', JSON.stringify({
+                keyword: currentKeyword,
+                mood: userChoices.mood,
+                time: userChoices.time_of_day,
+                timestamp: Date.now()
+            }));
 
-            const recContainer = document.getElementById('recommendationsContainer');
-            recContainer.innerHTML = currentRecommendations.map((rec, i) =>
-                createRecCard(rec, i, i === 0)
-            ).join('');
+            // 显示反馈按钮
+            document.getElementById('feedbackSection').style.display = 'block';
 
-            // 渲染替代选项
-            const altContainer = document.getElementById('alternativesContainer');
-            if (currentAlternatives.length > 0) {
-                altContainer.innerHTML = currentAlternatives.map((alt, i) =>
-                    createAltCard(alt, i)
-                ).join('');
-            } else {
-                document.getElementById('alternativesSection').style.display = 'none';
-            }
+            // 更新按钮状态
+            const actionBtn = document.getElementById('actionBtn');
+            actionBtn.innerHTML = '✅ 已跳转';
+            actionBtn.style.background = 'linear-gradient(135deg, #34C759, #2DB84C)';
+            actionBtn.onclick = null; // 禁用再次点击
+
+            // 跳转到饿了么
+            jumpToEleme(currentKeyword);
         }
 
-        // 显示错误
-        function showError() {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
+        // 显示准备就绪状态
+        function showReady(keyword) {
+            currentKeyword = keyword;
+
+            // 隐藏加载动画
+            document.getElementById('loader').style.display = 'none';
+
+            // 更新标题文案
+            const readyTitles = {
+                stressed: '找到了！',
+                homesick: '这个味道应该没错',
+                finished_work: '准备好了！',
+                lonely: '暖心推荐来了'
+            };
+            document.getElementById('title').textContent = readyTitles[userChoices.mood] || '找到了！';
+            document.getElementById('subtitle').textContent = '为你精选的美食已就位';
+
+            // 更新按钮文案
+            const btnText = actionButtonTexts[userChoices.mood] || '🍜 开炫吧';
+            document.getElementById('actionBtn').innerHTML = btnText;
+
+            // 显示准备就绪状态
+            document.getElementById('readyState').classList.add('active');
         }
 
-        // 获取推荐
+        // ========== 获取AI推荐 ==========
         async function getRecommendation() {
+            // 默认关键词（根据心情）
+            const moodKeywords = {
+                stressed: '麻辣烫',
+                homesick: '家常菜',
+                finished_work: '火锅',
+                lonely: '粥'
+            };
+            const defaultKeyword = moodKeywords[userChoices.mood] || '外卖';
+
             try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/recommend`, {
                     method: 'POST',
@@ -590,39 +544,176 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    // 存储到session以便复用
-                    sessionStorage.setItem('recommendations', JSON.stringify(data));
-                    showResult(data);
+
+                    // 注意：不在这里保存记录，改为用户确认下单后再保存
+
+                    // 获取AI返回的关键词
+                    const aiKeyword = data.recommendations?.[0]?.jump_keyword ||
+                        data.recommendations?.[0]?.food_name ||
+                        defaultKeyword;
+
+                    // 显示准备就绪按钮（而不是直接跳转）
+                    showReady(aiKeyword);
                 } else {
                     throw new Error('API Error');
                 }
             } catch (error) {
-                console.error('获取推荐失败:', error);
-                showError();
+                console.error('API调用失败:', error);
+                // 即使失败也显示按钮，使用默认关键词
+                showReady(defaultKeyword);
             }
         }
 
-        // 页面初始化
+        // ========== 显示错误 ==========
+        function showError() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+        }
+
+        // ========== 页面初始化 ==========
         document.addEventListener('DOMContentLoaded', () => {
+            // 检查是否有用户选择
             if (!userChoices.time_of_day) {
                 window.location.href = 'index.html';
                 return;
             }
 
-            // 检查是否有缓存的推荐
-            const cached = sessionStorage.getItem('recommendations');
-            if (cached) {
-                try {
-                    const data = JSON.parse(cached);
-                    if (data.recommendations?.length > 0) {
-                        setTimeout(() => showResult(data), 500);
-                        return;
-                    }
-                } catch (e) { }
-            }
+            // 新流程开始，清除之前可能留下的 pendingOrder
+            sessionStorage.removeItem('pendingOrder');
 
+            // 更新文案
+            updateCopywriting();
+
+            // 开始获取推荐
             getRecommendation();
         });
+
+        // 检查是否有待确认的订单
+        function checkPendingOrder() {
+            const pending = sessionStorage.getItem('pendingOrder');
+            if (!pending) return;
+
+            try {
+                const order = JSON.parse(pending);
+                // 检查是否在5分钟内（防止过期的订单）
+                if (Date.now() - order.timestamp > 5 * 60 * 1000) {
+                    sessionStorage.removeItem('pendingOrder');
+                    return;
+                }
+
+                // 延迟显示确认对话框（让页面先加载）
+                setTimeout(() => {
+                    showOrderConfirmation(order.keyword);
+                }, 500);
+            } catch (e) {
+                sessionStorage.removeItem('pendingOrder');
+            }
+        }
+
+        // 显示订单确认对话框
+        function showOrderConfirmation(keyword) {
+            // 创建确认弹窗
+            const overlay = document.createElement('div');
+            overlay.id = 'confirmOverlay';
+            overlay.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                ">
+                    <div style="
+                        background: white;
+                        border-radius: 20px;
+                        padding: 24px;
+                        max-width: 320px;
+                        width: 100%;
+                        text-align: center;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    ">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🍜</div>
+                        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #000;">下单了吗？</h3>
+                        <p style="font-size: 15px; color: #666; margin-bottom: 24px;">记录一下，方便以后复盘分析</p>
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="confirmOrderPlaced('${keyword.replace(/'/g, "\\'")}')" style="
+                                flex: 1;
+                                padding: 14px;
+                                background: linear-gradient(135deg, #34C759, #2DB84C);
+                                color: white;
+                                border: none;
+                                border-radius: 12px;
+                                font-size: 16px;
+                                font-weight: 600;
+                                cursor: pointer;
+                            ">✅ 已下单</button>
+                            <button onclick="cancelOrder()" style="
+                                flex: 1;
+                                padding: 14px;
+                                background: #f0f0f0;
+                                color: #666;
+                                border: none;
+                                border-radius: 12px;
+                                font-size: 16px;
+                                font-weight: 600;
+                                cursor: pointer;
+                            ">❌ 没下单</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        // 确认已下单
+        async function confirmOrderPlaced(keyword) {
+            const userToken = localStorage.getItem('user_token') || generateToken();
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        user_token: userToken,
+                        food_name: keyword,
+                        price: 0,
+                        fullness: 2,
+                        mood: 'satisfied',
+                        regret_score: 2,
+                        note: `用户确认下单 - ${choiceLabels.mood || ''} - 饿了么`,
+                        created_at: new Date().toISOString()
+                    })
+                });
+            } catch (e) {
+                console.log('保存失败:', e);
+            }
+
+            // 清除待确认订单
+            sessionStorage.removeItem('pendingOrder');
+
+            // 关闭弹窗并跳转到复盘页面
+            document.getElementById('confirmOverlay')?.remove();
+            window.location.href = 'review.html';
+        }
+
+        // 取消订单
+        function cancelOrder() {
+            sessionStorage.removeItem('pendingOrder');
+            document.getElementById('confirmOverlay')?.remove();
+            // 返回首页重新选择
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 

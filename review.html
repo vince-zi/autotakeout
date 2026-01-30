@@ -184,35 +184,7 @@
                 记录这一餐
             </button>
         </form>
-
-        <!-- 查看历史 -->
-        <div class="mt-6 text-center">
-            <a href="review-history.html" class="text-primary hover:underline text-sm font-medium">
-                📊 查看7天复盘报告
-            </a>
-        </div>
     </main>
-
-    <!-- 底部导航 -->
-    <nav
-        class="fixed bottom-0 left-0 right-0 bg-card-light dark:bg-card-dark border-t border-[#f0e6da] dark:border-[#4a3a2f] px-4 py-2">
-        <div class="max-w-md mx-auto flex justify-around">
-            <a href="code.html"
-                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
-                <span class="material-symbols-outlined text-xl">restaurant_menu</span>
-                <span class="text-xs mt-1">想吃啥</span>
-            </a>
-            <a href="review.html" class="flex flex-col items-center py-2 px-4 text-primary">
-                <span class="material-symbols-outlined text-xl">rate_review</span>
-                <span class="text-xs mt-1 font-bold">吃后复盘</span>
-            </a>
-            <a href="review-history.html"
-                class="flex flex-col items-center py-2 px-4 text-text-sub hover:text-primary transition-colors">
-                <span class="material-symbols-outlined text-xl">analytics</span>
-                <span class="text-xs mt-1">数据报告</span>
-            </a>
-        </div>
-    </nav>
 
     <script>
         // Supabase 配置
@@ -269,8 +241,10 @@
 
                 if (response.ok) {
                     showToast('✅ 记录成功！');
-                    form.reset();
-                    document.querySelectorAll('.emoji-btn.selected').forEach(b => b.classList.remove('selected'));
+                    // 保存成功后跳转到主页
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
                 } else {
                     throw new Error('保存失败');
                 }
