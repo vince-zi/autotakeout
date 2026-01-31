@@ -3,429 +3,498 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
-    <title>饮食觉察</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport" />
+    <title>今天吃点啥？</title>
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#fffcf8',
+                        dusty: {
+                            rose: '#d9a59d',
+                            'rose-light': '#f4e4e1',
+                            'rose-dark': '#b57b72',
+                        },
+                        sage: {
+                            green: '#c8d5c4',
+                            'green-light': '#e8f0e6',
+                            'green-dark': '#8a9a85',
+                        },
+                        charcoal: '#5c5552',
+                        'text-light': '#948c89'
+                    },
+                    fontFamily: {
+                        serif: ['Zodiak', 'serif'],
+                        sans: ['Pally', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)',
+                        'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)',
+                        'inner-soft': 'inset 0 2px 6px 0 rgba(255, 255, 255, 0.8)',
+                        'glass': '0 8px 32px 0 rgba(217, 165, 157, 0.15)',
+                        'card-soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'bounce-soft': 'bounce-soft 2s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'bounce-soft': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        pop: {
+                            '0%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            /* Apple Design System Colors */
-            --system-bg: #F2F2F7;
-            --system-bg-secondary: #FFFFFF;
-            --system-gray: #8E8E93;
-            --system-gray-2: #636366;
-            --system-gray-3: #48484A;
-            --system-gray-4: #3A3A3C;
-            --system-gray-5: #2C2C2E;
-            --system-gray-6: #1C1C1E;
-            --label-primary: #000000;
-            --label-secondary: #3C3C43;
-            --label-tertiary: rgba(60, 60, 67, 0.6);
-            --fill-primary: rgba(120, 120, 128, 0.2);
-            --system-blue: #007AFF;
-            --system-pink: #FF2D55;
-            --system-purple: #AF52DE;
-            --system-indigo: #5856D6;
-
-            /* Vibrancy */
-            --glass-bg: rgba(255, 255, 255, 0.72);
-            --glass-border: rgba(255, 255, 255, 0.5);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
-            min-height: 100vh;
-            min-height: 100dvh;
-            background: var(--system-bg);
-            overflow: hidden;
-            position: relative;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Apple风格渐变背景 */
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
             width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            background: linear-gradient(180deg,
-                    #F2F2F7 0%,
-                    #E8E8ED 100%);
         }
 
-        /* 流动光晕 - Apple风格 */
-        .glow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .glow-orb {
-            position: absolute;
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 28px;
+            width: 28px;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: float 6s ease-in-out infinite;
+            background: #d9a59d;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(217, 165, 157, 0.5);
+            cursor: pointer;
+            margin-top: -12px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .glow-orb-1 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #FF2D55 0%, #FF9500 100%);
-            top: -100px;
-            right: -100px;
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
         }
 
-        .glow-orb-2 {
-            width: 350px;
-            height: 350px;
-            background: linear-gradient(135deg, #5856D6 0%, #AF52DE 100%);
-            bottom: -80px;
-            left: -80px;
-            animation-delay: -2s;
+        input[type=range]:active::-webkit-slider-thumb {
+            transform: scale(0.95);
+            background: #b57b72;
         }
 
-        .glow-orb-3 {
-            width: 280px;
-            height: 280px;
-            background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%);
-            top: 40%;
-            left: 50%;
-            transform: translateX(-50%);
-            animation-delay: -4s;
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: linear-gradient(to right, #e8f0e6, #d9a59d);
+            border-radius: 99px;
         }
 
+        /* Staggered Animation Delays */
+        .delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .delay-300 {
+            animation-delay: 300ms;
+        }
+
+        .delay-400 {
+            animation-delay: 400ms;
+        }
+
+        .delay-500 {
+            animation-delay: 500ms;
+        }
+
+        .card-enter {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Hover interactions */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        /* Keyframes Definitions (Moved from Tailwind Config for Reliability) */
         @keyframes float {
 
             0%,
             100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.5;
+                transform: translateY(0);
             }
 
             50% {
-                transform: translateY(-30px) scale(1.1);
-                opacity: 0.7;
+                transform: translateY(-20px);
             }
         }
 
-        /* 主容器 */
-        .container {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
+        @keyframes bounce-soft {
 
-        /* 问题卡片 */
-        .question-card {
-            text-align: center;
-            max-width: 380px;
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            pointer-events: none;
-            position: absolute;
-        }
-
-        .question-card.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-            position: relative;
-        }
-
-        .question-card.exit {
-            opacity: 0;
-            transform: translateY(-20px) scale(0.98);
-        }
-
-        /* Logo - Apple风格 */
-        .logo {
-            margin-bottom: 40px;
-        }
-
-        .logo-icon {
-            font-size: 72px;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .logo-text {
-            font-size: 34px;
-            font-weight: 700;
-            color: var(--label-primary);
-            letter-spacing: -0.02em;
-        }
-
-        /* 问题文字 - SF Pro Display */
-        .question-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--label-primary);
-            margin-bottom: 32px;
-            line-height: 1.3;
-            letter-spacing: -0.02em;
-        }
-
-        /* 选项网格 */
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .options.two-col {
-            flex-direction: row;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        /* Apple风格按钮 - 毛玻璃 */
-        .option-btn {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 0.5px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 18px 24px;
-            font-family: inherit;
-            font-size: 17px;
-            font-weight: 500;
-            color: var(--label-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 14px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        }
-
-        .options.two-col .option-btn {
-            flex: 1;
-            justify-content: center;
-        }
-
-        .option-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        .option-btn:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.85);
-        }
-
-        .option-btn.selected {
-            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 8px 24px rgba(88, 86, 214, 0.3);
-        }
-
-        .option-emoji {
-            font-size: 28px;
-        }
-
-        .option-text {
-            text-align: left;
-            letter-spacing: -0.01em;
-        }
-
-        /* 进度指示器 - Apple Capsule风格 */
-        .progress-bar {
-            position: fixed;
-            bottom: 48px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            padding: 8px 12px;
-            border-radius: 20px;
-            border: 0.5px solid var(--glass-border);
-            z-index: 10;
-        }
-
-        .progress-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 4px;
-            background: var(--fill-primary);
-            transition: all 0.3s ease;
-        }
-
-        .progress-dot.active {
-            width: 24px;
-            background: var(--system-blue);
-        }
-
-        .progress-dot.done {
-            background: var(--system-blue);
-        }
-
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .progress-bar {
-                bottom: calc(32px + env(safe-area-inset-bottom));
+            0%,
+            100% {
+                transform: translateY(0);
             }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(-3deg);
+            }
+
+            50% {
+                transform: rotate(3deg);
+            }
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Utility classes matching the Tailwind config names for convenience */
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: float 6s ease-in-out 3s infinite;
+        }
+
+        .animate-bounce-soft {
+            animation: bounce-soft 2s infinite;
+        }
+
+        .animate-wiggle {
+            animation: wiggle 1s ease-in-out infinite;
+        }
+
+        .animate-pop {
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
         }
     </style>
 </head>
 
-<body>
-    <!-- 渐变背景 -->
-    <div class="gradient-bg"></div>
+<body
+    class="min-h-screen bg-cream text-charcoal font-sans p-6 md:p-12 relative overflow-x-hidden selection:bg-dusty-rose selection:text-white">
 
-    <!-- 光晕效果 -->
-    <div class="glow-container">
-        <div class="glow-orb glow-orb-1"></div>
-        <div class="glow-orb glow-orb-2"></div>
-        <div class="glow-orb glow-orb-3"></div>
+    <!-- Animated Background Blobs -->
+    <div
+        class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[100px] animate-float pointer-events-none z-0">
+    </div>
+    <div
+        class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/10 blur-[100px] animate-float-delayed pointer-events-none z-0">
     </div>
 
-    <div class="container">
-        <!-- 问题1 -->
-        <div class="question-card active" id="q1">
-            <div class="logo">
-                <span class="logo-icon">🍽️</span>
-                <div class="logo-text">饮食觉察</div>
+    <div class="relative z-10 max-w-4xl mx-auto pb-32">
+
+        <!-- Header -->
+        <header class="flex flex-col items-center justify-center mb-12 card-enter delay-100">
+            <div class="mb-6 relative group cursor-pointer"
+                onclick="this.classList.add('animate-pop'); setTimeout(() => this.classList.remove('animate-pop'), 300)">
+                <div class="absolute inset-0 bg-dusty-rose/20 rounded-full blur-xl scale-150 animate-pulse"></div>
+                <div
+                    class="relative p-6 rounded-full bg-white shadow-bubble text-dusty-rose transition-transform group-hover:scale-110 duration-300 group-hover:rotate-12">
+                    <iconify-icon icon="lucide:utensils" class="text-4xl"></iconify-icon>
+                </div>
             </div>
-            <div class="question-text">现在是白天还是夜晚？</div>
-            <div class="options two-col">
-                <button class="option-btn" onclick="selectOption('time_of_day', 'daytime', 1)">
-                    <span class="option-emoji">☀️</span>
-                    <span class="option-text">白天</span>
+            <h1
+                class="font-serif text-4xl md:text-[3.5rem] leading-none text-charcoal font-bold text-center mb-3 tracking-tight">
+                今天 <span class="italic text-dusty-rose relative inline-block transform -rotate-2">
+                    吃点啥？
+                    <iconify-icon icon="lucide:sparkles"
+                        class="text-2xl absolute -top-4 -right-6 text-sage-green animate-bounce-soft"></iconify-icon>
+                </span>
+            </h1>
+            <p
+                class="text-text-light font-medium tracking-wide text-sm bg-white/60 backdrop-blur-sm px-6 py-2 rounded-full border border-white/50 shadow-sm mt-2">
+                别纠结啦，让肚子做决定 ✨
+            </p>
+        </header>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+
+            <!-- 1. Time Selector -->
+            <div
+                class="p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-200 hover:bg-white/50 transition-colors duration-500">
+                <h2
+                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
+                    <iconify-icon icon="lucide:clock" class="text-sage-green-dark"></iconify-icon> 饭点时刻
+                </h2>
+                <div class="grid grid-cols-2 gap-4" id="time-options">
+                    <button
+                        class="choice-btn h-16 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-base border border-transparent hover-lift flex items-center justify-center gap-2 group"
+                        onclick="selectOption('time_of_day', 'daytime', this)">
+                        <span>阳光正好</span>
+                    </button>
+                    <button
+                        class="choice-btn h-16 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-base border border-transparent hover-lift flex items-center justify-center gap-2 group"
+                        onclick="selectOption('time_of_day', 'nighttime', this)">
+                        <span>月色温柔</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Exercise -->
+            <div
+                class="p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-300 hover:bg-white/50 transition-colors duration-500">
+                <h2
+                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
+                    <iconify-icon icon="lucide:activity" class="text-sage-green-dark"></iconify-icon> 动没动呀
+                </h2>
+                <div class="bg-white p-5 rounded-[2rem] shadow-glass flex flex-col justify-between h-36 cursor-pointer hover-lift relative overflow-hidden group"
+                    id="exercise-card" onclick="toggleExercise()">
+                    <!-- Decorative blob -->
+                    <div
+                        class="absolute -right-8 -bottom-8 w-24 h-24 bg-sage-green/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700">
+                    </div>
+
+                    <div class="flex justify-between items-start relative z-10">
+                        <div class="w-12 h-12 rounded-2xl bg-sage-green/10 flex items-center justify-center text-sage-green-dark transition-all duration-300 group-hover:rotate-12"
+                            id="exercise-icon-bg">
+                            <iconify-icon icon="lucide:dumbbell" class="text-2xl"></iconify-icon>
+                        </div>
+                        <div class="w-8 h-8 rounded-full border-2 border-sage-green flex items-center justify-center transition-all bg-transparent"
+                            id="exercise-check">
+                            <iconify-icon icon="lucide:check"
+                                class="text-white text-lg opacity-0 transition-opacity scale-50"
+                                id="exercise-check-icon"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="relative z-10 pl-1">
+                        <span class="block font-serif text-xl text-charcoal tracking-tight"
+                            id="exercise-text">今天没动弹</span>
+                        <span class="text-xs text-text-light font-medium mt-1 block" id="exercise-subtext">做一个快乐的小土豆
+                            🥔</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Mood -->
+            <div
+                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-400 hover:bg-white/50 transition-colors duration-500">
+                <h2
+                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
+                    <iconify-icon icon="lucide:smile" class="text-sage-green-dark"></iconify-icon> 心情咋样
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="mood-options">
+                    <button
+                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
+                        onclick="selectOption('mood', 'stressed', this)">
+                        <span>脑壳疼</span>
+                    </button>
+                    <button
+                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
+                        onclick="selectOption('mood', 'homesick', this)">
+                        <span>想家了</span>
+                    </button>
+                    <button
+                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
+                        onclick="selectOption('mood', 'finished_work', this)">
+                        <span>自由啦!</span>
+                    </button>
+                    <button
+                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
+                        onclick="selectOption('mood', 'lonely', this)">
+                        <span>有点emo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. Body Status -->
+            <div
+                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500 hover:bg-white/50 transition-colors duration-500">
+                <h2
+                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
+                    <iconify-icon icon="lucide:heart-pulse" class="text-sage-green-dark"></iconify-icon> 身体想要...
+                </h2>
+                <div
+                    class="bg-white p-2 rounded-full shadow-inner-soft flex flex-col md:flex-row w-full relative h-auto md:h-16 overflow-hidden md:overflow-visible hover:shadow-inner transition-shadow duration-300">
+                    <!-- Buttons Container -->
+                    <div class="flex w-full flex-col md:flex-row relative z-10" id="body-options">
+                        <button
+                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
+                            onclick="selectBodyOption('hunger_level', 'culinary_hug', this)">
+                            求安慰
+                        </button>
+                        <button
+                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
+                            onclick="selectBodyOption('hunger_level', 'crunch', this)">
+                            嘴巴寂寞
+                        </button>
+                        <button
+                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
+                            onclick="selectBodyOption('hunger_level', 'energy_needed', this)">
+                            极速充电
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Budget -->
+            <div
+                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500 hover:bg-white/50 transition-colors duration-500">
+                <h2
+                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
+                    <iconify-icon icon="lucide:wallet" class="text-sage-green-dark"></iconify-icon> 钱包余额
+                </h2>
+                <div
+                    class="bg-white p-8 rounded-[2rem] shadow-glass flex flex-col justify-between relative overflow-hidden group">
+                    <!-- Dynamic BG Emoji -->
+                    <div class="absolute -right-4 -bottom-4 text-[8rem] opacity-[0.03] group-hover:opacity-[0.06] transition-opacity select-none pointer-events-none"
+                        id="budget-emoji-bg">
+                        💸
+                    </div>
+
+                    <div class="flex justify-between items-center px-1 mb-6 relative z-10">
+                        <span class="text-sm font-bold text-charcoal">预计花多少?</span>
+                        <div class="flex items-center gap-2">
+                            <span id="budget-emoji-small" class="text-base animate-bounce-soft">💸</span>
+                            <span id="budget-display"
+                                class="text-xs font-bold text-dusty-rose bg-dusty-rose/10 px-4 py-1.5 rounded-full transition-all">
+                                拖拖看 ->
+                            </span>
+                        </div>
+                    </div>
+                    <div class="px-2 pb-2 relative z-10">
+                        <input type="range" min="1" max="5" value="3" class="w-full focus:outline-none"
+                            id="budget-slider" oninput="updateBudget(this.value)">
+                        <div
+                            class="flex justify-between text-[10px] text-text-light font-bold mt-4 uppercase tracking-wide px-1 opacity-60">
+                            <span>吃土</span>
+                            <span></span>
+                            <span>日常</span>
+                            <span></span>
+                            <span>豪华</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Submit Button -->
+            <div
+                class="md:col-span-2 p-8 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500">
+                <button id="submit-btn" onclick="submitChoices()" disabled
+                    class="w-full py-6 rounded-full bg-white text-text-light font-serif text-xl tracking-wide shadow-sm transition-all duration-500 flex items-center justify-center gap-3 group overflow-hidden relative cursor-not-allowed opacity-60 hover:shadow-md">
+                    <span
+                        class="absolute inset-0 bg-gradient-to-r from-dusty-rose to-[#e6b2aa] translate-y-full transition-transform duration-500 rounded-full z-0"
+                        id="btn-bg"></span>
+                    <span class="relative z-10 transition-colors duration-300">告诉我吃啥!</span>
+                    <iconify-icon icon="lucide:send"
+                        class="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500 text-2xl"></iconify-icon>
                 </button>
-                <button class="option-btn" onclick="selectOption('time_of_day', 'nighttime', 1)">
-                    <span class="option-emoji">🌙</span>
-                    <span class="option-text">夜晚</span>
-                </button>
+            </div>
+
+        </div>
+
+        <!-- Family Meal Entry (Subtle) -->
+        <div class="mt-12 text-center card-enter delay-500">
+            <div class="p-8 border border-sage-green/30 rounded-[2.5rem] bg-sage-green-light/30 backdrop-blur-sm">
+                <p class="text-charcoal font-medium text-lg mb-4">不知道今晚吃什么？ 🤔</p>
+                <a href="family.html"
+                    class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-sage-green text-white font-bold text-base shadow-bubble hover:shadow-bubble-hover hover:-translate-y-1 transition-all duration-300 group">
+                    <iconify-icon icon="lucide:home" class="text-xl"></iconify-icon>
+                    <span>帮我配一顿家常饭</span>
+                    <iconify-icon icon="lucide:arrow-right"
+                        class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+                </a>
             </div>
         </div>
 
-        <!-- 问题2 -->
-        <div class="question-card" id="q2">
-            <div class="question-text">此刻你的心情是？</div>
-            <div class="options">
-                <button class="option-btn" onclick="selectOption('mood', 'stressed', 2)">
-                    <span class="option-emoji">😫</span>
-                    <span class="option-text">压力山大</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('mood', 'homesick', 2)">
-                    <span class="option-emoji">🏠</span>
-                    <span class="option-text">有点想家</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('mood', 'finished_work', 2)">
-                    <span class="option-emoji">🎉</span>
-                    <span class="option-text">终于忙完了</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('mood', 'lonely', 2)">
-                    <span class="option-emoji">😔</span>
-                    <span class="option-text">有些孤单</span>
-                </button>
-            </div>
+        <!-- Divider -->
+        <div class="mt-12 flex items-center justify-center opacity-40">
+            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-dusty-rose/50 to-transparent"></div>
+            <iconify-icon icon="lucide:sparkles" class="mx-4 text-dusty-rose text-sm"></iconify-icon>
+            <div class="flex-1 h-px bg-gradient-to-l from-transparent via-dusty-rose/50 to-transparent"></div>
         </div>
 
-        <!-- 问题3 -->
-        <div class="question-card" id="q3">
-            <div class="question-text">你的身体在说什么？</div>
-            <div class="options">
-                <button class="option-btn" onclick="selectOption('hunger_level', 'culinary_hug', 3)">
-                    <span class="option-emoji">🤗</span>
-                    <span class="option-text">想被美食治愈</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('hunger_level', 'crunch', 3)">
-                    <span class="option-emoji">😋</span>
-                    <span class="option-text">想嚼点什么</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('hunger_level', 'energy_needed', 3)">
-                    <span class="option-emoji">⚡</span>
-                    <span class="option-text">急需能量</span>
-                </button>
-            </div>
+        <!-- Footer -->
+        <div class="mt-12 text-center opacity-70 card-enter delay-500">
+            <p class="font-serif text-charcoal italic text-lg leading-snug max-w-[260px] mx-auto">
+                "人如其食，拒绝速成、廉价与虚假。"
+            </p>
+            <div class="mt-6 w-16 h-1 bg-sage-green/30 rounded-full mx-auto"></div>
         </div>
 
-        <!-- 问题4 -->
-        <div class="question-card" id="q4">
-            <div class="question-text">今天运动了吗？</div>
-            <div class="options two-col">
-                <button class="option-btn" onclick="selectOption('exercised_today', true, 4)">
-                    <span class="option-emoji">🏃</span>
-                    <span class="option-text">运动了</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('exercised_today', false, 4)">
-                    <span class="option-emoji">🛋️</span>
-                    <span class="option-text">没运动</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- 问题5 -->
-        <div class="question-card" id="q5">
-            <div class="question-text">今天的预算是？</div>
-            <div class="options">
-                <button class="option-btn" onclick="selectOption('budget_level', 1, 5)">
-                    <span class="option-emoji">💰</span>
-                    <span class="option-text">5-15元</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('budget_level', 2, 5)">
-                    <span class="option-emoji">💵</span>
-                    <span class="option-text">15-25元</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('budget_level', 3, 5)">
-                    <span class="option-emoji">💳</span>
-                    <span class="option-text">25-40元</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('budget_level', 4, 5)">
-                    <span class="option-emoji">💎</span>
-                    <span class="option-text">40-80元</span>
-                </button>
-                <button class="option-btn" onclick="selectOption('budget_level', 5, 5)">
-                    <span class="option-emoji">👑</span>
-                    <span class="option-text">80元以上</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 进度条 -->
-    <div class="progress-bar">
-        <div class="progress-dot active" id="dot1"></div>
-        <div class="progress-dot" id="dot2"></div>
-        <div class="progress-dot" id="dot3"></div>
-        <div class="progress-dot" id="dot4"></div>
-        <div class="progress-dot" id="dot5"></div>
     </div>
 
     <script>
+        // State
         const userChoices = {
             time_of_day: null,
             mood: null,
             hunger_level: null,
             exercised_today: null,
-            budget_level: null
+            budget_level: 3
+        };
+
+        const budgetData = {
+            1: { label: "15元以下 (省钱小分队)", emoji: "🥬" },
+            2: { label: "15-25元 (凑合吃点)", emoji: "🍜" },
+            3: { label: "25-40元 (对自己好点)", emoji: "🥗" },
+            4: { label: "40-80元 (小小奢侈)", emoji: "🥩" },
+            5: { label: "80元+ (富贵迷人眼)", emoji: "🦞" }
         };
 
         const choiceLabels = {
@@ -436,40 +505,126 @@
             budget_level: { 1: '5-15元', 2: '15-25元', 3: '25-40元', 4: '40-80元', 5: '80元以上' }
         };
 
-        let currentQuestion = 1;
+        // --- Interaction Functions ---
 
-        function selectOption(field, value, qNum) {
+        function selectOption(field, value, element) {
             userChoices[field] = value;
 
-            const card = document.getElementById('q' + qNum);
-            card.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
+            const parent = element.parentElement;
+            const siblings = parent.querySelectorAll('.choice-btn');
 
-            setTimeout(() => {
-                if (qNum < 5) {
-                    goToQuestion(qNum + 1);
-                } else {
-                    submitChoices();
-                }
-            }, 400);
+            siblings.forEach(btn => {
+                // Reset to default playful style
+                btn.className = "choice-btn h-16 md:h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm md:text-base border border-transparent hover-lift flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 group opacity-60 hover:opacity-100 scale-95 hover:scale-100";
+            });
+
+            // Active visual: Pop out, fill color
+            element.className = "choice-btn h-16 md:h-20 rounded-3xl bg-dusty-rose text-white shadow-bubble-hover font-bold text-sm md:text-base relative overflow-hidden group transform scale-100 ring-4 ring-dusty-rose/20 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 animate-pop transition-all";
+
+            checkCompletion();
         }
 
-        function goToQuestion(num) {
-            const curr = document.getElementById('q' + currentQuestion);
-            curr.classList.remove('active');
-            curr.classList.add('exit');
+        function selectBodyOption(field, value, element) {
+            userChoices[field] = value;
 
-            document.getElementById('dot' + currentQuestion).classList.remove('active');
-            document.getElementById('dot' + currentQuestion).classList.add('done');
+            const parent = document.getElementById('body-options');
+            const siblings = parent.querySelectorAll('button');
 
-            setTimeout(() => {
-                currentQuestion = num;
-                document.getElementById('q' + num).classList.add('active');
-                document.getElementById('dot' + num).classList.add('active');
-            }, 300);
+            siblings.forEach(btn => {
+                btn.className = "choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-medium text-text-light hover:text-dusty-rose transition-colors relative z-10 opacity-70 hover:opacity-100";
+            });
+
+            element.className = "choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-white bg-dusty-rose shadow-md transition-all relative z-10 transform scale-105";
+
+            checkCompletion();
+        }
+
+        function toggleExercise() {
+            if (userChoices.exercised_today === null) {
+                userChoices.exercised_today = false;
+            } else {
+                userChoices.exercised_today = !userChoices.exercised_today;
+            }
+            updateExerciseVisuals();
+            checkCompletion();
+        }
+
+        function updateExerciseVisuals() {
+            const iconBg = document.getElementById('exercise-icon-bg');
+            const checkIcon = document.getElementById('exercise-check-icon');
+            const mainText = document.getElementById('exercise-text');
+            const subText = document.getElementById('exercise-subtext');
+            const checkContainer = document.getElementById('exercise-check');
+
+            if (userChoices.exercised_today === true) {
+                // Active (Yes)
+                checkContainer.className = "w-8 h-8 rounded-full border-2 border-sage-green bg-sage-green flex items-center justify-center transition-all shadow-sm";
+                checkIcon.classList.remove('opacity-0', 'scale-50');
+                checkIcon.classList.add('scale-100');
+                mainText.innerText = "💦 狠狠流汗了";
+                subText.innerText = "多吃点好的补一补！";
+                subText.className = "text-xs text-sage-green-dark font-bold mt-1 block animate-bounce-soft";
+                iconBg.className = "w-12 h-12 rounded-2xl bg-sage-green text-white flex items-center justify-center transition-colors rotate-12 shadow-inner";
+            } else {
+                // Inactive (No)
+                checkContainer.className = "w-8 h-8 rounded-full border-2 border-sage-green bg-transparent flex items-center justify-center transition-all";
+                checkIcon.classList.add('opacity-0', 'scale-50');
+                checkIcon.classList.remove('scale-100');
+                mainText.innerText = "🥔 今天当个土豆";
+                subText.innerText = "不动怎么了？吃饱了才有力气动";
+                subText.className = "text-xs text-text-light font-medium mt-1 block";
+                iconBg.className = "w-12 h-12 rounded-2xl bg-sage-green/10 text-sage-green-dark flex items-center justify-center transition-colors shadow-none";
+            }
+        }
+
+        function updateBudget(value) {
+            userChoices.budget_level = parseInt(value);
+            const data = budgetData[value];
+
+            const display = document.getElementById('budget-display');
+            const emojiSmall = document.getElementById('budget-emoji-small');
+            const emojiBg = document.getElementById('budget-emoji-bg');
+
+            display.innerText = data.label;
+            emojiSmall.innerText = data.emoji;
+            emojiBg.innerText = data.emoji;
+
+            checkCompletion();
+        }
+
+        // Init
+        updateBudget(3);
+
+        function checkCompletion() {
+            const isTimeSet = userChoices.time_of_day !== null;
+            const isMoodSet = userChoices.mood !== null;
+            const isBodySet = userChoices.hunger_level !== null;
+            const isExerciseSet = userChoices.exercised_today !== null;
+
+            const btn = document.getElementById('submit-btn');
+            const btnBg = document.getElementById('btn-bg');
+
+            if (isTimeSet && isMoodSet && isBodySet && isExerciseSet) {
+                btn.disabled = false;
+                btn.classList.remove('cursor-not-allowed', 'opacity-60');
+                btn.classList.add('hover:-translate-y-1', 'active:translate-y-0', 'shadow-bubble');
+                btnBg.classList.remove('translate-y-full'); // Fill color
+            } else {
+                btn.disabled = true;
+                btn.classList.add('cursor-not-allowed', 'opacity-60');
+                btn.classList.remove('hover:-translate-y-1', 'active:translate-y-0', 'shadow-bubble');
+                btnBg.classList.add('translate-y-full');
+            }
         }
 
         function submitChoices() {
+            if (document.getElementById('submit-btn').disabled) return;
+
+            // Animate out
+            document.querySelector('.max-w-4xl').style.transform = 'scale(0.95) translateY(-20px)';
+            document.querySelector('.max-w-4xl').style.opacity = '0';
+            document.querySelector('.max-w-4xl').style.transition = 'all 0.5s ease-in';
+
             sessionStorage.setItem('userChoices', JSON.stringify(userChoices));
             sessionStorage.setItem('choiceLabels', JSON.stringify({
                 time: choiceLabels.time_of_day[userChoices.time_of_day],
@@ -478,7 +633,10 @@
                 exercise: choiceLabels.exercised_today[userChoices.exercised_today],
                 budget: choiceLabels.budget_level[userChoices.budget_level]
             }));
-            window.location.href = 'result.html';
+
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 600);
         }
     </script>
 </body>

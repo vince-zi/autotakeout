@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport" />
+    <title>今日搭配</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { cream: '#fffcf8', dusty: { rose: '#d9a59d', 'rose-dark': '#b57b72' }, sage: { green: '#c8d5c4', 'green-dark': '#8a9a85' }, charcoal: '#5c5552', 'text-light': '#948c89' },
+                    fontFamily: { serif: ['Zodiak', 'serif'], sans: ['Pally', 'sans-serif'] },
+                    boxShadow: { 'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)', 'card': '0 4px 20px -5px rgba(0,0,0,0.05)' },
+                    animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' },
+                    keyframes: { fadeInUp: { '0%': { opacity: 0, transform: 'translateY(20px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen bg-cream text-charcoal font-sans p-6 pb-24">
+
+    <!-- Header -->
+    <header class="mb-8 pt-4">
+        <a href="family.html"
+            class="inline-flex items-center gap-1 text-text-light text-sm mb-4 hover:text-dusty-rose transition-colors">
+            <iconify-icon icon="lucide:arrow-left"></iconify-icon> 重选
+        </a>
+        <h1 class="font-serif text-2xl text-charcoal font-bold">🍚 今日家庭搭配 (2-3人份)</h1>
+        <p class="text-text-light text-sm mt-1" id="subtitle">根据你的口味生成</p>
+    </header>
+
+    <!-- Meal Cards (Dynamically Injected) -->
+    <div class="grid gap-6 mb-10" id="meal-container">
+        <!-- Template -->
+        <!-- <div class="bg-white p-6 rounded-[2rem] shadow-card border border-transparent hover:border-dusty-rose/30 transition-all flex gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-cream flex items-center justify-center text-3xl shrink-0">🍅</div>
+            <div>
+                <span class="text-xs font-bold text-dusty-rose uppercase tracking-wider">主菜</span>
+                <h3 class="text-xl font-bold text-charcoal mb-1">番茄炒蛋</h3>
+                <p class="text-sm text-text-light">稳定、快、不翻车</p>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Shopping List -->
+    <div class="mb-10 animate-fade-in-up" style="animation-delay: 200ms;">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <iconify-icon icon="lucide:shopping-cart" class="text-sage-green-dark"></iconify-icon>
+            需要买的东西
+        </h2>
+        <div class="bg-white p-6 rounded-[2rem] shadow-card relative overflow-hidden">
+            <ul class="space-y-3 text-sm" id="shopping-list">
+                <!-- List Items -->
+            </ul>
+
+            <!-- CTA -->
+            <div class="mt-6 pt-6 border-t border-dashed border-gray-100">
+                <a href="https://s.taobao.com/search?q=生鲜配送" target="_blank"
+                    class="w-full py-3 rounded-full bg-sage-green text-white font-bold text-center block shadow-bubble hover:shadow-bubble-hover hover:-translate-y-1 transition-all">
+                    去淘宝闪送买这些 →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipes -->
+    <div class="animate-fade-in-up" style="animation-delay: 400ms;">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <iconify-icon icon="lucide:chef-hat" class="text-sage-green-dark"></iconify-icon>
+            极简做法
+        </h2>
+        <div class="space-y-6" id="recipe-container">
+            <!-- Recipes -->
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const menus = {
+            'light-none': {
+                dishes: [
+                    { type: '主菜', name: '番茄炒蛋', emoji: '🍅', desc: '稳定、快、不翻车', steps: ['鸡蛋打散炒熟盛出', '番茄炒出汁', '倒回鸡蛋翻炒'], ingredients: ['鸡蛋×4', '番茄×2'] },
+                    { type: '蔬菜', name: '清炒西兰花', emoji: '🥦', desc: '解腻、补充蔬菜', steps: ['西兰花焯水1分钟', '蒜末爆香', '大火快炒出锅'], ingredients: ['西兰花×1', '大蒜'] },
+                    { type: '汤', name: '紫菜蛋花汤', emoji: '🥣', desc: '5分钟完成', steps: ['水烧开下紫菜', '淋入蛋液', '加盐和香油'], ingredients: ['紫菜', '鸡蛋×1'] }
+                ]
+            },
+            'light-no_meat': {
+                dishes: [
+                    { type: '主菜', name: '千页豆腐', emoji: '🍘', desc: 'Q弹入味，下饭神器', steps: ['豆腐切片煎至两面金黄', '加入青红椒翻炒', '生抽耗油调味'], ingredients: ['千页豆腐', '青红椒'] },
+                    { type: '蔬菜', name: '蒜蓉油麦菜', emoji: '🥬', desc: '清脆爽口', steps: ['油麦菜洗净切段', '多放蒜末爆香', '大火快炒'], ingredients: ['油麦菜', '大蒜'] },
+                    { type: '汤', name: '番茄菌菇汤', emoji: '🍄', desc: '鲜美开胃', steps: ['番茄炒出汁', '加水放入金针菇', '煮开调味'], ingredients: ['番茄', '金针菇'] }
+                ]
+            },
+            'normal-none': {
+                dishes: [
+                    { type: '主菜', name: '红烧肉(简易版)', emoji: '🥩', desc: '硬菜其实很简单', steps: ['五花肉煸炒出油', '加生抽老抽冰糖', '加水炖40分钟'], ingredients: ['五花肉500g', '冰糖'] },
+                    { type: '蔬菜', name: '手撕包菜', emoji: '🥬', desc: '脆嫩爽口', steps: ['包菜手撕成片', '放入干辣椒爆香', '大火爆炒加醋'], ingredients: ['包菜', '干辣椒'] },
+                    { type: '汤', name: '冬瓜排骨汤', emoji: '🍲', desc: '清热去火', steps: ['排骨焯水', '加水炖30分钟', '放入冬瓜再煮10分'], ingredients: ['排骨', '冬瓜'] }
+                ]
+            },
+            'normal-no_spicy': {
+                dishes: [
+                    { type: '主菜', name: '土豆炖牛腩', emoji: '🥔', desc: '软烂入味', steps: ['牛腩炖煮1小时', '加入土豆块', '收汁出锅'], ingredients: ['牛腩', '土豆'] },
+                    { type: '蔬菜', name: '清炒小白菜', emoji: '🥬', desc: '补充维生素', steps: ['大火快炒', '加盐调味', '出锅'], ingredients: ['小白菜'] },
+                    { type: '汤', name: '玉米排骨汤', emoji: '🌽', desc: '清甜好喝', steps: ['排骨焯水', '加玉米胡萝卜', '炖煮1小时'], ingredients: ['排骨', '玉米', '胡萝卜'] }
+                ]
+            },
+            'savory-none': {
+                dishes: [
+                    { type: '主菜', name: '辣椒炒肉', emoji: '🌶️', desc: '米饭杀手', steps: ['五花肉煸炒', '加入青椒拍蒜', '豆豉酱油调味/爆炒'], ingredients: ['五花肉', '青椒(螺丝椒)'] },
+                    { type: '蔬菜', name: '干煸四季豆', emoji: '🥗', desc: '咸香下饭', steps: ['四季豆炸至虎皮状', '加肉末干辣椒碎', '翻炒均匀'], ingredients: ['四季豆', '肉末', '干辣椒'] },
+                    { type: '汤', name: '酸辣汤', emoji: '🥣', desc: '酸爽开胃', steps: ['木耳火腿丝煮开', '勾芡打蛋花', '加醋和胡椒粉'], ingredients: ['木耳', '火腿', '陈醋', '胡椒粉'] }
+                ]
+            }
+        };
+
+        // Fallback
+        const defaultMenu = menus['light-none'];
+
+        // Logic
+        function loadContent() {
+            const prefs = JSON.parse(sessionStorage.getItem('familyMealPrefs') || '{}');
+            const taste = prefs.taste || 'light';
+            const restriction = prefs.restriction || 'none';
+
+            // Allow sloppy matching or defaulting
+            let key = `${taste}-${restriction}`;
+
+            // Partial fallbacks if exact combo missing
+            if (!menus[key]) {
+                if (restriction === 'no_meat') key = 'light-no_meat'; // Fallback for veg
+                else if (taste === 'savory') key = 'savory-none';
+                else if (taste === 'normal') key = 'normal-none';
+                else key = 'light-none';
+            }
+
+            const menu = menus[key] || defaultMenu;
+            renderMenu(menu);
+        }
+
+        function renderMenu(menu) {
+            const container = document.getElementById('meal-container');
+            const shoppingList = document.getElementById('shopping-list');
+            const recipeContainer = document.getElementById('recipe-container');
+
+            let allIngredients = [];
+
+            menu.dishes.forEach((dish, index) => {
+                // 1. Meal Card
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-[2rem] shadow-card border border-transparent hover:border-dusty-rose/30 transition-all flex gap-4 animate-fade-in-up";
+                card.style.animationDelay = `${index * 100}ms`;
+                card.innerHTML = `
+                    <div class="w-16 h-16 rounded-2xl bg-cream flex items-center justify-center text-3xl shrink-0 border border-sage-green/10">${dish.emoji}</div>
+                    <div>
+                        <span class="text-[10px] font-bold text-dusty-rose uppercase tracking-wider bg-dusty-rose/10 px-2 py-0.5 rounded-full">${dish.type}</span>
+                        <h3 class="text-xl font-bold text-charcoal mb-1 mt-1">${dish.name}</h3>
+                        <p class="text-sm text-text-light">${dish.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // Collect Ingredients
+                allIngredients = [...allIngredients, ...dish.ingredients];
+
+                // 2. Recipe
+                const recipe = document.createElement('div');
+                recipe.className = "bg-white p-6 rounded-[2rem] shadow-sm";
+                recipe.innerHTML = `
+                    <h3 class="font-bold text-charcoal mb-3 flex items-center gap-2">
+                        <span>${dish.emoji}</span> ${dish.name}
+                    </h3>
+                    <ol class="space-y-2 relative border-l border-sage-green/30 ml-1 pl-4">
+                        ${dish.steps.map(step => `<li class="text-sm text-charcoal/80 leading-relaxed">${step}</li>`).join('')}
+                    </ol>
+                `;
+                recipeContainer.appendChild(recipe);
+            });
+
+            // Shopping List Render
+            // Deduplicate logic could go here, but for simple strings Set is okay-ish (though "Tomato x2" vs "Tomato" is tricky. Keeping simple for now)
+            const uniqueIngredients = [...new Set(allIngredients)];
+            uniqueIngredients.forEach(item => {
+                const li = document.createElement('li');
+                li.className = "flex items-center gap-3 text-charcoal/80";
+                li.innerHTML = `
+                    <iconify-icon icon="lucide:circle" class="text-[6px] text-sage-green-dark"></iconify-icon>
+                    <span>${item}</span>
+                `;
+                shoppingList.appendChild(li);
+            });
+        }
+
+        // Init
+        loadContent();
+
+    </script>
+</body>
+
+</html>

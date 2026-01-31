@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport" />
+    <title>家常饭搭配</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { cream: '#fffcf8', dusty: { rose: '#d9a59d' }, sage: { green: '#c8d5c4', 'green-dark': '#8a9a85' }, charcoal: '#5c5552', 'text-light': '#948c89' },
+                    fontFamily: { serif: ['Zodiak', 'serif'], sans: ['Pally', 'sans-serif'] },
+                    boxShadow: { 'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)', 'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)' },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out forwards', 'slide-up': 'slideUp 0.5s ease-out forwards' },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="min-h-screen bg-cream text-charcoal font-sans p-6 flex flex-col items-center justify-center relative overflow-hidden">
+
+    <!-- Background Blobs -->
+    <div
+        class="fixed top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-sage-green/20 blur-[80px] pointer-events-none">
+    </div>
+    <div
+        class="fixed bottom-[-10%] left-[-10%] w-[300px] h-[300px] rounded-full bg-dusty-rose/10 blur-[80px] pointer-events-none">
+    </div>
+
+    <!-- Container -->
+    <div class="max-w-md w-full relative z-10 transition-all duration-500" id="step-container">
+
+        <!-- Header -->
+        <header class="text-center mb-12 animate-fade-in">
+            <a href="index.html"
+                class="inline-flex items-center gap-1 text-text-light text-sm mb-6 hover:text-dusty-rose transition-colors">
+                <iconify-icon icon="lucide:arrow-left"></iconify-icon> 返回
+            </a>
+            <h1 class="font-serif text-3xl text-charcoal font-bold mb-2">家庭烹饪搭配 🍚</h1>
+            <p class="text-text-light text-sm">简单两步，搞定今晚吃什么</p>
+        </header>
+
+        <!-- Step 1: Taste -->
+        <div id="step-1" class="animate-slide-up">
+            <h2 class="text-xl font-medium text-center mb-8">Step 1｜今天更想吃哪种？</h2>
+            <div class="grid gap-4">
+                <button onclick="selectTaste('light')"
+                    class="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-bubble hover:border-sage-green border border-transparent transition-all group text-left flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-sage-green/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🥬</div>
+                    <div>
+                        <span class="block font-bold text-lg text-charcoal">清淡一点</span>
+                        <span class="text-xs text-text-light">解腻，舒服，不想太油</span>
+                    </div>
+                </button>
+                <button onclick="selectTaste('normal')"
+                    class="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-bubble hover:border-sage-green border border-transparent transition-all group text-left flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-cream flex items-center justify-center text-2xl border border-dusty-rose/20 group-hover:scale-110 transition-transform">
+                        🍲</div>
+                    <div>
+                        <span class="block font-bold text-lg text-charcoal">正常家常</span>
+                        <span class="text-xs text-text-light">就是那个熟悉的味道</span>
+                    </div>
+                </button>
+                <button onclick="selectTaste('savory')"
+                    class="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-bubble hover:border-sage-green border border-transparent transition-all group text-left flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-dusty-rose/10 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        🌶️</div>
+                    <div>
+                        <span class="block font-bold text-lg text-charcoal">稍微下饭</span>
+                        <span class="text-xs text-text-light">多煮一碗饭的节奏</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Restrictions (Hidden initially) -->
+        <div id="step-2" class="hidden opacity-0 translate-y-4 transition-all duration-500">
+            <h2 class="text-xl font-medium text-center mb-8">Step 2｜有忌口吗？</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="selectRestriction('none')"
+                    class="bg-white p-5 rounded-[1.5rem] shadow-sm hover:shadow-bubble text-center border-2 border-transparent hover:border-sage-green transition-all h-32 flex flex-col items-center justify-center gap-2">
+                    <span class="text-3xl">😋</span>
+                    <span class="font-bold">没有</span>
+                    <span class="text-[10px] text-text-light">百无禁忌</span>
+                </button>
+                <button onclick="selectRestriction('no_spicy')"
+                    class="bg-white p-5 rounded-[1.5rem] shadow-sm hover:shadow-bubble text-center border-2 border-transparent hover:border-sage-green transition-all h-32 flex flex-col items-center justify-center gap-2">
+                    <span class="text-3xl">🥵</span>
+                    <span class="font-bold">不吃辣</span>
+                    <span class="text-[10px] text-text-light">一点辣都不行</span>
+                </button>
+                <button onclick="selectRestriction('no_meat')"
+                    class="bg-white p-5 rounded-[1.5rem] shadow-sm hover:shadow-bubble text-center border-2 border-transparent hover:border-sage-green transition-all h-32 flex flex-col items-center justify-center gap-2">
+                    <span class="text-3xl">🥩</span>
+                    <span class="font-bold">不吃肉</span>
+                    <span class="text-[10px] text-text-light">今天想吃素</span>
+                </button>
+            </div>
+            <div class="mt-8 text-center">
+                <button onclick="selectRestriction('none')"
+                    class="text-text-light text-sm underline hover:text-dusty-rose">跳过，直接给结果</button>
+            </div>
+        </div>
+
+        <!-- Generating State -->
+        <div id="generating" class="hidden text-center py-12">
+            <div class="text-5xl mb-4 animate-bounce">🍳</div>
+            <h2 class="text-2xl font-serif text-charcoal font-bold mb-2">正在搭配...</h2>
+            <p class="text-text-light">给你配一顿「不费脑子的家常饭」</p>
+        </div>
+
+    </div>
+
+    <script>
+        let taste = '';
+
+        function selectTaste(value) {
+            taste = value;
+
+            // Animate transition
+            const step1 = document.getElementById('step-1');
+            const step2 = document.getElementById('step-2');
+
+            step1.style.opacity = '0';
+            step1.style.transform = 'translateY(-20px)';
+
+            setTimeout(() => {
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+                // Trigger reflow
+                void step2.offsetWidth;
+                step2.classList.remove('opacity-0', 'translate-y-4');
+            }, 300);
+        }
+
+        function selectRestriction(restriction) {
+            // Save state
+            const preferences = { taste, restriction };
+            sessionStorage.setItem('familyMealPrefs', JSON.stringify(preferences));
+
+            // Show generating UI
+            const step2 = document.getElementById('step-2');
+            const gen = document.getElementById('generating');
+
+            step2.style.opacity = '0';
+
+            setTimeout(() => {
+                step2.classList.add('hidden');
+                gen.classList.remove('hidden');
+
+                // Slight delay for effect -> redirect
+                setTimeout(() => {
+                    window.location.href = 'family-result.html';
+                }, 1500);
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>

@@ -3,331 +3,137 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name="viewport" />
     <title>正在寻找 - 饮食觉察</title>
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#fffcf8',
+                        dusty: { rose: '#d9a59d', 'rose-light': '#f4e4e1', 'rose-dark': '#b57b72' },
+                        sage: { green: '#c8d5c4', 'green-light': '#e8f0e6', 'green-dark': '#8a9a85' },
+                        charcoal: '#5c5552',
+                        'text-light': '#948c89'
+                    },
+                    fontFamily: { serif: ['Zodiak', 'serif'], sans: ['Pally', 'sans-serif'] },
+                    boxShadow: {
+                        'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)',
+                        'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(217, 165, 157, 0.15)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'pulse-soft': 'pulse-soft 2s infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+                        'pulse-soft': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.7 } }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --system-bg: #F2F2F7;
-            --label-primary: #000000;
-            --label-secondary: #3C3C43;
-            --label-tertiary: rgba(60, 60, 67, 0.6);
-            --system-blue: #007AFF;
-            --system-pink: #FF2D55;
-            --system-purple: #AF52DE;
-            --system-indigo: #5856D6;
-            --glass-bg: rgba(255, 255, 255, 0.72);
-            --glass-border: rgba(255, 255, 255, 0.5);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-            min-height: 100vh;
-            min-height: 100dvh;
-            background: var(--system-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #F2F2F7 0%, #E8E8ED 100%);
-            z-index: 0;
-        }
-
-        .glow-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .glow-orb-1 {
-            width: 450px;
-            height: 450px;
-            background: linear-gradient(135deg, #FF2D55, #FF9500);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.5;
-        }
-
-        .glow-orb-2 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #5856D6, #AF52DE);
-            top: 20%;
-            right: -50px;
-            opacity: 0.4;
-            animation-delay: -2s;
-        }
-
-        .glow-orb-3 {
-            width: 280px;
-            height: 280px;
-            background: linear-gradient(135deg, #007AFF, #5AC8FA);
-            bottom: 15%;
-            left: -50px;
-            opacity: 0.4;
-            animation-delay: -4s;
-        }
-
+        /* CSS Safe Fallback */
         @keyframes float {
 
             0%,
             100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: translateY(-30px) scale(1.1);
-                opacity: 0.7;
-            }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 24px;
-            max-width: 360px;
-        }
-
-        .icon {
-            font-size: 72px;
-            display: block;
-            margin-bottom: 24px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--label-primary);
-            margin-bottom: 12px;
-            line-height: 1.3;
-            letter-spacing: -0.02em;
-        }
-
-        .subtitle {
-            font-size: 17px;
-            color: var(--label-secondary);
-            line-height: 1.5;
-            margin-bottom: 40px;
-        }
-
-        .loader {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-top-color: var(--system-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loader-text {
-            font-size: 14px;
-            color: var(--label-tertiary);
-        }
-
-        .error-state {
-            display: none;
-        }
-
-        .error-text {
-            font-size: 17px;
-            color: var(--label-secondary);
-            margin-bottom: 24px;
-        }
-
-        .retry-btn {
-            padding: 14px 32px;
-            background: var(--system-blue);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* 准备就绪状态 */
-        .ready-state {
-            display: none;
-            margin-top: 32px;
-        }
-
-        .ready-state.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
                 transform: translateY(0);
             }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 18px 48px;
-            background: linear-gradient(135deg, var(--system-blue), var(--system-indigo));
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-family: inherit;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(88, 86, 214, 0.4);
-            text-decoration: none;
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
         }
 
-        .action-btn:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(88, 86, 214, 0.5);
-        }
-
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .action-hint {
-            font-size: 13px;
-            color: var(--label-tertiary);
-            margin-top: 16px;
+        .animate-float-delayed {
+            animation: float 6s ease-in-out 3s infinite;
         }
     </style>
 </head>
 
-<body>
-    <div class="gradient-bg"></div>
+<body
+    class="min-h-screen bg-cream text-charcoal font-sans p-6 flex flex-col items-center justify-center relative overflow-hidden">
 
-    <div class="glow-container">
-        <div class="glow-orb glow-orb-1"></div>
-        <div class="glow-orb glow-orb-2"></div>
-        <div class="glow-orb glow-orb-3"></div>
+    <!-- Background Blobs -->
+    <div
+        class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[100px] animate-float pointer-events-none z-0">
+    </div>
+    <div
+        class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/10 blur-[100px] animate-float-delayed pointer-events-none z-0">
     </div>
 
-    <div class="container">
-        <span class="icon" id="icon">🍜</span>
-        <h1 class="title" id="title">正在为你寻找慰藉...</h1>
-        <p class="subtitle" id="subtitle">让美食治愈今天的疲惫</p>
+    <!-- Main Container -->
+    <div class="w-full max-w-md relative z-10">
 
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-            <span class="loader-text" id="loaderText">正在匹配最适合你的选择...</span>
-        </div>
+        <div class="bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-8 md:p-12 shadow-glass text-center min-h-[400px] flex flex-col items-center justify-center transition-all duration-500"
+            id="card-container">
 
-        <!-- 准备就绪状态 -->
-        <div class="ready-state" id="readyState">
-            <button class="action-btn" id="actionBtn" onclick="goToEleme()">
-                🍜 开炫吧
-            </button>
-            <p class="action-hint">点击前往饿了么</p>
+            <!-- Icon -->
+            <div class="mb-6 text-6xl animate-bounce-soft" id="icon">🍜</div>
 
-            <!-- 用餐反馈按钮（点击开炫后显示） -->
-            <div class="feedback-section" id="feedbackSection" style="display: none; margin-top: 24px;">
-                <p style="font-size: 14px; color: var(--label-tertiary); margin-bottom: 12px;">下单了吗？</p>
-                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <a href="review.html" class="feedback-btn" style="
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 8px;
-                        padding: 14px 24px;
-                        background: linear-gradient(135deg, #34C759, #2DB84C);
-                        color: white;
-                        border-radius: 14px;
-                        font-size: 15px;
-                        font-weight: 600;
-                        text-decoration: none;
-                        box-shadow: 0 4px 16px rgba(52, 199, 89, 0.3);
-                    ">
-                        ✅ 已下单，去反馈
-                    </a>
-                    <button onclick="reRecommend()" style="
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 8px;
-                        padding: 14px 24px;
-                        background: #f0f0f5;
-                        color: var(--label-secondary);
-                        border: none;
-                        border-radius: 14px;
-                        font-size: 15px;
-                        font-weight: 600;
-                        cursor: pointer;
-                    ">
-                        🔄 没下单，换一个
-                    </button>
+            <!-- Titles -->
+            <h1 class="font-serif text-3xl md:text-4xl font-bold text-charcoal mb-3" id="title">正在为你寻找慰藉...</h1>
+            <p class="text-text-light text-lg mb-10 leading-relaxed" id="subtitle">让美食治愈今天的疲惫</p>
+
+            <!-- Loader -->
+            <div class="flex flex-col items-center gap-4" id="loader">
+                <div class="w-12 h-12 border-4 border-sage-green/30 border-t-sage-green rounded-full animate-spin">
+                </div>
+                <span class="text-sm font-bold text-sage-green-dark uppercase tracking-widest animate-pulse-soft"
+                    id="loaderText">正在匹配...</span>
+            </div>
+
+            <!-- Ready State -->
+            <div class="hidden w-full space-y-6 pt-4 animate-fade-in-up" id="readyState">
+                <button id="actionBtn" onclick="goToEleme()"
+                    class="w-full py-5 rounded-full bg-dusty-rose text-white font-bold text-xl shadow-bubble hover:shadow-bubble-hover hover:-translate-y-1 transition-all flex items-center justify-center gap-3 group">
+                    <span>🍜 开炫吧</span>
+                    <iconify-icon icon="lucide:external-link"
+                        class="text-lg opacity-60 group-hover:opacity-100 transition-opacity"></iconify-icon>
+                </button>
+                <p class="text-xs text-text-light font-medium tracking-wide">点击自动打开饿了么App</p>
+
+                <!-- Feedback Section -->
+                <div id="feedbackSection" style="display: none;" class="pt-6 border-t border-dashed border-charcoal/10">
+                    <p class="text-sm text-text-light mb-4 font-medium">下单了吗？</p>
+                    <div class="flex gap-3 justify-center">
+                        <a href="review.html"
+                            class="flex-1 py-3 px-4 rounded-2xl bg-sage-green text-white font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2">
+                            <iconify-icon icon="lucide:check"></iconify-icon> 已下单
+                        </a>
+                        <button onclick="reRecommend()"
+                            class="flex-1 py-3 px-4 rounded-2xl bg-white text-text-light font-bold text-sm shadow-sm border border-transparent hover:border-dusty-rose/30 transition-all flex items-center justify-center gap-2">
+                            <iconify-icon icon="lucide:refresh-cw"></iconify-icon> 换一个
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="error-state" id="errorState">
-            <p class="error-text">获取推荐时遇到问题</p>
-            <button class="retry-btn" onclick="location.href='index.html'">重新开始</button>
+            <!-- Error State -->
+            <div class="hidden w-full pt-8" id="errorState">
+                <p class="text-dusty-rose font-bold mb-6">获取推荐时遇到问题</p>
+                <button onclick="location.href='index.html'"
+                    class="px-8 py-3 rounded-full bg-white text-charcoal font-bold shadow-sm hover:shadow-md transition-all">重新开始</button>
+            </div>
+
         </div>
     </div>
 
+    <!-- Original Logic (Preserved) -->
     <script>
         const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
@@ -505,8 +311,11 @@
 
             // 更新按钮状态
             const actionBtn = document.getElementById('actionBtn');
-            actionBtn.innerHTML = '✅ 已跳转';
-            actionBtn.style.background = 'linear-gradient(135deg, #34C759, #2DB84C)';
+            // Hacky visual update to button
+            actionBtn.querySelector('span').innerText = '✅ 已跳转';
+            actionBtn.classList.remove('bg-dusty-rose');
+            actionBtn.classList.add('bg-sage-green');
+
             actionBtn.onclick = null; // 禁用再次点击
 
             // 用户确认要跳转，清除排除列表（下单的食品下次可以再推）
@@ -542,10 +351,12 @@
 
             // 更新按钮文案
             const btnText = actionButtonTexts[userChoices.mood] || '🍜 开炫吧';
-            document.getElementById('actionBtn').innerHTML = btnText;
+            document.getElementById('actionBtn').querySelector('span').innerText = btnText;
 
             // 显示准备就绪状态
-            document.getElementById('readyState').classList.add('active');
+            const readyDiv = document.getElementById('readyState');
+            readyDiv.classList.remove('hidden');
+            readyDiv.classList.add('block');
         }
 
         // ========== 获取AI推荐 ==========
@@ -600,7 +411,8 @@
         // ========== 显示错误 ==========
         function showError() {
             document.getElementById('loader').style.display = 'none';
-            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorState').classList.remove('hidden');
+            document.getElementById('errorState').classList.add('block');
         }
 
         // ========== 页面初始化 ==========
@@ -628,12 +440,15 @@
 
             // 恢复加载状态
             document.getElementById('loader').style.display = 'flex';
-            document.getElementById('readyState').classList.remove('active');
+            const readyDiv = document.getElementById('readyState');
+            readyDiv.classList.add('hidden');
+            readyDiv.classList.remove('block');
 
             // 恢复按钮状态
             const actionBtn = document.getElementById('actionBtn');
-            actionBtn.innerHTML = '🍜 开炫吧';
-            actionBtn.style.background = 'linear-gradient(135deg, var(--system-blue), var(--system-indigo))';
+            actionBtn.querySelector('span').innerText = '🍜 开炫吧';
+            actionBtn.classList.add('bg-dusty-rose');
+            actionBtn.classList.remove('bg-sage-green');
             actionBtn.onclick = goToEleme;
 
             // 更新提示文字
