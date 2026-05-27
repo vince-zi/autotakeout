@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         name="viewport" />
-    <title>正在寻找 - 饮食觉察</title>
+    <title>推荐结果 - 饮食觉察</title>
     <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
@@ -17,123 +17,160 @@
                 extend: {
                     colors: {
                         cream: '#fffcf8',
-                        dusty: { rose: '#d9a59d', 'rose-light': '#f4e4e1', 'rose-dark': '#b57b72' },
-                        sage: { green: '#c8d5c4', 'green-light': '#e8f0e6', 'green-dark': '#8a9a85' },
+                        dusty: {
+                            rose: '#d9a59d',
+                            'rose-light': '#f4e4e1',
+                            'rose-dark': '#b57b72',
+                        },
+                        sage: {
+                            green: '#c8d5c4',
+                            'green-light': '#e8f0e6',
+                            'green-dark': '#8a9a85',
+                        },
                         charcoal: '#5c5552',
                         'text-light': '#948c89'
                     },
-                    fontFamily: { serif: ['Zodiak', 'serif'], sans: ['Pally', 'sans-serif'] },
+                    fontFamily: {
+                        serif: ['Zodiak', 'serif'],
+                        sans: ['Pally', 'sans-serif'],
+                    },
                     boxShadow: {
                         'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)',
                         'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)',
                         'glass': '0 8px 32px 0 rgba(217, 165, 157, 0.15)',
+                        'card-soft': '0 10px 40px -10px rgba(0,0,0,0.06)',
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'float-delayed': 'float 6s ease-in-out 3s infinite',
-                        'pulse-soft': 'pulse-soft 2s infinite',
+                        'bounce-soft': 'bounce-soft 2.5s ease-in-out infinite',
+                        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-                        'pulse-soft': { '0%, 100%': { opacity: 1 }, '50%': { opacity: 0.7 } }
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        'bounce-soft': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        'pulse-soft': {
+                            '0%, 100%': { opacity: '0.6' },
+                            '50%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* CSS Safe Fallback */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
+        .recommendation-card {
+            opacity: 0;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-float-delayed {
-            animation: float 6s ease-in-out 3s infinite;
+        /* Hover animations */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px -12px rgba(217, 165, 157, 0.25);
         }
     </style>
 </head>
 
-<body
-    class="min-h-screen bg-cream text-charcoal font-sans p-6 flex flex-col items-center justify-center relative overflow-hidden">
+<body class="min-h-screen bg-cream text-charcoal font-sans p-6 pb-20 relative overflow-x-hidden">
 
     <!-- Background Blobs -->
-    <div
-        class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[100px] animate-float pointer-events-none z-0">
-    </div>
-    <div
-        class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/10 blur-[100px] animate-float-delayed pointer-events-none z-0">
-    </div>
+    <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[120px] animate-float pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/15 blur-[120px] animate-float-delayed pointer-events-none z-0"></div>
 
     <!-- Main Container -->
-    <div class="w-full max-w-md relative z-10">
+    <div class="max-w-2xl mx-auto relative z-10 w-full">
 
-        <div class="bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-8 md:p-12 shadow-glass text-center min-h-[400px] flex flex-col items-center justify-center transition-all duration-500"
-            id="card-container">
+        <!-- Header -->
+        <header class="text-center mb-10 pt-4">
+            <a href="index.html" class="inline-flex items-center gap-1.5 text-text-light text-sm mb-4 hover:text-dusty-rose transition-colors font-medium">
+                <iconify-icon icon="lucide:arrow-left" class="text-base"></iconify-icon> 返回重新选择
+            </a>
+            <h1 class="font-serif text-3xl md:text-4xl text-charcoal font-bold mb-2 flex items-center justify-center gap-2">
+                <span>🍽️</span> 今日定制推荐
+            </h1>
+            <p class="text-text-light text-sm" id="subContext">智能分析你此刻的饥饿与心情...</p>
+        </header>
 
-            <!-- Icon -->
-            <div class="mb-6 text-6xl animate-bounce-soft" id="icon">🍜</div>
-
-            <!-- Titles -->
-            <h1 class="font-serif text-3xl md:text-4xl font-bold text-charcoal mb-3" id="title">正在为你寻找慰藉...</h1>
-            <p class="text-text-light text-lg mb-10 leading-relaxed" id="subtitle">让美食治愈今天的疲惫</p>
-
-            <!-- Loader -->
-            <div class="flex flex-col items-center gap-4" id="loader">
-                <div class="w-12 h-12 border-4 border-sage-green/30 border-t-sage-green rounded-full animate-spin">
-                </div>
-                <span class="text-sm font-bold text-sage-green-dark uppercase tracking-widest animate-pulse-soft"
-                    id="loaderText">正在匹配...</span>
+        <!-- Loading State -->
+        <div id="loader" class="bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-12 shadow-glass text-center min-h-[350px] flex flex-col items-center justify-center transition-all duration-500">
+            <div class="text-6xl mb-6 animate-bounce-soft" id="loaderEmoji">🍜</div>
+            <h2 class="font-serif text-2xl font-bold text-charcoal mb-3" id="loaderTitle">正在为你寻找慰藉...</h2>
+            <p class="text-text-light text-base mb-8 leading-relaxed max-w-sm" id="loaderSubtitle">让美食治愈此刻的你</p>
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-10 h-10 border-4 border-sage-green/30 border-t-sage-green rounded-full animate-spin"></div>
+                <span class="text-xs font-bold text-sage-green-dark tracking-widest uppercase animate-pulse-soft">正在智能配餐中</span>
             </div>
-
-            <!-- Ready State -->
-            <div class="hidden w-full space-y-6 pt-4 animate-fade-in-up" id="readyState">
-                <button id="actionBtn" onclick="goToEleme()"
-                    class="w-full py-5 rounded-full bg-dusty-rose text-white font-bold text-xl shadow-bubble hover:shadow-bubble-hover hover:-translate-y-1 transition-all flex items-center justify-center gap-3 group">
-                    <span>🍜 开炫吧</span>
-                    <iconify-icon icon="lucide:external-link"
-                        class="text-lg opacity-60 group-hover:opacity-100 transition-opacity"></iconify-icon>
-                </button>
-                <p class="text-xs text-text-light font-medium tracking-wide">点击自动打开饿了么App</p>
-
-                <!-- Feedback Section -->
-                <div id="feedbackSection" style="display: none;" class="pt-6 border-t border-dashed border-charcoal/10">
-                    <p class="text-sm text-text-light mb-4 font-medium">下单了吗？</p>
-                    <div class="flex gap-3 justify-center">
-                        <a href="review.html"
-                            class="flex-1 py-3 px-4 rounded-2xl bg-sage-green text-white font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2">
-                            <iconify-icon icon="lucide:check"></iconify-icon> 已下单
-                        </a>
-                        <button onclick="reRecommend()"
-                            class="flex-1 py-3 px-4 rounded-2xl bg-white text-text-light font-bold text-sm shadow-sm border border-transparent hover:border-dusty-rose/30 transition-all flex items-center justify-center gap-2">
-                            <iconify-icon icon="lucide:refresh-cw"></iconify-icon> 换一个
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Error State -->
-            <div class="hidden w-full pt-8" id="errorState">
-                <p class="text-dusty-rose font-bold mb-6">获取推荐时遇到问题</p>
-                <button onclick="location.href='index.html'"
-                    class="px-8 py-3 rounded-full bg-white text-charcoal font-bold shadow-sm hover:shadow-md transition-all">重新开始</button>
-            </div>
-
         </div>
+
+        <!-- Result State (Hidden initially) -->
+        <div id="result-state" class="hidden space-y-8">
+            <!-- 推荐菜品列表 -->
+            <div id="recommendations-container" class="space-y-6">
+                <!-- 动态生成 5 个推荐卡片 -->
+            </div>
+
+            <!-- 换换口味备选 -->
+            <div id="alternatives-box" class="hidden bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-6 sm:p-8 shadow-glass space-y-4">
+                <h3 class="font-serif text-lg font-bold text-charcoal flex items-center gap-2">
+                    <iconify-icon icon="lucide:sparkles" class="text-dusty-rose"></iconify-icon>
+                    如果上面的不合胃口，还可以试试：
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="alternatives-container">
+                    <!-- 动态生成 2 个备选卡片 -->
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                <button onclick="reRecommend()" class="flex-1 py-4.5 rounded-full bg-white border border-[#ebdcd8] text-text-light font-bold text-base shadow-sm hover:shadow-md hover:border-dusty-rose/30 transition-all flex items-center justify-center gap-2">
+                    <iconify-icon icon="lucide:refresh-cw" class="text-lg"></iconify-icon>
+                    <span>换一批试试</span>
+                </button>
+                <a href="index.html" class="flex-1 py-4.5 rounded-full bg-dusty-rose hover:bg-dusty-rose-dark text-white font-bold text-base shadow-bubble hover:shadow-bubble-hover hover:-translate-y-0.5 transition-all text-center flex items-center justify-center gap-2">
+                    <iconify-icon icon="lucide:rotate-ccw" class="text-lg"></iconify-icon>
+                    <span>重新做决策</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Error State (Hidden initially) -->
+        <div id="error-state" class="hidden bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-12 shadow-glass text-center py-16">
+            <span class="material-symbols-outlined text-6xl text-dusty-rose animate-pulse">sentiment_dissatisfied</span>
+            <h2 class="font-serif text-2xl font-bold text-charcoal mt-4 mb-2">获取推荐遇到问题</h2>
+            <p id="error-msg" class="text-text-light text-sm mb-8">可能服务器开小差了，请稍后再试</p>
+            <button onclick="location.href='index.html'" class="px-8 py-3.5 rounded-full bg-dusty-rose text-white font-bold shadow-bubble hover:shadow-bubble-hover transition-all">重新开始</button>
+        </div>
+
     </div>
 
-    <!-- Original Logic (Preserved) -->
+    <!-- Script Block -->
     <script>
         const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
@@ -141,121 +178,129 @@
         const userChoices = JSON.parse(sessionStorage.getItem('userChoices') || '{}');
         const choiceLabels = JSON.parse(sessionStorage.getItem('choiceLabels') || '{}');
 
-        // ========== 动态文案生成 ==========
-        // 根据用户选择生成情感化等待文案
+        // 情感等待文案
         const copyTemplates = {
-            // 夜晚 + 各种心情
-            'nighttime_stressed': {
-                icon: '🌙',
-                title: '夜深了，你还在扛着',
-                subtitle: '放下那些沉重，让一份热腾腾的美食温暖你',
-                loader: '正在寻找能治愈你的味道...'
-            },
-            'nighttime_homesick': {
-                icon: '🏠',
-                title: '想家的夜晚',
-                subtitle: '虽然回不去，但熟悉的味道能带你回家',
-                loader: '正在寻找那份温暖...'
-            },
-            'nighttime_finished_work': {
-                icon: '🎉',
-                title: '终于熬完了！',
-                subtitle: '夜宵时间，你值得好好犒劳自己',
-                loader: '正在准备你的奖励...'
-            },
-            'nighttime_lonely': {
-                icon: '🌃',
-                title: '一个人的夜晚',
-                subtitle: '美食不会让你孤单，它会静静陪着你',
-                loader: '正在寻找陪伴你的味道...'
-            },
+            'nighttime_stressed': { emoji: '🌙', title: '夜深了，你还在默默坚持', subtitle: '放下那些沉重，让一份暖胃的美食在这个深夜拥抱你。', loader: '正在为你寻找最能解压的烟火气...' },
+            'nighttime_homesick': { emoji: '🏠', title: '思念家乡的深夜', subtitle: '虽然山高水长，但那些带有家乡印记的味道，能瞬间拉近你的思绪。', loader: '正在寻找能唤醒家乡记忆的温暖味道...' },
+            'nighttime_finished_work': { emoji: '🎉', title: '终于大功告成了！', subtitle: '属于你自己的狂欢时间已到，用一份极致美味，为今天的辛劳画上句点！', loader: '正在为你挑选最畅快的庆功美食...' },
+            'nighttime_lonely': { emoji: '🌃', title: '一个人，也要静静享受', subtitle: '食物是最好的陪伴，在这个宁静的夜晚，它会温柔地温暖你的身心。', loader: '正在挑选适合一人享用的暖心宵夜...' },
+            'daytime_stressed': { emoji: '😮‍💨', title: '今天有些辛苦吧', subtitle: '深呼吸一下，暂时按下工作的暂停键，用美食给自己的大脑放个假。', loader: '正在寻找能让你喘口气的舒适味道...' },
+            'daytime_homesick': { emoji: '🥘', title: '突然好想吃那口家常菜', subtitle: '一碗热气腾腾的家常饭，是抚平思乡之情最直接的良药。', loader: '正在寻找最还原妈妈手艺的家常小馆...' },
+            'daytime_finished_work': { emoji: '✨', title: '忙完了，一身轻松！', subtitle: '是时候去吃一顿好吃的，好好犒劳一下这个辛苦但饱满的自己了！', loader: '正在搜罗极具诱惑的美味犒劳选项...' },
+            'daytime_lonely': { emoji: '🍽️', title: '舒适的一人食时光', subtitle: '独处本就是一种美妙的滋味，慢慢品味这顿不被打扰的美好一餐。', loader: '正在挑选精美的一人食套餐...' },
+            'default': { emoji: '🍜', title: '正在为你量身推荐', subtitle: '让美食治愈此刻的你，享受生活的每一口香甜。', loader: '正在智能计算最契合你当前状态的美食...' }
+        };
 
-            // 白天 + 各种心情
-            'daytime_stressed': {
-                icon: '😮‍💨',
-                title: '今天有点累了',
-                subtitle: '停下来，用美食给自己按个暂停键',
-                loader: '正在寻找能让你喘口气的选择...'
-            },
-            'daytime_homesick': {
-                icon: '🥘',
-                title: '突然想家了',
-                subtitle: '一碗家常的味道，也许能填补那份想念',
-                loader: '正在寻找家的味道...'
-            },
-            'daytime_finished_work': {
-                icon: '✨',
-                title: '忙完了！',
-                subtitle: '是时候犒劳一下辛苦的自己了',
-                loader: '正在准备你的庆功宴...'
-            },
-            'daytime_lonely': {
-                icon: '🍽️',
-                title: '一人食',
-                subtitle: '独处也可以是一种享受，慢慢来',
-                loader: '正在挑选适合独享的美味...'
-            },
+        const PLATFORMS = {
+            meituan: { name: '美团外卖', emoji: '🛵', bg: 'bg-[#FFD000]/10', border: 'border-[#FFD000]/30', text: 'text-[#5C3A00]', scheme: (kw) => `waimai://search?keyword=${encodeURIComponent(kw)}`, web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}` },
+            eleme: { name: '饿了么', emoji: '💙', bg: 'bg-[#008CFF]/10', border: 'border-[#008CFF]/30', text: 'text-[#004A8C]', scheme: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`, web: (kw) => `https://h5.ele.me/msite/search?keyword=${encodeURIComponent(kw)}` },
+            jd: { name: '京东秒送', emoji: '🍎', bg: 'bg-[#DF2D2D]/10', border: 'border-[#DF2D2D]/30', text: 'text-[#8A1414]', scheme: (kw) => `openapp.jdmobile://virtual?params=${encodeURIComponent(JSON.stringify({ category: 'jump', des: 'jdMartHome' }))}`, web: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}` }
+        };
 
-            // 默认
-            'default': {
-                icon: '🍜',
-                title: '正在为你寻找慰藉',
-                subtitle: '让美食治愈此刻的你',
-                loader: '正在匹配最适合你的选择...'
+        // 获取匿名用户 Token
+        function getOrGenerateToken() {
+            let token = localStorage.getItem('user_token');
+            if (!token) {
+                token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('user_token', token);
             }
-        };
+            return token;
+        }
 
-        // 根据饥饿程度添加额外文案
-        const hungerModifiers = {
-            'culinary_hug': '温柔地',
-            'crunch': '酥脆地',
-            'energy_needed': '快速地'
-        };
-
-        // 更新页面文案
-        function updateCopywriting() {
+        // 页面提示文案设置
+        function updateLoadingTexts() {
             const time = userChoices.time_of_day || 'daytime';
             const mood = userChoices.mood || 'stressed';
             const key = `${time}_${mood}`;
-
             const copy = copyTemplates[key] || copyTemplates['default'];
 
-            document.getElementById('icon').textContent = copy.icon;
-            document.getElementById('title').textContent = copy.title;
-            document.getElementById('subtitle').textContent = copy.subtitle;
-            document.getElementById('loaderText').textContent = copy.loader;
+            document.getElementById('loaderEmoji').textContent = copy.emoji;
+            document.getElementById('loaderTitle').textContent = copy.title;
+            document.getElementById('loaderSubtitle').textContent = copy.subtitle;
+            document.getElementById('subContext').textContent = `${choiceLabels.time || '此刻'} · ${choiceLabels.mood || '正常情绪'} · 预算${choiceLabels.budget || '日常'}`;
         }
 
-        // ========== 饿了么跳转 ==========
-        function getElemeUrl(keyword) {
-            // 使用网页版确保兼容性
-            return `https://h5.ele.me/msite/search?keyword=${encodeURIComponent(keyword)}`;
-        }
-
-        // 尝试打开饿了么App（只打开一次，不自动fallback）
-        function jumpToEleme(keyword) {
-            // 保存关键词供返回后使用
-            sessionStorage.setItem('pendingOrder', JSON.stringify({
-                keyword: keyword,
-                timestamp: Date.now()
-            }));
-
-            // 尝试打开App（iOS/Android都支持）
-            const appScheme = `eleme://search?keyword=${encodeURIComponent(keyword)}`;
-
-            // 直接跳转，不做fallback（避免二次跳转）
-            window.location.href = appScheme;
-        }
-
-        // ========== 保存推荐记录 ==========
-        async function saveRecommendation(data) {
+        // 复制剪贴板
+        async function copyToClipboard(text) {
             try {
-                const userToken = localStorage.getItem('user_token') || generateToken();
-                const rec = data.recommendations?.[0];
+                await navigator.clipboard.writeText(text);
+                showToast('📋 已自动复制商家与菜品名！');
+                return true;
+            } catch (err) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('📋 已自动复制商家与菜品名！');
+                return true;
+            }
+        }
 
-                if (!rec) return;
+        // 显示 Toast 提示
+        function showToast(message, isSuccess = true) {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3.5 rounded-2xl shadow-xl z-50 text-sm font-bold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-4 opacity-0 ${
+                isSuccess ? 'bg-[#c8d5c4] text-[#4f594d] border border-[#a4bca0]' : 'bg-red-50 text-red-700 border border-red-200'
+            }`;
+            toast.innerHTML = `<iconify-icon icon="${isSuccess ? 'lucide:check-circle' : 'lucide:alert-circle'}" class="text-lg"></iconify-icon><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('-translate-y-4', 'opacity-0');
+            }, 50);
 
-                await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
+            setTimeout(() => {
+                toast.classList.add('-translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // 跳转外卖平台与复制
+        function goToOrder(platformKey, keyword) {
+            const plat = PLATFORMS[platformKey] || PLATFORMS.meituan;
+            copyToClipboard(keyword);
+
+            // Set a flag to show feedback section on return
+            sessionStorage.setItem('pendingOrder', JSON.stringify({ keyword, timestamp: Date.now() }));
+
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Try launching app
+                window.location.href = plat.scheme(keyword);
+                
+                // Fallback to web link if app doesn't open
+                setTimeout(() => {
+                    window.location.href = plat.web(keyword);
+                }, 1800);
+            } else {
+                // On desktop open in new tab
+                window.open(plat.web(keyword), '_blank');
+            }
+        }
+
+        // 我已下单：直接存库
+        async function confirmOrdered(foodName, estimatedPrice, regretScore, restaurant, platform) {
+            const userToken = getOrGenerateToken();
+
+            const orderData = {
+                user_token: userToken,
+                food_name: foodName,
+                price: parseFloat(estimatedPrice) || 0,
+                fullness: 2, // 刚好
+                mood: 'satisfied', // 满足
+                regret_score: regretScore || 2,
+                note: `通过饮食觉察智能下单: ${restaurant || '未知商家'} (${platform === 'meituan' ? '美团' : platform === 'eleme' ? '饿了么' : '京东秒送'})`,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -263,115 +308,139 @@
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Prefer': 'return=minimal'
                     },
-                    body: JSON.stringify({
-                        user_token: userToken,
-                        food_name: rec.food_name || '待选择',
-                        price: parseFloat(rec.estimated_price) || 0,
-                        fullness: 2,
-                        mood: 'satisfied',
-                        regret_score: rec.regret_score || 2,
-                        note: `AI推荐 - ${choiceLabels.mood || ''} - ${rec.restaurant || '饿了么'}`,
-                        created_at: new Date().toISOString()
-                    })
+                    body: JSON.stringify(orderData)
                 });
+
+                if (response.ok) {
+                    showToast('🎉 下单成功，记录已存入复盘数据！');
+                    // 清除缓存的备选食品列表
+                    sessionStorage.removeItem('excludedFoods');
+                    setTimeout(() => {
+                        window.location.href = 'review-history.html';
+                    }, 1200);
+                } else {
+                    const err = await response.text();
+                    console.error('Save failed:', err);
+                    showToast('❌ 保存记录失败，请手动记录', false);
+                }
             } catch (e) {
-                console.log('保存记录失败:', e);
+                console.error('Network error:', e);
+                showToast('⚠️ 网络错误，无法连接数据库', false);
             }
         }
 
-        function generateToken() {
-            const token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('user_token', token);
-            return token;
-        }
+        // 智能构建推荐卡片
+        function renderRecommendations(data) {
+            const container = document.getElementById('recommendations-container');
+            container.innerHTML = '';
 
-        // 存储当前关键词供按钮使用
-        let currentKeyword = '外卖';
+            const recs = data.recommendations || [];
+            recs.forEach((rec, index) => {
+                const plat = PLATFORMS[rec.platform] || PLATFORMS.meituan;
+                
+                // 渲染后悔指数的星星
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    const active = i <= rec.regret_score;
+                    starsHtml += `<iconify-icon icon="lucide:star" class="text-sm ${active ? 'text-dusty-rose fill-dusty-rose' : 'text-gray-200'}" style="margin-right: 2px;"></iconify-icon>`;
+                }
 
-        // 按钮文案（根据心情）
-        const actionButtonTexts = {
-            stressed: '🔥 释放一下',
-            homesick: '🏠 回味家的味道',
-            finished_work: '🎉 开炫吧',
-            lonely: '🥣 温暖一下'
-        };
+                // 排除重合关键字以便下一次过滤
+                const jumpKeyword = rec.jump_keyword || `${rec.restaurant} ${rec.food_name}`;
 
-        // 点击按钮跳转饿了么
-        function goToEleme() {
-            // 保存当前推荐信息供review页面使用
-            sessionStorage.setItem('currentRecommendation', JSON.stringify({
-                keyword: currentKeyword,
-                mood: userChoices.mood,
-                time: userChoices.time_of_day,
-                timestamp: Date.now()
-            }));
+                const card = document.createElement('div');
+                card.className = `recommendation-card bg-white rounded-[2rem] border border-[#f5ecea] p-6 shadow-card-soft hover-lift delay-${(index + 1) * 100}`;
+                card.innerHTML = `
+                    <div class="flex flex-col gap-4">
+                        <!-- Top header -->
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl ${plat.bg} ${plat.border} border flex items-center justify-center text-2xl shrink-0">
+                                    ${plat.emoji}
+                                </div>
+                                <div>
+                                    <h3 class="font-serif text-lg md:text-xl font-bold text-charcoal leading-tight">${rec.food_name}</h3>
+                                    <p class="text-xs text-text-light mt-0.5">${rec.restaurant || '推荐商家'}</p>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <span class="font-serif text-xl font-bold text-dusty-rose-dark">¥${rec.estimated_price}</span>
+                                <span class="block text-[10px] text-text-light mt-0.5 bg-gray-50 border border-gray-100 px-1.5 py-0.5 rounded-full font-bold uppercase">${plat.name}</span>
+                            </div>
+                        </div>
 
-            // 显示反馈按钮
-            document.getElementById('feedbackSection').style.display = 'block';
+                        <!-- Reason -->
+                        <p class="text-sm text-charcoal/85 leading-relaxed bg-[#fbf8f5] p-3 rounded-2xl border border-gray-50">
+                            ✨ <span class="italic text-charcoal font-medium">推荐原因：</span>${rec.reason || '契合你当下的状态'}
+                        </p>
 
-            // 更新按钮状态
-            const actionBtn = document.getElementById('actionBtn');
-            // Hacky visual update to button
-            actionBtn.querySelector('span').innerText = '✅ 已跳转';
-            actionBtn.classList.remove('bg-dusty-rose');
-            actionBtn.classList.add('bg-sage-green');
+                        <!-- Regret info & buttons -->
+                        <div class="flex flex-col gap-3 pt-2 border-t border-dashed border-gray-100">
+                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                <div class="flex items-center gap-1.5 text-text-light font-medium">
+                                    <span>明日后悔指数：</span>
+                                    <span class="flex items-center">${starsHtml}</span>
+                                </div>
+                                ${rec.regret_reason ? `<span class="text-text-light/90 italic font-medium">👉 ${rec.regret_reason}</span>` : ''}
+                            </div>
 
-            actionBtn.onclick = null; // 禁用再次点击
+                            <div class="grid grid-cols-2 gap-3 mt-1.5">
+                                <button onclick="goToOrder('${rec.platform}', '${jumpKeyword.replace(/'/g, "\\'")}')" class="py-3 rounded-xl bg-sage-green hover:bg-sage-green-dark text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 hover:-translate-y-0.5">
+                                    <iconify-icon icon="lucide:shopping-cart" class="text-base"></iconify-icon>
+                                    <span>去下单</span>
+                                </button>
+                                <button onclick="confirmOrdered('${rec.food_name.replace(/'/g, "\\'")}', ${rec.estimated_price}, ${rec.regret_score}, '${(rec.restaurant || '').replace(/'/g, "\\'")}', '${rec.platform}')" class="py-3 rounded-xl bg-white border border-[#c8d5c4] text-sage-green-dark hover:bg-sage-green-light/20 font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 hover:-translate-y-0.5">
+                                    <iconify-icon icon="lucide:check-circle" class="text-base"></iconify-icon>
+                                    <span>我已下单</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
 
-            // 用户确认要跳转，清除排除列表（下单的食品下次可以再推）
-            sessionStorage.removeItem('excludedFoods');
+            // 渲染备选
+            const alts = data.alternatives || [];
+            const altContainer = document.getElementById('alternatives-container');
+            const altBox = document.getElementById('alternatives-box');
+            
+            if (alts.length > 0) {
+                altContainer.innerHTML = '';
+                alts.forEach((alt, idx) => {
+                    const plat = PLATFORMS[alt.platform] || PLATFORMS.meituan;
+                    const jumpKeyword = alt.jump_keyword || `${alt.restaurant} ${alt.food_name}`;
 
-            // 跳转到饿了么
-            jumpToEleme(currentKeyword);
-        }
-
-        // 显示准备就绪状态
-        function showReady(keyword) {
-            currentKeyword = keyword;
-
-            // 保存已推荐的食品到排除列表（用于“换一个”时排除）
-            const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
-            if (keyword && !excludedFoods.includes(keyword)) {
-                excludedFoods.push(keyword);
-                sessionStorage.setItem('excludedFoods', JSON.stringify(excludedFoods));
+                    const btn = document.createElement('button');
+                    btn.onclick = () => goToOrder(alt.platform, jumpKeyword);
+                    btn.className = "flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 hover:border-dusty-rose/40 hover:bg-cream transition-all duration-300 text-left w-full shadow-sm group";
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="text-xl shrink-0">${plat.emoji}</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-charcoal leading-tight">${alt.food_name}</h4>
+                                <span class="text-[10px] text-text-light block mt-0.5 font-medium">${alt.restaurant || plat.name}</span>
+                            </div>
+                        </div>
+                        <iconify-icon icon="lucide:arrow-right" class="text-dusty-rose text-base opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></iconify-icon>
+                    `;
+                    altContainer.appendChild(btn);
+                });
+                altBox.classList.remove('hidden');
+            } else {
+                altBox.classList.add('hidden');
             }
-
-            // 隐藏加载动画
-            document.getElementById('loader').style.display = 'none';
-
-            // 更新标题文案
-            const readyTitles = {
-                stressed: '找到了！',
-                homesick: '这个味道应该没错',
-                finished_work: '准备好了！',
-                lonely: '暖心推荐来了'
-            };
-            document.getElementById('title').textContent = readyTitles[userChoices.mood] || '找到了！';
-            document.getElementById('subtitle').textContent = '为你精选的美食已就位';
-
-            // 更新按钮文案
-            const btnText = actionButtonTexts[userChoices.mood] || '🍜 开炫吧';
-            document.getElementById('actionBtn').querySelector('span').innerText = btnText;
-
-            // 显示准备就绪状态
-            const readyDiv = document.getElementById('readyState');
-            readyDiv.classList.remove('hidden');
-            readyDiv.classList.add('block');
         }
 
-        // ========== 获取AI推荐 ==========
-        async function getRecommendation() {
-            // 默认关键词（根据心情）
-            const moodKeywords = {
-                stressed: '麻辣烫',
-                homesick: '家常菜',
-                finished_work: '火锅',
-                lonely: '粥'
-            };
-            const defaultKeyword = moodKeywords[userChoices.mood] || '外卖';
+        // 调用推荐接口
+        async function fetchRecommendations() {
+            // Loading show
+            document.getElementById('loader').style.display = 'flex';
+            document.getElementById('result-state').classList.add('hidden');
+            document.getElementById('error-state').classList.add('hidden');
 
             try {
-                // 获取排除列表（推荐过但没下单的食品）
+                // 获取已经生成推荐但用户拒绝的关键词列表
                 const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
 
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/recommend`, {
@@ -382,83 +451,54 @@
                     },
                     body: JSON.stringify({
                         ...userChoices,
-                        excluded_foods: excludedFoods  // 传递排除列表给 AI
+                        excluded_foods: excludedFoods
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
+                    
+                    // 将本次推荐菜品名称存入 excludedFoods 缓存，方便换一批时过滤
+                    const currentExcludes = data.recommendations?.map(r => r.food_name) || [];
+                    const newExcludes = [...new Set([...excludedFoods, ...currentExcludes])];
+                    sessionStorage.setItem('excludedFoods', JSON.stringify(newExcludes));
 
-                    // 注意：不在这里保存记录，改为用户确认下单后再保存
-
-                    // 获取AI返回的关键词
-                    const aiKeyword = data.recommendations?.[0]?.jump_keyword ||
-                        data.recommendations?.[0]?.food_name ||
-                        defaultKeyword;
-
-                    // 显示准备就绪按钮（而不是直接跳转）
-                    showReady(aiKeyword);
+                    // 渲染页面
+                    setTimeout(() => {
+                        document.getElementById('loader').style.display = 'none';
+                        document.getElementById('result-state').classList.remove('hidden');
+                        renderRecommendations(data);
+                    }, 800);
                 } else {
+                    const errTxt = await response.text();
+                    console.error('API Error details:', errTxt);
                     throw new Error('API Error');
                 }
             } catch (error) {
-                console.error('API调用失败:', error);
-                // 即使失败也显示按钮，使用默认关键词
-                showReady(defaultKeyword);
+                console.error('Fetch recommendations failed:', error);
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('error-state').classList.remove('hidden');
+                document.getElementById('error-msg').textContent = error.message || '网络连接异常，请重试';
             }
         }
 
-        // ========== 显示错误 ==========
-        function showError() {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('errorState').classList.remove('hidden');
-            document.getElementById('errorState').classList.add('block');
+        // 重新推荐（换一批）
+        function reRecommend() {
+            showToast('🔄 正在为你搜罗其他惊喜菜品...');
+            fetchRecommendations();
         }
 
-        // ========== 页面初始化 ==========
+        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 检查是否有用户选择
             if (!userChoices.time_of_day) {
+                // 如果没有数据，回退到主页
                 window.location.href = 'index.html';
                 return;
             }
 
-            // 新流程开始，清除之前可能留下的 pendingOrder
-            sessionStorage.removeItem('pendingOrder');
-
-            // 更新文案
-            updateCopywriting();
-
-            // 开始获取推荐
-            getRecommendation();
+            updateLoadingTexts();
+            fetchRecommendations();
         });
-
-        // ========== 重新推荐 ==========
-        function reRecommend() {
-            // 隐藏反馈区域
-            document.getElementById('feedbackSection').style.display = 'none';
-
-            // 恢复加载状态
-            document.getElementById('loader').style.display = 'flex';
-            const readyDiv = document.getElementById('readyState');
-            readyDiv.classList.add('hidden');
-            readyDiv.classList.remove('block');
-
-            // 恢复按钮状态
-            const actionBtn = document.getElementById('actionBtn');
-            actionBtn.querySelector('span').innerText = '🍜 开炫吧';
-            actionBtn.classList.add('bg-dusty-rose');
-            actionBtn.classList.remove('bg-sage-green');
-            actionBtn.onclick = goToEleme;
-
-            // 更新提示文字
-            document.getElementById('title').textContent = '换一个试试...';
-            document.getElementById('subtitle').textContent = '正在寻找其他美食';
-            document.getElementById('loaderText').textContent = '正在重新推荐...';
-
-            // 重新调用 AI
-            getRecommendation();
-        }
     </script>
 </body>
 
