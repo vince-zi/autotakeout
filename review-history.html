@@ -5,42 +5,31 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         name="viewport" />
-    <title>饮食觉察看板 | 饮食觉察 2.0</title>
-    <!-- Y2K Acid Fonts & Iconography -->
+    <title>饮食觉察复盘 | 饮食觉察</title>
+    <!-- Premium Google Fonts & Iconography -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&family=Outfit:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        obsidian: '#08080c',
-                        acid: {
-                            green: '#00ff66',
-                            green_dark: '#00cc52',
-                            purple: '#a12cff',
-                            pink: '#ff3e83',
-                            orange: '#ff8800'
-                        },
-                        cyber: {
-                            card: '#12121a',
-                            border: '#1a1a26',
-                            text: '#8a8a9e'
+                        obsidian: '#08080a',
+                        premium: {
+                            dark: '#121217',
+                            border: '#1e1e26',
+                            text: '#7e7e90',
+                            accent: '#ffffff',
+                            green: '#10b981',
+                            purple: '#8b5cf6',
+                            pink: '#ec4899',
+                            orange: '#f59e0b'
                         }
                     },
                     fontFamily: {
-                        syne: ['Syne', 'sans-serif'],
-                        grotesk: ['Space Grotesk', 'monospace'],
-                        outfit: ['Outfit', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'acid-green': '0 0 20px rgba(0, 255, 102, 0.25)',
-                        'acid-purple': '0 0 20px rgba(161, 44, 255, 0.25)',
-                        'acid-pink': '0 0 20px rgba(255, 62, 131, 0.25)',
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        sans: ['Outfit', 'sans-serif'],
                     }
                 }
             }
@@ -49,40 +38,27 @@
 
     <style>
         body {
-            background-color: #08080c;
+            background-color: #08080a;
             background-image: 
-                radial-gradient(at 0% 100%, rgba(161, 44, 255, 0.06) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(0, 255, 102, 0.05) 0px, transparent 50%);
+                radial-gradient(at 0% 100%, rgba(139, 92, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
             overflow-x: hidden;
         }
 
-        .scanlines {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.2) 50%
-            );
-            background-size: 100% 4px;
-            z-index: 99;
-            opacity: 0.3;
-        }
-
         .glass-panel {
-            background: rgba(18, 18, 26, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(18, 18, 23, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .hover-neon {
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .hover-glow {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .hover-neon:hover {
-            border-color: rgba(0, 255, 102, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.15);
+        .hover-glow:hover {
+            border-color: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
             transform: translateY(-2px);
         }
 
@@ -93,34 +69,33 @@
 
         .animate-fade-in {
             opacity: 0;
-            animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
 
-<body class="min-h-screen text-white font-outfit p-4 md:p-8 relative selection:bg-acid-green selection:text-black">
-    <div class="scanlines"></div>
+<body class="min-h-screen text-white font-sans p-4 md:p-8 relative selection:bg-white selection:text-black">
 
     <!-- Background Blobs -->
-    <div class="fixed top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-acid-green/5 blur-[120px] pointer-events-none z-0"></div>
-    <div class="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-acid-purple/5 blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-premium-green/3 blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-premium-purple/3 blur-[120px] pointer-events-none z-0"></div>
 
-    <div class="relative z-10 max-w-4xl mx-auto pb-24">
+    <div class="relative z-10 max-w-3xl mx-auto pb-24">
 
         <!-- Top Navigation -->
         <header class="flex justify-between items-center mb-8 pt-4">
-            <a href="index.html" class="px-4 py-2 rounded-full border border-cyber-border bg-cyber-card/40 hover:bg-cyber-card/80 hover:border-acid-purple transition-all text-xs font-grotesk flex items-center gap-1.5 hover-neon">
-                <iconify-icon icon="lucide:arrow-left" class="text-acid-purple"></iconify-icon>
-                <span>回到灵魂入口</span>
+            <a href="index.html" class="px-4 py-2 rounded-full border border-premium-border bg-premium-dark/40 hover:bg-premium-dark/80 hover:border-white/20 transition-all text-xs flex items-center gap-1.5 hover-glow">
+                <iconify-icon icon="lucide:arrow-left" class="text-premium-purple"></iconify-icon>
+                <span>返回主页</span>
             </a>
             
             <div class="flex gap-3">
-                <button onclick="generateTestData()" class="px-4 py-2 rounded-full border border-cyber-border bg-cyber-card/40 hover:border-acid-green text-xs font-grotesk flex items-center gap-1.5 transition-all active:scale-95">
-                    <iconify-icon icon="lucide:plus-circle" class="text-acid-green"></iconify-icon>
+                <button onclick="generateTestData()" class="px-4 py-2 rounded-full border border-premium-border bg-premium-dark/40 hover:border-premium-green text-xs flex items-center gap-1.5 transition-all active:scale-95">
+                    <iconify-icon icon="lucide:plus-circle" class="text-premium-green"></iconify-icon>
                     <span>生成测试数据</span>
                 </button>
-                <a href="review.html" class="px-4 py-2 rounded-full border border-cyber-border bg-cyber-card/40 hover:border-acid-pink text-xs font-grotesk flex items-center gap-1.5 transition-all hover-neon">
-                    <iconify-icon icon="lucide:pen-tool" class="text-acid-pink"></iconify-icon>
+                <a href="review.html" class="px-4 py-2 rounded-full border border-premium-border bg-premium-dark/40 hover:border-premium-pink text-xs flex items-center gap-1.5 transition-all hover-glow">
+                    <iconify-icon icon="lucide:edit-3" class="text-premium-pink"></iconify-icon>
                     <span>记一餐</span>
                 </a>
             </div>
@@ -128,55 +103,54 @@
 
         <!-- Brand Hero -->
         <section class="text-center mb-10">
-            <h1 class="font-syne font-extrabold text-3xl md:text-4xl tracking-tight mb-2">📊 饮食复盘与觉察看板</h1>
-            <p class="font-grotesk text-cyber-text text-xs uppercase tracking-wider" id="dateRange">
-                [RETRO_AWARENESS_DASHBOARD // 数据对齐中]
+            <h1 class="text-3xl font-bold tracking-tight mb-2">历史用餐复盘看板</h1>
+            <p class="text-xs text-premium-text" id="dateRange">
+                正在加载数据
             </p>
         </section>
 
         <!-- 1. KEY PERFORMANCE METRICS GRID -->
         <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <!-- Total Meals -->
-            <div class="glass-panel p-5 rounded-2xl border border-cyber-border hover-neon relative overflow-hidden group">
-                <span class="font-grotesk text-[9px] uppercase tracking-widest text-cyber-text block mb-1">用餐次数 / COUNT</span>
-                <span class="font-syne font-extrabold text-3xl text-white block" id="totalMeals">0</span>
-                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5 group-hover:opacity-10 transition-opacity">🍲</div>
+            <div class="glass-panel p-5 rounded-2xl border border-premium-border hover-glow relative overflow-hidden group">
+                <span class="text-[10px] uppercase text-premium-text block mb-1">用餐次数</span>
+                <span class="font-bold text-3xl text-white block" id="totalMeals">0</span>
+                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5">🍲</div>
             </div>
 
             <!-- Total Cost -->
-            <div class="glass-panel p-5 rounded-2xl border border-cyber-border hover-neon relative overflow-hidden group">
-                <span class="font-grotesk text-[9px] uppercase tracking-widest text-cyber-text block mb-1">总花费额 / COST</span>
-                <span class="font-syne font-extrabold text-3xl text-acid-green block font-sans" id="totalSpent">¥0</span>
-                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5 group-hover:opacity-10 transition-opacity">💵</div>
+            <div class="glass-panel p-5 rounded-2xl border border-premium-border hover-glow relative overflow-hidden group">
+                <span class="text-[10px] uppercase text-premium-text block mb-1">累计总花费</span>
+                <span class="font-bold text-3xl text-premium-green block" id="totalSpent">¥0</span>
+                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5">💵</div>
             </div>
 
             <!-- Average Regret -->
-            <div class="glass-panel p-5 rounded-2xl border border-cyber-border hover-neon relative overflow-hidden group">
-                <span class="font-grotesk text-[9px] uppercase tracking-widest text-cyber-text block mb-1">平均后悔度 / REGRET</span>
-                <span class="font-syne font-extrabold text-3xl text-acid-pink block font-sans" id="avgRegret">0.0</span>
-                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5 group-hover:opacity-10 transition-opacity">⭐</div>
+            <div class="glass-panel p-5 rounded-2xl border border-premium-border hover-glow relative overflow-hidden group">
+                <span class="text-[10px] uppercase text-premium-text block mb-1">平均后悔度</span>
+                <span class="font-bold text-3xl text-premium-pink block" id="avgRegret">0.0</span>
+                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5">⭐</div>
             </div>
 
             <!-- Happy Rate -->
-            <div class="glass-panel p-5 rounded-2xl border border-cyber-border hover-neon relative overflow-hidden group">
-                <span class="font-grotesk text-[9px] uppercase tracking-widest text-cyber-text block mb-1">满足率 / HAPPY_INDEX</span>
-                <span class="font-syne font-extrabold text-3xl text-acid-purple block" id="happyRate">0%</span>
-                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5 group-hover:opacity-10 transition-opacity">😊</div>
+            <div class="glass-panel p-5 rounded-2xl border border-premium-border hover-glow relative overflow-hidden group">
+                <span class="text-[10px] uppercase text-premium-text block mb-1">满足率</span>
+                <span class="font-bold text-3xl text-premium-purple block" id="happyRate">0%</span>
+                <div class="absolute -right-3 -bottom-3 text-4xl opacity-5">😊</div>
             </div>
         </section>
 
         <!-- 2. REGRET TREND WAVE CHART -->
-        <section class="glass-panel p-6 rounded-[2rem] border border-cyber-border mb-8">
+        <section class="glass-panel p-6 rounded-[2rem] border border-premium-border mb-8">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="font-syne font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
-                    <iconify-icon icon="lucide:activity" class="text-acid-pink"></iconify-icon>
-                    <span>📈 最近 10 次明日后悔度波动波形</span>
+                <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                    <iconify-icon icon="lucide:activity" class="text-premium-pink"></iconify-icon>
+                    <span>最近 10 次明日后悔度波动趋势</span>
                 </h3>
-                <span class="font-grotesk text-[9px] text-cyber-text uppercase tracking-wider">[REGRET_WAVE_CHART]</span>
             </div>
 
             <!-- Vertical Bar Chart -->
-            <div class="h-36 flex items-end justify-between gap-2.5 px-4 bg-cyber-card/30 border border-cyber-border/40 rounded-2xl p-4" id="trendChart">
+            <div class="h-32 flex items-end justify-between gap-3 px-4 bg-premium-dark/30 border border-premium-border/40 rounded-2xl p-4 animate-fade-in" id="trendChart">
                 <!-- Injected dynamically -->
             </div>
         </section>
@@ -184,109 +158,108 @@
         <!-- 3. BIOLOGICAL COGNITIVE INTERVENTION BOARDS -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             
-            <!-- Binge Eating List (フルネス == 1) -->
-            <div class="glass-panel p-5 rounded-[2rem] border border-cyber-border hover-neon">
-                <h4 class="font-syne font-extrabold text-sm mb-4 flex items-center gap-1.5 text-white">
-                    <iconify-icon icon="lucide:smile-alert" class="text-acid-orange"></iconify-icon>
-                    <span>⚠️ 暴食雷区 (撑饱行为)</span>
+            <!-- Binge Eating List -->
+            <div class="glass-panel p-5 rounded-[2rem] border border-premium-border hover-glow">
+                <h4 class="text-xs font-bold mb-4 flex items-center gap-1.5 text-white">
+                    <iconify-icon icon="lucide:smile-alert" class="text-premium-orange"></iconify-icon>
+                    <span>暴食警告 (撑饱餐食)</span>
                 </h4>
                 <div class="space-y-3" id="bingeList">
-                    <p class="text-xs text-cyber-text italic">[暂无撑饱记录，胃壁状态安好]</p>
+                    <p class="text-xs text-premium-text italic">胃部非常舒坦，无撑饱记录</p>
                 </div>
             </div>
 
-            <!-- Worst Value List (High Regret + High Price) -->
-            <div class="glass-panel p-5 rounded-[2rem] border border-cyber-border hover-neon">
-                <h4 class="font-syne font-extrabold text-sm mb-4 flex items-center gap-1.5 text-white">
-                    <iconify-icon icon="lucide:alert-circle" class="text-acid-pink"></iconify-icon>
-                    <span>😅 避坑红线 (高价高悔)</span>
+            <!-- Worst Value List -->
+            <div class="glass-panel p-5 rounded-[2rem] border border-premium-border hover-glow">
+                <h4 class="text-xs font-bold mb-4 flex items-center gap-1.5 text-white">
+                    <iconify-icon icon="lucide:alert-circle" class="text-premium-pink"></iconify-icon>
+                    <span>避坑警告 (高价高悔)</span>
                 </h4>
                 <div class="space-y-3" id="worstValueList">
-                    <p class="text-xs text-cyber-text italic">[暂无避坑记录，消费理智度高]</p>
+                    <p class="text-xs text-premium-text italic">无避坑记录，消费非常理智</p>
                 </div>
             </div>
 
-            <!-- Best Purchase List (Low Regret + High Mood) -->
-            <div class="glass-panel p-5 rounded-[2rem] border border-cyber-border hover-neon">
-                <h4 class="font-syne font-extrabold text-sm mb-4 flex items-center gap-1.5 text-white">
-                    <iconify-icon icon="lucide:check-circle" class="text-acid-green"></iconify-icon>
-                    <span>⭐ 极力推崇 (无悔红榜)</span>
+            <!-- Best Purchase List -->
+            <div class="glass-panel p-5 rounded-[2rem] border border-premium-border hover-glow">
+                <h4 class="text-xs font-bold mb-4 flex items-center gap-1.5 text-white">
+                    <iconify-icon icon="lucide:check-circle" class="text-premium-green"></iconify-icon>
+                    <span>复购红榜 (低悔高乐)</span>
                 </h4>
                 <div class="space-y-3" id="bestChoiceList">
-                    <p class="text-xs text-cyber-text italic">[暂无复购数据，期待你的第一餐]</p>
+                    <p class="text-xs text-premium-text italic">期待你的第一餐觉察记录</p>
                 </div>
             </div>
 
         </section>
 
         <!-- 4. AI REPORT ANALYTICS CLOSURE -->
-        <section class="glass-panel p-6 md:p-8 rounded-[2.5rem] border border-cyber-border relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-36 h-36 bg-acid-purple/5 rounded-full blur-2xl"></div>
+        <section class="glass-panel p-6 md:p-8 rounded-[2.5rem] border border-premium-border relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-36 h-36 bg-premium-purple/5 rounded-full blur-2xl"></div>
 
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h3 class="font-syne font-extrabold text-lg text-white">🧠 认知心理调和 AI 分析报告</h3>
-                    <p class="text-[10px] text-cyber-text font-grotesk uppercase mt-0.5 tracking-wider">
-                        [COGNITIVE_DISSONANCE_CONTROL_REPORT // 控制报告]
+                    <h3 class="text-base font-bold text-white">行为心理觉察诊断报告</h3>
+                    <p class="text-[10px] text-premium-text mt-0.5">
+                        基于吃前饱腹与吃后情绪调和分析
                     </p>
                 </div>
                 
-                <button id="aiAnalyzeBtn" class="px-5 py-3 rounded-xl bg-acid-purple hover:bg-acid-purple/80 hover:shadow-acid-purple border border-transparent transition-all text-xs font-grotesk font-bold tracking-wider flex items-center gap-1.5 active:scale-95">
+                <button id="aiAnalyzeBtn" class="px-5 py-3 rounded-xl bg-premium-purple hover:bg-premium-purple/80 border border-transparent transition-all text-xs font-bold flex items-center gap-1.5 active:scale-95 animate-pulse">
                     <iconify-icon icon="lucide:brain" class="text-sm"></iconify-icon>
-                    <span>生成行为学 AI 诊断</span>
+                    <span>生成行为学诊断</span>
                 </button>
             </div>
 
             <!-- Analysis Report Text Area -->
-            <div id="aiAnalysisResult" class="hidden bg-cyber-card/50 border border-cyber-border/40 p-5 rounded-2xl font-grotesk text-xs leading-relaxed text-cyber-text whitespace-pre-line animate-fade-in shadow-inner">
+            <div id="aiAnalysisResult" class="hidden bg-premium-dark/50 border border-premium-border/40 p-5 rounded-2xl text-xs leading-relaxed text-premium-text whitespace-pre-line animate-fade-in shadow-inner">
                 <div>诊断分析载入中...</div>
             </div>
         </section>
 
-        <!-- 5. SHADOW MORNING JUDGMENT OVERLAY (ZHANG YIMING PMF LOOP) -->
+        <!-- 5. SHADOW MORNING JUDGMENT OVERLAY (Zhang Yiming Loop - Clean Apple Style) -->
         <div id="morning-judgment-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian/95 backdrop-blur-md">
-            <div class="glass-panel p-8 rounded-[2.5rem] border border-cyber-border shadow-acid-pink max-w-md w-full text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-acid-pink/5 rounded-full blur-xl"></div>
+            <div class="glass-panel p-8 rounded-[2.5rem] border border-premium-border shadow-acid-pink max-w-md w-full text-center relative overflow-hidden">
                 
-                <h3 class="font-syne font-extrabold text-2xl text-acid-pink mb-2 flex items-center justify-center gap-2">
-                    <iconify-icon icon="lucide:gavel" class="animate-pulse"></iconify-icon> ☠️ 清晨审判 MORNING JUDGMENT
+                <h3 class="font-bold text-xl text-premium-pink mb-1 flex items-center justify-center gap-2">
+                    <iconify-icon icon="lucide:gavel" class="text-lg"></iconify-icon> 清晨审判
                 </h3>
-                <p class="text-xs text-cyber-text font-grotesk tracking-wider uppercase mb-6">
-                    [00s_DIET_TELEMETRY // 深夜吃后真实体感审讯]
+                <p class="text-[10px] text-premium-text tracking-wider uppercase mb-6">
+                    深夜餐后身体状况追踪
                 </p>
 
-                <div class="bg-cyber-card/60 border border-[#ff3e83]/20 p-4 rounded-2xl text-left text-sm space-y-2 mb-6">
+                <div class="bg-premium-dark/60 border border-[#ff3e83]/10 p-4.5 rounded-2xl text-left text-sm space-y-2 mb-6">
                     <p class="font-bold text-white flex items-center gap-1.5">
-                        <iconify-icon icon="lucide:utensils-cross" class="text-acid-pink"></iconify-icon>
-                        <span>抓取到昨晚未提报对齐的餐品：</span>
+                        <iconify-icon icon="lucide:utensils" class="text-premium-pink"></iconify-icon>
+                        <span>昨晚点单的餐品：</span>
                     </p>
-                    <p class="text-xs font-bold text-acid-pink font-grotesk" id="judgment-food-name">肯德基双层嫩牛堡套餐</p>
-                    <p class="text-[10px] text-cyber-text leading-relaxed">
-                        昨晚多巴胺爽过了，**今天早上起来，你的身体对齐失败了吗？** 你的胃和精神现在感觉怎么样？请老实提报你的身体状态以反馈给AI：
+                    <p class="text-xs font-bold text-premium-pink" id="judgment-food-name">外卖餐品</p>
+                    <p class="text-[10px] text-premium-text leading-relaxed">
+                        昨晚多巴胺愉悦释放已过，**今天早上起来，你的胃和身体状态还好吗？** 请选择你的真实清晨感受以反馈算法：
                     </p>
                 </div>
 
                 <div class="grid grid-cols-3 gap-2.5 mb-6" id="judgment-group">
-                    <button onclick="selectJudgment('super_healthy', this)" class="py-3 rounded-xl bg-cyber-card border border-cyber-border text-xs flex flex-col items-center justify-center gap-1 hover:border-acid-green transition-all">
+                    <button onclick="selectJudgment('super_healthy', this)" class="py-3.5 rounded-xl bg-premium-dark border border-premium-border text-xs flex flex-col items-center justify-center gap-1 hover:border-premium-green/40 transition-all">
                         <span class="text-xl">🥬</span>
                         <span class="font-bold">无悔战神</span>
                     </button>
-                    <button onclick="selectJudgment('balanced', this)" class="py-3 rounded-xl bg-cyber-card border border-cyber-border text-xs flex flex-col items-center justify-center gap-1 hover:border-acid-orange transition-all">
+                    <button onclick="selectJudgment('balanced', this)" class="py-3.5 rounded-xl bg-premium-dark border border-premium-border text-xs flex flex-col items-center justify-center gap-1 hover:border-premium-orange/40 transition-all">
                         <span class="text-xl">💊</span>
                         <span class="font-bold">养生狂人</span>
                     </button>
-                    <button onclick="selectJudgment('exploded', this)" class="py-3 rounded-xl bg-cyber-card border border-cyber-border text-xs flex flex-col items-center justify-center gap-1 hover:border-acid-pink transition-all">
+                    <button onclick="selectJudgment('exploded', this)" class="py-3.5 rounded-xl bg-premium-dark border border-premium-border text-xs flex flex-col items-center justify-center gap-1 hover:border-premium-pink/40 transition-all">
                         <span class="text-xl">☠️</span>
                         <span class="font-bold">肠胃崩溃</span>
                     </button>
                 </div>
 
                 <!-- Judgment Note -->
-                <textarea id="judgment-note" placeholder="吐槽你的清晨现状，如：拉稀了、拉肚子、口干舌燥、或者神清气爽..."
-                    class="w-full h-20 px-4 py-3 rounded-2xl bg-cyber-card border border-cyber-border focus:border-acid-pink focus:outline-none text-xs placeholder-cyber-text/50 leading-relaxed mb-6"></textarea>
+                <textarea id="judgment-note" placeholder="简单反馈你早上的身体现况，如：拉肚子了、口干舌燥、或者神清气爽..."
+                    class="w-full h-20 px-4 py-3 rounded-2xl bg-premium-dark border border-premium-border focus:border-premium-pink focus:outline-none text-xs placeholder-premium-text/40 leading-relaxed mb-6"></textarea>
 
-                <button onclick="submitMorningJudgment()" class="w-full py-3.5 rounded-full bg-acid-pink text-white font-syne font-extrabold text-xs tracking-wider shadow-acid-pink active:scale-95 transition-all">
-                    提报清晨身体指数 (LOG_TELEMETRY)
+                <button onclick="submitMorningJudgment()" class="w-full py-3.5 rounded-full bg-premium-pink text-white font-bold text-xs tracking-wider shadow-lg active:scale-95 transition-all">
+                    提报清晨身体指数
                 </button>
             </div>
         </div>
@@ -311,13 +284,13 @@
 
         // Haptic utility
         function triggerLightHaptic() {
-            if (navigator.vibrate) navigator.vibrate(15);
+            if (navigator.vibrate) navigator.vibrate(12);
         }
 
         // --- 1. Load History Data ---
 
         async function loadReportData() {
-            document.getElementById('dateRange').textContent = '[SYNCHRONIZING_DIET_RECORDS // 正在拉取用餐记录...]';
+            document.getElementById('dateRange').textContent = '正在拉取用餐数据...';
 
             try {
                 const response = await fetch(
@@ -336,15 +309,15 @@
                 cachedReviews = reviews;
                 renderReport(reviews);
             } catch (error) {
-                console.warn('Paused Supabase, reading records from local reviews database:', error);
+                console.warn('Supabase offline, using local reviews database:', error);
                 
                 const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
                 if (history.length > 0) {
-                    document.getElementById('dateRange').textContent = '[LOCAL_DATABASE_ACTIVE // 本地离线数据库模式]';
+                    document.getElementById('dateRange').textContent = '本地离线数据库模式';
                     cachedReviews = history.slice(0, 10);
                     renderReport(cachedReviews);
                 } else {
-                    document.getElementById('dateRange').textContent = '[OFFLINE_EMPTY_DB // 本地数据库为空，请点击右上角生成测试数据]';
+                    document.getElementById('dateRange').textContent = '本地暂无进食记录，请生成测试数据';
                 }
             }
         }
@@ -353,7 +326,7 @@
 
         function renderReport(reviews) {
             if (!reviews.length) {
-                document.getElementById('dateRange').textContent = '暂无记录，去记录第一餐吧！🥬';
+                document.getElementById('dateRange').textContent = '暂无记录，去记录第一餐吧！';
                 return;
             }
 
@@ -369,18 +342,18 @@
             const happyMeals = reviews.filter(r => ['happy', 'satisfied'].includes(r.mood)).length;
             document.getElementById('happyRate').textContent = `${Math.round(happyMeals / reviews.length * 100)}%`;
 
-            // Binge list (太撑了 fullness == 1)
+            // Binge list
             const bingeEating = reviews.filter(r => r.fullness === 1);
             const bingeContainer = document.getElementById('bingeList');
             if (bingeEating.length) {
                 bingeContainer.innerHTML = bingeEating.slice(0, 3).map(r => `
-                    <div class="flex items-center justify-between p-3.5 bg-cyber-card/60 border border-cyber-border rounded-xl animate-fade-in hover:border-acid-orange transition-all">
+                    <div class="flex items-center justify-between p-3.5 bg-premium-dark/60 border border-premium-border rounded-xl animate-fade-in hover:border-premium-orange transition-all">
                         <span class="text-xs font-bold text-white">${r.food_name}</span>
-                        <span class="text-[10px] text-acid-orange font-bold font-grotesk uppercase">撑饱警告 😫</span>
+                        <span class="text-[10px] text-premium-orange font-bold font-sans">撑饱警告 😫</span>
                     </div>
                 `).join('');
             } else {
-                bingeContainer.innerHTML = `<p class="text-xs text-cyber-text italic">胃壁十分安康，无暴食撑嘴记录</p>`;
+                bingeContainer.innerHTML = `<p class="text-xs text-premium-text italic">胃部非常舒坦，无暴食记录</p>`;
             }
 
             // Worst Value (High price + High regret)
@@ -391,13 +364,13 @@
             const worstContainer = document.getElementById('worstValueList');
             if (worstValue.length) {
                 worstContainer.innerHTML = worstValue.map(r => `
-                    <div class="flex items-center justify-between p-3.5 bg-cyber-card/60 border border-cyber-border rounded-xl animate-fade-in hover:border-acid-pink transition-all">
+                    <div class="flex items-center justify-between p-3.5 bg-premium-dark/60 border border-premium-border rounded-xl animate-fade-in hover:border-premium-pink transition-all">
                         <span class="text-xs font-bold text-white">${r.food_name}</span>
-                        <span class="text-[9px] text-acid-pink font-bold font-grotesk">¥${r.price} · 后悔${r.regret_score}星</span>
+                        <span class="text-[9px] text-premium-pink font-bold">¥${r.price} · 后悔${r.regret_score}★</span>
                     </div>
                 `).join('');
             } else {
-                worstContainer.innerHTML = `<p class="text-xs text-cyber-text italic">消费避坑控制合理</p>`;
+                worstContainer.innerHTML = `<p class="text-xs text-premium-text italic">消费控制得体</p>`;
             }
 
             // Best purchases (Low regret <= 2 + high mood satisfied/happy)
@@ -407,38 +380,38 @@
             const bestContainer = document.getElementById('bestChoiceList');
             if (bestChoice.length) {
                 bestContainer.innerHTML = bestChoice.map(r => `
-                    <div class="flex items-center justify-between p-3.5 bg-cyber-card/60 border border-cyber-border rounded-xl animate-fade-in hover:border-acid-green transition-all">
+                    <div class="flex items-center justify-between p-3.5 bg-premium-dark/60 border border-premium-border rounded-xl animate-fade-in hover:border-premium-green transition-all">
                         <span class="text-xs font-bold text-white">${r.food_name}</span>
-                        <span class="text-[10px] text-acid-green font-bold font-grotesk uppercase">极力回购 ⭐</span>
+                        <span class="text-[10px] text-premium-green font-bold">极力回购 ⭐</span>
                     </div>
                 `).join('');
             } else {
-                bestContainer.innerHTML = `<p class="text-xs text-cyber-text italic">期待你的第一顿养生无悔餐</p>`;
+                bestContainer.innerHTML = `<p class="text-xs text-premium-text italic">期待你的第一餐觉察记录</p>`;
             }
 
-            // Draw Y2K wave columns (last 10)
+            // Draw clean regret trend bars (last 10)
             const chartHtml = reviews.slice(0, 10).reverse().map((r, i) => {
                 const score = r.regret_score || 3;
                 const height = `${score * 20}%`;
                 
                 // Color codes
-                let colorClass = 'bg-acid-green shadow-acid-green';
+                let colorClass = 'bg-premium-green shadow-sm';
                 if (score > 3) {
-                    colorClass = 'bg-acid-pink shadow-acid-pink';
+                    colorClass = 'bg-premium-pink shadow-sm';
                 } else if (score > 2) {
-                    colorClass = 'bg-acid-orange shadow-acid-orange';
+                    colorClass = 'bg-premium-orange shadow-sm';
                 }
                 
                 return `
                     <div class="flex-1 flex flex-col items-center h-full group relative cursor-pointer justify-end">
                         <!-- Column Bar -->
-                        <div class="w-full ${colorClass} rounded-t-lg transition-all duration-500 hover:brightness-125 select-none" style="height: ${height}"></div>
+                        <div class="w-full ${colorClass} rounded-t-md transition-all duration-500 hover:brightness-110 select-none" style="height: ${height}"></div>
                         
                         <!-- Mini score -->
-                        <span class="text-[9px] font-grotesk font-bold text-cyber-text mt-1.5 select-none">${score}★</span>
+                        <span class="text-[9px] text-premium-text mt-1.5 select-none font-bold">${score}★</span>
 
                         <!-- Tooltip with food name -->
-                        <div class="absolute bottom-20 bg-cyber-card border border-cyber-border text-white text-[9px] px-2 py-1 rounded shadow-xl hidden group-hover:block z-20 whitespace-nowrap font-grotesk">
+                        <div class="absolute bottom-20 bg-premium-dark border border-premium-border text-white text-[9px] px-2 py-1.5 rounded-lg shadow-xl hidden group-hover:block z-20 whitespace-nowrap">
                             ${r.food_name}
                         </div>
                     </div>
@@ -446,18 +419,17 @@
             }).join('');
             document.getElementById('trendChart').innerHTML = chartHtml;
 
-            // Check if there is an unjudged order in the session storage for the "Morning Judgment" popup
+            // Trigger morning check if pending order exists
             checkMorningJudgmentTrigger();
         }
 
-        // --- 3. Morning Judgment (Zhang Yiming Loop) ---
+        // --- 3. Morning Judgment ---
 
         let judgmentValue = 'balanced';
 
         function checkMorningJudgmentTrigger() {
             const pendingOrder = JSON.parse(sessionStorage.getItem('pendingOrder') || 'null');
             if (pendingOrder) {
-                // Show modal!
                 const modal = document.getElementById('morning-judgment-modal');
                 const foodTitle = document.getElementById('judgment-food-name');
                 foodTitle.innerText = pendingOrder.keyword || '昨晚点的美食';
@@ -470,17 +442,17 @@
             judgmentValue = val;
             const siblings = document.getElementById('judgment-group').querySelectorAll('button');
             siblings.forEach(btn => {
-                btn.className = "py-3 rounded-xl bg-cyber-card border border-cyber-border text-xs flex flex-col items-center justify-center gap-1 hover:border-cyber-text transition-all scale-95 opacity-75";
+                btn.className = "py-3.5 rounded-xl bg-premium-dark border border-premium-border text-xs flex flex-col items-center justify-center gap-1 hover:border-white/10 transition-all scale-95 opacity-75";
             });
 
-            let activeClass = "border-acid-orange bg-[#2e1d12]/40 shadow-acid-orange text-white font-bold";
+            let activeClass = "border-premium-orange bg-[#30221a]/30 text-white font-bold";
             if (val === 'super_healthy') {
-                activeClass = "border-acid-green bg-[#122e1b]/40 shadow-acid-green text-white font-bold";
+                activeClass = "border-premium-green bg-[#16291d]/30 text-white font-bold";
             } else if (val === 'exploded') {
-                activeClass = "border-acid-pink bg-[#2e1222]/40 shadow-acid-pink text-white font-bold";
+                activeClass = "border-premium-pink bg-[#301a25]/30 text-white font-bold";
             }
 
-            el.className = `py-3 rounded-xl border ${activeClass} text-xs flex flex-col items-center justify-center gap-1 scale-100 transition-all`;
+            el.className = `py-3.5 rounded-xl border ${activeClass} text-xs flex flex-col items-center justify-center gap-1 scale-100 transition-all`;
             triggerLightHaptic();
         }
 
@@ -495,11 +467,10 @@
                 fullness: 2,
                 mood: judgmentValue === 'super_healthy' ? 'happy' : judgmentValue === 'exploded' ? 'guilty' : 'neutral',
                 regret_score: judgmentValue === 'super_healthy' ? 1 : judgmentValue === 'exploded' ? 5 : 3,
-                note: `清晨体感提报: [${judgmentValue === 'super_healthy' ? '无悔战神' : judgmentValue === 'exploded' ? '肠胃崩溃' : '养生狂人'}] - ${note || '一切对齐。'}`,
+                note: `清晨反馈: [${judgmentValue === 'super_healthy' ? '无悔战神' : judgmentValue === 'exploded' ? '肠胃崩溃' : '养生狂人'}] - ${note || '一切良好。'}`,
                 created_at: new Date().toISOString()
             };
 
-            // Write to database
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/meal_reviews`, {
                     method: 'POST',
@@ -513,7 +484,6 @@
                 
                 if (!response.ok) throw new Error();
             } catch (e) {
-                // Write locally
                 const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
                 history.push({
                     ...judgmentData,
@@ -523,12 +493,11 @@
                 localStorage.setItem('selection_history', JSON.stringify(history));
             }
 
-            // Reset and reload
             sessionStorage.removeItem('pendingOrder');
             document.getElementById('morning-judgment-modal').classList.add('hidden');
             
             const alertBox = document.createElement('div');
-            alertBox.className = "fixed inset-0 bg-[#fff] z-[999] opacity-80 transition-opacity duration-300";
+            alertBox.className = "fixed inset-0 bg-white z-[999] opacity-80 transition-opacity duration-300";
             document.body.appendChild(alertBox);
 
             setTimeout(() => {
@@ -562,7 +531,7 @@
                 mood: moods[Math.floor(Math.random() * moods.length)],
                 regret_score: Math.floor(Math.random() * 5) + 1,
                 price: food.price,
-                note: `本地生成测试数据 #${i + 1}`,
+                note: `本地测试数据 #${i + 1}`,
                 created_at: new Date(Date.now() - i * 3600000 * 6).toISOString()
             }));
 
@@ -584,7 +553,7 @@
                     throw new Error();
                 }
             } catch (error) {
-                console.warn('Supabase offline, saving test reviews to local database:');
+                console.warn('Supabase offline, saving test reviews to local database');
                 localStorage.setItem('selection_history', JSON.stringify(testReviews));
                 alert('💡 线上服务休眠中，已成功生成10条本地离线测试数据！正在刷新...');
                 location.reload();
@@ -597,13 +566,13 @@
 
         document.getElementById('aiAnalyzeBtn').addEventListener('click', async function () {
             if (cachedReviews.length === 0) {
-                alert('暂无饮食记录，请先点餐或生成测试数据后再试！');
+                alert('暂无饮食记录，请先点餐或生成测试数据！');
                 return;
             }
 
             const btn = this;
             btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> AI 分析对齐中...';
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> 分析对齐中...';
 
             const resultContainer = document.getElementById('aiAnalysisResult');
             resultContainer.classList.remove('hidden');
@@ -627,16 +596,15 @@
                 const result = await response.json();
                 resultContainer.querySelector('div').textContent = result.analysis || '无分析结果';
                 btn.innerHTML = '<iconify-icon icon="lucide:check" class="text-sm"></iconify-icon> 分析完成';
-                btn.className = "px-5 py-3 rounded-xl bg-acid-green border border-transparent text-black font-bold font-grotesk text-xs";
+                btn.className = "px-5 py-3 rounded-xl bg-premium-green border border-transparent text-black font-bold text-xs shadow-md";
             } catch (error) {
-                console.warn('DeepSeek online failed, computing local diagnosis reports:');
+                console.warn('DeepSeek online failed, computing local diagnosis reports');
                 
-                // Pure Python server or rule engine emulation
                 const localReport = generateLocalCognitiveReport(cachedReviews);
                 setTimeout(() => {
                     resultContainer.querySelector('div').innerText = localReport;
-                    btn.innerHTML = '<iconify-icon icon="lucide:check" class="text-sm"></iconify-icon> 本地离线分析完成';
-                    btn.className = "px-5 py-3 rounded-xl bg-acid-green border border-transparent text-black font-bold font-grotesk text-xs";
+                    btn.innerHTML = '<iconify-icon icon="lucide:check" class="text-sm"></iconify-icon> 本地分析完成';
+                    btn.className = "px-5 py-3 rounded-xl bg-premium-green border border-transparent text-black font-bold text-xs shadow-md";
                 }, 1000);
             }
         });
@@ -648,30 +616,29 @@
             const totalSpent = reviews.reduce((sum, r) => sum + (r.price || 0), 0);
             const avgPrice = (totalSpent / total).toFixed(0);
 
-            let analysis = `📊 【饮食觉察 2.0 本地离线认知特征模型】\n\n`;
-            analysis += `您共完成了对 ${total} 次用餐的数据觉察对齐，平均单餐消费额约 ¥${avgPrice}。\n`;
+            let analysis = `📊 【饮食觉察 本地离线认知特征模型】\n\n`;
+            analysis += `您共完成了对 ${total} 次用餐的数据觉察对齐，平均单餐消费约 ¥${avgPrice}。\n`;
             analysis += `您的平均明日后悔星级为 ${avgRegret} 星 (最差 5 星)。\n\n`;
 
             if (avgRegret >= 3.5) {
                 analysis += (
-                    "🧠 【身体认知失调预警 ☠️】\n"
-                    "警告：你目前的平均后悔度处于极端不健康的认知失调带！这表示你的深夜食欲多巴胺释放（感性）在事后对你的理性自我（健康预期）造成了强烈的精神压迫与自责内疚。\n\n"
-                    "💡 芒格式对错方针：不要盲目封锁想吃夜宵的欲望。当你实在想吃时，强制采取以下措施：\n"
-                    "1. 启动【3分钟温水减速带】：喝一杯温水，物理稀释胃酸阻断虚空饱腹；\n"
-                    "2. 启动【朋克养生 risk-hedging】：吃麻辣烫时强制配一瓶无糖绿茶，吃炸鸡时强制加一片护肝片，用这种客观行为冲抵负罪感，实现心理平稳降落！"
+                    "🧠 【身体认知失调提醒】\n"
+                    "提醒：你目前的平均后悔度偏高。这表示你的深夜食欲多巴胺释放（感性放纵）在事后对你的理性自我（健康预期）造成了自责感与认知失调。\n\n"
+                    "💡 饮食重塑方针：无需过度苛责口腹之欲，但可合理调控：\n"
+                    "1. 启动【温水减速带】：喝一杯温水，物理提供饱腹感阻断虚假虚空感；\n"
+                    "2. 启动【养生对冲】：重油辛辣宵夜时，强制搭配无糖绿茶或在床头置一盒护肝片，用实际行为冲抵内疚，实现心理平稳降落！"
                 );
             } else {
                 analysis += (
-                    "🎉 【精神控制力极优 🥬】\n"
-                    "优秀：你的平均后悔星级非常低！这说明你的感性胃口与理性自我处于高度和谐的共振区。你在吃夜宵时成功运用了“朋克养生对冲法”（如麻辣烫搭配东方树叶、控制饱腹感为 2 星刚刚好）。\n\n"
-                    "💡 维持建议：不要改变当下的状态！你的认知平衡非常高，没有任何盲目暴食或深夜焦虑倾泻。你是个真正掌控自己身体与食欲的无悔打工人！"
+                    "🎉 【身心控制表现极优】\n"
+                    "极优：你的平均后悔星级非常低！这说明你的感性胃口与理性自我处于高度和谐的区域。你在吃夜宵时成功运用了“养生对冲法”（如麻辣烫搭配东方树叶、控制饱腹感为刚刚好）。\n\n"
+                    "💡 维持建议：不要改变当下的状态！你的认知平衡做得非常完美，你已很好地掌控了自己的身体与食欲。继续保持！"
                 );
             }
 
             return analysis;
         }
 
-        // Initialize loading
         loadReportData();
     </script>
 </body>
