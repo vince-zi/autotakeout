@@ -160,7 +160,9 @@
     </nav>
 
     <script>
-        const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+        const SUPABASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? window.location.origin
+            : 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
         const userToken = localStorage.getItem('user_token') || generateUserToken();
@@ -220,7 +222,10 @@
                     alert('生成失败: ' + err);
                 }
             } catch (error) {
-                alert('生成失败: ' + error.message);
+                console.warn('Network error or paused Supabase, saving test data to local storage:', error);
+                localStorage.setItem('selection_history', JSON.stringify(testReviews));
+                alert('💡 线上服务休眠中，已成功生成本地测试数据！正在刷新...');
+                location.reload();
             }
         }
 
@@ -245,8 +250,16 @@
                 cachedReviews = reviews; // 缓存用于AI分析
                 renderReport(reviews);
             } catch (error) {
-                console.error(error);
-                document.getElementById('dateRange').textContent = '数据加载失败';
+                console.warn('Failed to load online data, reading from local history (selection_history):', error);
+                
+                const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
+                if (history.length > 0) {
+                    document.getElementById('dateRange').textContent = '最近10次用餐记录 (离线本地数据)';
+                    cachedReviews = history.slice(0, 10);
+                    renderReport(cachedReviews);
+                } else {
+                    document.getElementById('dateRange').textContent = '离线模式且无本地历史记录，请点击右上角生成测试数据！';
+                }
             }
         }
 

@@ -172,7 +172,9 @@
 
     <!-- Script Block -->
     <script>
-        const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+        const SUPABASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? window.location.origin
+            : 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
         const userChoices = JSON.parse(sessionStorage.getItem('userChoices') || '{}');
@@ -319,13 +321,24 @@
                         window.location.href = 'review-history.html';
                     }, 1200);
                 } else {
-                    const err = await response.text();
-                    console.error('Save failed:', err);
-                    showToast('❌ 保存记录失败，请手动记录', false);
+                    throw new Error('Save failed');
                 }
             } catch (e) {
-                console.error('Network error:', e);
-                showToast('⚠️ 网络错误，无法连接数据库', false);
+                console.warn('Network error or paused Supabase, saving to local history:', e);
+                
+                // Fallback to local storage history
+                const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
+                history.push({
+                    ...orderData,
+                    id: 'local_' + Date.now(),
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('selection_history', JSON.stringify(history));
+
+                showToast('💡 线上服务休眠中，下单已成功存入本地数据！');
+                setTimeout(() => {
+                    window.location.href = 'review-history.html';
+                }, 1200);
             }
         }
 
@@ -364,7 +377,7 @@
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <span class="font-serif text-xl font-bold text-dusty-rose-dark">¥${rec.estimated_price}</span>
+                                <span class="font-serif text-xl font-bold text-dusty-rose-dark font-sans">¥${rec.estimated_price}</span>
                                 <span class="block text-[10px] text-text-light mt-0.5 bg-gray-50 border border-gray-100 px-1.5 py-0.5 rounded-full font-bold uppercase">${plat.name}</span>
                             </div>
                         </div>
@@ -475,10 +488,104 @@
                     throw new Error('API Error');
                 }
             } catch (error) {
-                console.error('Fetch recommendations failed:', error);
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('error-state').classList.remove('hidden');
-                document.getElementById('error-msg').textContent = error.message || '网络连接异常，请重试';
+                console.warn('Fetch recommendations online failed, triggering offline/crawled fallback:', error);
+                
+                // Show a helpful warning toast
+                showToast('💡 线上服务休眠中，已自动开启本地离线测试模式！');
+
+                try {
+                    // Try to fetch our locally crawled real food data!
+                    const localResponse = await fetch('real_foods.json');
+                    if (localResponse.ok) {
+                        const localData = await localResponse.json();
+                        setTimeout(() => {
+                            document.getElementById('loader').style.display = 'none';
+                            document.getElementById('result-state').classList.remove('hidden');
+                            renderRecommendations(localData);
+                        }, 800);
+                        return;
+                    }
+                } catch (localErr) {
+                    console.error('Local JSON fetch failed:', localErr);
+                }
+
+                // If local JSON is missing or fails, generate a rich high-quality fallback based on report categories
+                const localFallbackData = {
+                    recommendations: [
+                        {
+                            food_name: "招牌骨汤麻辣烫单人豪华餐",
+                            restaurant: "杨国福麻辣烫 (中关村店)",
+                            platform: "meituan",
+                            estimated_price: 32.8,
+                            reason: "辛辣饱腹释放压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻，降低明日负罪感！",
+                            jump_keyword: "杨国福麻辣烫 招牌骨汤麻辣烫",
+                            regret_score: 2,
+                            regret_reason: "已搭配无糖绿茶，对冲高热量负罪感"
+                        },
+                        {
+                            food_name: "经典秘制烤肉串大份 (10支)",
+                            restaurant: "丰茂烤串 (知春路店)",
+                            platform: "eleme",
+                            estimated_price: 45.0,
+                            reason: "油脂焦香带来多巴胺极速释放。💡 朋克养生对冲：建议搭配无糖金银花茶以防上火！",
+                            jump_keyword: "丰茂烤串 知春路店",
+                            regret_score: 3,
+                            regret_reason: "已默认搭配金银花茶，解腻又防火"
+                        },
+                        {
+                            food_name: "黄金脆皮炸鸡半只+可乐",
+                            restaurant: "麦当劳麦乐送 (中关村店)",
+                            platform: "meituan",
+                            estimated_price: 29.9,
+                            reason: "咔嚓酥脆的物理咀嚼感，治愈疲惫。💡 朋克养生对冲：建议睡前对冲一片【护肝片】！",
+                            jump_keyword: "麦当劳 炸鸡 东方树叶",
+                            regret_score: 2,
+                            regret_reason: "已进行护肝片 risk-hedging 对冲"
+                        },
+                        {
+                            food_name: "温润滋补砂锅皮蛋瘦肉粥",
+                            restaurant: "三顾粥铺 (海淀店)",
+                            platform: "meituan",
+                            estimated_price: 19.8,
+                            reason: "【自我补偿型】清淡温热，深夜一人食，极低脂，暖胃更暖心，无任何发胖压力。",
+                            jump_keyword: "三顾粥铺 皮蛋瘦肉粥",
+                            regret_score: 1,
+                            regret_reason: "极致低脂肪流食，完全无悔恨感"
+                        },
+                        {
+                            food_name: "深夜解压经典麻辣拌单人餐",
+                            restaurant: "张亮麻辣烫 (海淀黄庄店)",
+                            platform: "jd",
+                            estimated_price: 28.5,
+                            reason: "麻辣拌的爆爽口感完美解压。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+                            jump_keyword: "张亮麻辣烫 经典麻辣拌",
+                            regret_score: 2,
+                            regret_reason: "已默认搭配东方树叶，对冲油腻感"
+                        }
+                    ],
+                    alternatives: [
+                        {
+                            food_name: "便利店关东煮暖心三人组",
+                            restaurant: "便利蜂 (中关村科技园店)",
+                            platform: "meituan",
+                            estimated_price: 15.0,
+                            jump_keyword: "便利蜂 关东煮"
+                        },
+                        {
+                            food_name: "新鲜时令果切拼盘500g",
+                            restaurant: "百果园 (海淀黄庄店)",
+                            platform: "eleme",
+                            estimated_price: 22.0,
+                            jump_keyword: "百果园 果切"
+                        }
+                    ]
+                };
+
+                setTimeout(() => {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('result-state').classList.remove('hidden');
+                    renderRecommendations(localFallbackData);
+                }, 800);
             }
         }
 

@@ -188,7 +188,9 @@
 
     <script>
         // Supabase 配置
-        const SUPABASE_URL = 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
+        const SUPABASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? window.location.origin
+            : 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
         // 表情按钮选择逻辑
@@ -249,8 +251,21 @@
                     throw new Error('保存失败');
                 }
             } catch (error) {
-                console.error(error);
-                showToast('❌ 保存失败，请稍后再试');
+                console.warn('Network error or paused Supabase, saving review to local history:', error);
+                
+                // Fallback to local storage history
+                const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
+                history.push({
+                    ...data,
+                    id: 'local_' + Date.now(),
+                    created_at: new Date().toISOString()
+                });
+                localStorage.setItem('selection_history', JSON.stringify(history));
+
+                showToast('💡 线上服务休眠中，已成功保存至本地！');
+                setTimeout(() => {
+                    window.location.href = 'review-history.html';
+                }, 1500);
             }
         });
 
