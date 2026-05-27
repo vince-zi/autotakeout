@@ -1,5 +1,5 @@
 // 饮食觉察 - 推荐 Edge Function
-// 处理用户输入，调用火山方舟AI，返回饮食建议
+// 基于《夜宵消费人群与心理决策洞察》深度打通决策疲劳与认知失调控制
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -33,23 +33,23 @@ const MOOD_MAP: Record<string, string> = {
 const MOOD_FOOD_MAP: Record<string, { foods: string[]; style: string; reason: string }> = {
     stressed: {
         foods: ["麻辣烫", "火锅", "烧烤", "炸鸡", "麻辣香锅", "小龙虾", "辣子鸡"],
-        style: "重口味、辣的、解压型",
-        reason: "辣味能刺激多巴胺分泌，帮助释放压力"
+        style: "重口味、辣的、解压发泄型",
+        reason: "辣味能刺激多巴胺分泌，通过油脂和辛辣带来即时放纵与解压感"
     },
     homesick: {
         foods: ["饺子", "馄饨", "面条", "砂锅", "粥", "红烧肉", "排骨汤", "米饭套餐"],
-        style: "家常菜、温暖的、妈妈的味道",
-        reason: "温热的家常味道能带来安慰和归属感"
+        style: "家常菜、温暖的、自我补偿型",
+        reason: "温热清淡的熟悉家常味道能带来强烈的安慰与归属感，有效降低负罪感"
     },
     finished_work: {
         foods: ["寿司", "日料", "牛排", "披萨", "奶茶", "甜品", "蛋糕", "精致套餐"],
-        style: "品质稍高、享受型、犒劳自己",
-        reason: "忙碌后值得用美食奖励自己"
+        style: "品质稍高、犒劳放纵型、享受放松",
+        reason: "忙碌工作画上句点，深夜意志力防线松懈，急需用美食补偿与奖励自己"
     },
     lonely: {
         foods: ["关东煮", "便利店饭团", "一人食套餐", "拉面", "盖浇饭", "咖喱饭"],
-        style: "单人份、治愈系、暖心",
-        reason: "一人份的温暖食物，陪伴孤独时刻"
+        style: "单人食、猎奇/省心型、治愈温热",
+        reason: "一人份的温暖食物能悄然消解孤独，盲盒般的省心组合彻底解决决策疲劳"
     }
 };
 
@@ -57,15 +57,15 @@ const MOOD_FOOD_MAP: Record<string, { foods: string[]; style: string; reason: st
 const HUNGER_FOOD_MAP: Record<string, { foods: string[]; portion: string }> = {
     culinary_hug: {
         foods: ["甜品", "奶茶", "小食", "点心", "面包"],
-        portion: "小份，不求饱只求暖心"
+        portion: "小份，不求饱只求情绪安慰"
     },
     crunch: {
         foods: ["薯片", "坚果", "鸡米花", "炸物", "锅巴"],
-        portion: "零食型，嘎嘣脆的口感"
+        portion: "零食型，嘎嘣脆的物理咀嚼感"
     },
     energy_needed: {
         foods: ["大份套餐", "米饭", "面条", "盖浇饭", "快餐"],
-        portion: "份量足，快速补充能量"
+        portion: "份量足，高碳水，快速补充生理能量"
     }
 };
 
@@ -85,21 +85,21 @@ const BUDGET_MAP: Record<number, string> = {
 
 // 价格知识库：每个预算档位对应的价格区间（元）
 const PRICE_RANGES: Record<number, { min: number; max: number; keywords: string }> = {
-    1: { min: 5, max: 15, keywords: "优惠套餐 特价 折扣 小份" },      // 尽量省钱
-    2: { min: 15, max: 25, keywords: "套餐 单人餐 经济" },           // 经济实惠
-    3: { min: 25, max: 40, keywords: "招牌 热销" },                  // 正常消费
+    1: { min: 5, max: 15, keywords: "特价 剩菜盲盒 折扣 优惠套餐" },     // 尽量省钱
+    2: { min: 15, max: 25, keywords: "经济 套餐 单人餐" },            // 经济实惠
+    3: { min: 25, max: 40, keywords: "招牌 热销" },                 // 正常消费
     4: { min: 40, max: 80, keywords: "品质 甄选 双人餐" },           // 稍微奢侈
-    5: { min: 80, max: 200, keywords: "大餐 豪华 精选 多人餐" },     // 不在乎价格
+    5: { min: 80, max: 200, keywords: "豪华 大餐 多人餐" },          // 不在乎价格
 };
 
-// 平台价格系数（不同平台价格略有差异）
+// 平台价格系数
 const PLATFORM_PRICE_FACTOR: Record<string, number> = {
     meituan: 1.0,
     eleme: 1.0,
     jd: 1.1,  // 京东秒送略贵
 };
 
-// 构建 AI Prompt（增强版：定位、时间感知、5个推荐、排除已推荐食品）
+// 构建基于《夜宵决策洞察》的高级 AI Prompt
 function buildPrompt(input: {
     time_of_day: string;
     mood: string;
@@ -127,7 +127,7 @@ function buildPrompt(input: {
     // 判断是否白天
     const isDaytime = input.is_daytime !== undefined ? input.is_daytime : (hour >= 6 && hour < 18);
 
-    // 场景描述（白天不要提"夜宵"）
+    // 场景描述
     let sceneLabel = input.time_context?.label || timeDesc;
     if (isDaytime && sceneLabel.includes('夜')) {
         sceneLabel = hour < 11 ? '早餐' : hour < 14 ? '午餐' : hour < 17 ? '下午茶' : '晚餐';
@@ -135,7 +135,7 @@ function buildPrompt(input: {
 
     // 位置信息
     const locationInfo = input.location
-        ? `用户位置：纬度${input.location.latitude.toFixed(4)}，经度${input.location.longitude.toFixed(4)}（请优先推荐附近商家）`
+        ? `用户位置：纬度${input.location.latitude.toFixed(4)}，经度${input.location.longitude.toFixed(4)}`
         : '用户位置：未知（推荐全国连锁或常见商家）';
 
     // 获取心情对应的食物推荐
@@ -158,33 +158,31 @@ function buildPrompt(input: {
     const priceRange = PRICE_RANGES[input.budget_level] || PRICE_RANGES[3];
     const priceConstraint = `价格必须在 ${priceRange.min}-${priceRange.max} 元之间`;
 
-    return `你是一个外卖推荐专家，帮助用户快速做出饮食决策。
+    return `你是一个顶级外卖推荐与心理决策专家，基于《夜间即时消费与饮食心理决策洞察》报告，帮助用户克服【吃前决策疲劳】和【吃后认知失调/悔恨】。
 
 【当前时间】${timeStr}（${isDaytime ? '白天' : '夜间'}）
 【用户位置】${locationInfo}
-【用户状态】
+【用户状态参数】
 ${JSON.stringify(userInput, null, 2)}
 
-【⚠️ 心情驱动的推荐（重要！）】
-用户心情：${moodDesc}
-推荐食物风格：${moodFood.style}
-推荐理由：${moodFood.reason}
-⭐ 优先推荐这些食物：${moodFood.foods.join('、')}
+【🧠 科学决策匹配模型 (基于心理学画像)】
+1. 💥 【解压发泄型】（偏好：重口味、多巴胺刺激）：适合压力大或忙碌一整天后的犒劳（小龙虾、烧烤、辣条、炸鸡、麻辣烫）。通过极致口感释放压力。
+2. 🥬 【自我补偿型】（偏好：低负荷、无罪恶感）：适合追求健康、女性或健身人群（果切、杂粮粥、轻食沙拉、荞麦面）。通过干净饮食对冲负面情绪，避免负罪感。
+3. 💊 【朋克养生型】（偏好：放纵+对冲）：高压力熬夜白领最爱的“既要放纵又要命”模式（重口味外卖 + 东方树叶无糖茶/护肝片/金银花露）。通过“健康对冲产品”降低用户的“吃后悔恨”。
+4. 🎁 【猎奇/省心型】（偏好：极高性价比、逃避决策）：针对选择困难、预算有限的用户，推荐“剩菜盲盒”风格、随机特惠餐或单人食盲盒，通过游戏化体验消除决策疲劳。
 
-【饥饿状态】
-${hungerDesc}
-份量偏好：${hungerFood.portion}
-适合的食物类型：${hungerFood.foods.join('、')}
+【🎯 核心配餐任务】
+请针对该用户，量身推荐 5 个具体菜品（recommendations）和 2 个备选（alternatives）。
 
-【预算约束】⚠️ ${priceConstraint}
-用户选择了"${budgetDesc}"档位，推荐的菜品单价必须在 ${priceRange.min}-${priceRange.max} 元范围内。
-搜索时可附加关键词：${priceRange.keywords}
-
-【核心任务】
-根据用户的心情和饥饿状态，推荐5个真实可点的外卖或便利店商品。
-
-【输出要求】
-必须严格返回以下JSON格式，不要有任何其他文字：
+【⚠️ 核心规则】
+1. 💡 【朋克养生对冲推荐】（必须实施！）：
+   * 只要你推荐了重口味、高油脂、辛辣的放纵食物（如烧烤、麻辣烫、炸鸡、螺蛳粉等），在输出 "reason" 时，**必须默认搭配一个解腻、助消化、防上火的健康饮品或养生对冲建议**（如：搭配无糖乌龙茶以解腻、搭配金银花露防火气等）。
+   * 格式规范："推荐理由。💡 朋克养生对冲：默认搭配[对冲产品]以解腻，降低明早负罪感！"
+2. 🌟 【悔恨指数对冲机制】：
+   * 当你推荐了重口味的食物，如果默认进行了“朋克养生对冲”搭配，请**主动降低** "regret_score" (1-5)。例如原本重油食物的悔恨度是5，在实施对冲搭配后，请将 "regret_score" 设为 2 或 3，并在 "regret_reason" 中写明原因（如："已搭配无糖乌龙茶，有效解油腻"）。
+3. ⚠️ 价格必须严格在 ${priceRange.min}-${priceRange.max} 元之间。
+4. recommendations 必须是真实可点、在当前时间（${timeStr}）营业的全国/地区连锁或便利店食物（如：美团、饿了么、京东秒送）。
+5. 只返回以下 JSON，禁止任何解释文字：
 
 {
   "scene": "${sceneLabel}",
@@ -192,14 +190,14 @@ ${hungerDesc}
   "price_range": "${priceRange.min}-${priceRange.max}元",
   "recommendations": [
     {
-      "food_name": "具体菜品名称（如：香辣鸡腿堡套餐）",
+      "food_name": "具体菜品名称（如：香辣鸡腿堡双人餐）",
       "restaurant": "商家名称（如：肯德基 中关村店）",
       "platform": "meituan",
       "estimated_price": ${Math.round((priceRange.min + priceRange.max) / 2)},
-      "reason": "推荐理由，不超过15字",
+      "reason": "辛辣酥脆释放多巴胺。💡 朋克养生对冲：默认建议搭配无糖茶以解油腻！",
       "jump_keyword": "肯德基 香辣鸡腿堡 ${priceRange.keywords.split(' ')[0]}",
       "regret_score": 2,
-      "regret_reason": "份量适中，快餐标准化"
+      "regret_reason": "已搭配无糖绿茶，对冲高热量负罪感"
     }
   ],
   "alternatives": [
@@ -213,18 +211,7 @@ ${hungerDesc}
   ]
 }
 
-【关键规则】
-1. ⚠️ 必须推荐当前时间（${timeStr}）正在营业的商家
-2. ⚠️ 价格必须严格在 ${priceRange.min}-${priceRange.max} 元之间
-3. ⚠️ 优先推荐24小时营业或营业到凌晨的商家
-4. ⚠️ 推荐附近连锁店（肯德基、麦当劳、便利蜂、全家、永和大王、沙县小吃等）
-5. platform 必须是 "meituan"、"eleme" 或 "jd"（京东秒送）
-6. jump_keyword 格式："商家名 菜品名"，可附加：${priceRange.keywords}
-7. recommendations 必须给5个
-8. alternatives 给2个备选
-9. ${isDaytime ? '白天场景，不要提及"夜宵"或"深夜"等字眼' : '可以使用夜宵相关描述'}
-10. 只返回JSON，禁止任何解释文字
-11. ⚠️ 【重要】以下食品用户已经看过但没下单，禁止推荐：${input.excluded_foods?.length ? input.excluded_foods.join('、') : '无'}`
+11. ⚠️ 【重要】以下食品用户已经看过但没下单，禁止推荐：${input.excluded_foods?.length ? input.excluded_foods.join('、') : '无'}`;
 }
 
 // 校准推荐结果：确保价格在合理范围内
@@ -320,7 +307,6 @@ async function callDeepSeekAI(prompt: string): Promise<any> {
 
     // 尝试解析 JSON
     try {
-        // 处理可能的 markdown 代码块
         let jsonStr = content.trim();
         if (jsonStr.startsWith("```json")) {
             jsonStr = jsonStr.slice(7);
@@ -355,7 +341,6 @@ serve(async (req: Request) => {
     }
 
     try {
-        // 获取请求数据
         const input = await req.json();
 
         // 验证必要字段
@@ -429,7 +414,6 @@ serve(async (req: Request) => {
 
         if (recError) {
             console.error("存储推荐失败:", recError);
-            // 不抛出错误，继续返回结果
         }
 
         // 返回推荐结果（包含完整信息）
