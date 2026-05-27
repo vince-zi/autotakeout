@@ -8,10 +8,11 @@
 import os
 import sys
 import json
+import socket
 import urllib.parse
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
-PORT = 8080
+PORT = 8181
 REVIEWS_FILE = "local_reviews.json"
 REAL_FOODS_FILE = "real_foods.json"
 
@@ -486,6 +487,7 @@ class CustomHandler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
 def run(server_class=HTTPServer, handler_class=CustomHandler):
+    server_class.allow_reuse_address = True
     server_address = ('', PORT)
     httpd = server_class(server_address, handler_class)
     print(f"🚀 【智能开发服务器】正在本地完美监听端口 {PORT}...")

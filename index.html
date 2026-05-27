@@ -401,103 +401,21 @@
             checkScannerAbility();
         }
 
-        // --- Fingerprint Scanner Trigger ---
 
-        let scanTimer = null;
-        let scanStartTime = 0;
-        let isScanning = false;
 
-        const scannerMessages = [
-            "正在分析胃部与精神需求...",
-            "正在调谐深夜饮食对冲模型...",
-            "正在检索高阶养生对冲建议...",
-            "匹配成功！对冲引擎正在装载..."
-        ];
 
         function checkScannerAbility() {
-            const pad = document.getElementById('scanner-pad');
-            const icon = document.getElementById('scanner-icon');
+            const btn = document.getElementById('analyze-action-btn');
+            if (!btn) return;
             const isCompleted = userChoices.time_of_day !== null && 
                                 userChoices.mood !== null && 
                                 userChoices.hunger_level !== null && 
                                 userChoices.exercised_today !== null;
 
             if (isCompleted) {
-                pad.classList.remove('opacity-45', 'cursor-not-allowed');
-                pad.classList.add('border-white/10', 'hover:border-premium-green/40');
-                icon.className = "text-[4.5rem] text-premium-green opacity-90 transition-all duration-300 animate-pulse";
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
-                pad.classList.add('opacity-45', 'cursor-not-allowed');
-                pad.classList.remove('border-white/10', 'hover:border-premium-green/40');
-                icon.className = "text-[4.5rem] text-premium-text opacity-40 transition-all duration-300";
-            }
-        }
-
-        function startScanning(event) {
-            const isCompleted = userChoices.time_of_day !== null && 
-                                userChoices.mood !== null && 
-                                userChoices.hunger_level !== null && 
-                                userChoices.exercised_today !== null;
-
-            if (!isCompleted) {
-                showFeedbackToast("请先完成上面的 4 个基础觉察选项", false);
-                return;
-            }
-
-            if (event && event.cancelable) event.preventDefault();
-
-            isScanning = true;
-            scanStartTime = Date.now();
-            
-            const pad = document.getElementById('scanner-pad');
-            const icon = document.getElementById('scanner-icon');
-            const ring = document.getElementById('scanner-ring');
-            const core = document.getElementById('scanner-core');
-
-            pad.classList.add('scanning-active', 'scale-105');
-            icon.className = "text-[4.8rem] text-white transition-all";
-            ring.className = "absolute inset-0 rounded-full border border-premium-green border-dashed animate-[spin_2.5s_linear_infinite]";
-            core.className = "absolute inset-2 rounded-full border border-premium-green flex items-center justify-center bg-premium-green/10 transition-all scale-100 duration-100";
-
-            let messageIdx = 0;
-            const statusNode = document.getElementById('scanner-status');
-            statusNode.className = "text-xs tracking-wider text-premium-green animate-pulse font-bold";
-            statusNode.innerText = scannerMessages[0];
-
-            scanTimer = setInterval(() => {
-                messageIdx++;
-                if (messageIdx < scannerMessages.length) {
-                    statusNode.innerText = scannerMessages[messageIdx];
-                    triggerHeavyHaptic();
-                } else {
-                    clearInterval(scanTimer);
-                    executeRedirect();
-                }
-            }, 600);
-        }
-
-        function stopScanning() {
-            if (!isScanning) return;
-            isScanning = false;
-            
-            clearInterval(scanTimer);
-
-            const pad = document.getElementById('scanner-pad');
-            const icon = document.getElementById('scanner-icon');
-            const ring = document.getElementById('scanner-ring');
-            const core = document.getElementById('scanner-core');
-            const statusNode = document.getElementById('scanner-status');
-
-            pad.classList.remove('scanning-active', 'scale-105');
-            icon.className = "text-[4.5rem] text-premium-green opacity-90 transition-all duration-300 animate-pulse";
-            ring.className = "absolute inset-0 rounded-full border border-dashed border-premium-border animate-[spin_20s_linear_infinite]";
-            core.className = "absolute inset-4 rounded-full border border-premium-border flex items-center justify-center bg-white/[0.02] transition-all";
-
-            const elapsed = Date.now() - scanStartTime;
-            if (elapsed < 2400) {
-                statusNode.className = "text-xs text-premium-text tracking-wider";
-                statusNode.innerText = "扫描中断，请持续按住大圆盘";
-                showFeedbackToast("请持续按住圆盘以对齐状态...", false);
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
             }
         }
 

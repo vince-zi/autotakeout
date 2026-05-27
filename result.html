@@ -649,6 +649,7 @@
                     setTimeout(() => {
                         document.getElementById('loader').style.display = 'none';
                         document.getElementById('result-state').classList.remove('hidden');
+                        window.lastRecommendationData = data;
                         renderRecommendations(data);
                     }, 800);
                 } else {
@@ -665,6 +666,7 @@
                         setTimeout(() => {
                             document.getElementById('loader').style.display = 'none';
                             document.getElementById('result-state').classList.remove('hidden');
+                            window.lastRecommendationData = localData;
                             renderRecommendations(localData);
                         }, 800);
                         return;
@@ -741,6 +743,7 @@
                 setTimeout(() => {
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('result-state').classList.remove('hidden');
+                    window.lastRecommendationData = localFallbackData;
                     renderRecommendations(localFallbackData);
                 }, 800);
             }
