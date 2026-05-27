@@ -5,76 +5,111 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         name="viewport" />
-    <title>推荐结果 - 饮食觉察</title>
-    <!-- Dependencies -->
+    <title>AI 情绪配餐决策 | 饮食觉察 2.0</title>
+    <!-- Y2K Acid Fonts & Iconography -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        cream: '#fffcf8',
-                        dusty: {
-                            rose: '#d9a59d',
-                            'rose-light': '#f4e4e1',
-                            'rose-dark': '#b57b72',
+                        obsidian: '#08080c',
+                        acid: {
+                            green: '#00ff66',
+                            green_dark: '#00cc52',
+                            purple: '#a12cff',
+                            pink: '#ff3e83',
+                            orange: '#ff8800'
                         },
-                        sage: {
-                            green: '#c8d5c4',
-                            'green-light': '#e8f0e6',
-                            'green-dark': '#8a9a85',
-                        },
-                        charcoal: '#5c5552',
-                        'text-light': '#948c89'
+                        cyber: {
+                            card: '#12121a',
+                            border: '#1a1a26',
+                            text: '#8a8a9e'
+                        }
                     },
                     fontFamily: {
-                        serif: ['Zodiak', 'serif'],
-                        sans: ['Pally', 'sans-serif'],
+                        syne: ['Syne', 'sans-serif'],
+                        grotesk: ['Space Grotesk', 'monospace'],
+                        outfit: ['Outfit', 'sans-serif'],
                     },
                     boxShadow: {
-                        'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)',
-                        'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)',
-                        'glass': '0 8px 32px 0 rgba(217, 165, 157, 0.15)',
-                        'card-soft': '0 10px 40px -10px rgba(0,0,0,0.06)',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 6s ease-in-out 3s infinite',
-                        'bounce-soft': 'bounce-soft 2.5s ease-in-out infinite',
-                        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
-                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-15px)' },
-                        },
-                        'bounce-soft': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-6px)' },
-                        },
-                        'pulse-soft': {
-                            '0%, 100%': { opacity: '0.6' },
-                            '50%': { opacity: '1' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(16px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
-                        }
+                        'acid-green': '0 0 25px rgba(0, 255, 102, 0.3)',
+                        'acid-purple': '0 0 25px rgba(161, 44, 255, 0.3)',
+                        'acid-pink': '0 0 25px rgba(255, 62, 131, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
                     }
                 }
             }
         }
     </script>
+
     <style>
-        .recommendation-card {
-            opacity: 0;
-            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        body {
+            background-color: #08080c;
+            background-image: 
+                radial-gradient(at 0% 100%, rgba(0, 255, 102, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(161, 44, 255, 0.08) 0px, transparent 50%);
+            overflow-x: hidden;
         }
 
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.2) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 99;
+            opacity: 0.35;
+        }
+
+        .glass-panel {
+            background: rgba(18, 18, 26, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hover-neon {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .hover-neon:hover {
+            border-color: rgba(0, 255, 102, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Water Level Fill Animation */
+        @keyframes fill-water {
+            0% { height: 10%; }
+            100% { height: 95%; }
+        }
+
+        .water-fill {
+            animation: fill-water 10s linear forwards;
+        }
+
+        /* Water Bubbling Effect */
+        @keyframes bubble {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-150px) scale(0.6); opacity: 0; }
+        }
+
+        .bubble-elm {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: bubble 2s infinite ease-in;
+        }
+
+        /* Card floating stagger delay */
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
@@ -82,153 +117,222 @@
         .delay-500 { animation-delay: 500ms; }
 
         @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(16px); }
+            0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Hover animations */
-        .hover-lift {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px -12px rgba(217, 165, 157, 0.25);
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
     </style>
 </head>
 
-<body class="min-h-screen bg-cream text-charcoal font-sans p-6 pb-20 relative overflow-x-hidden">
+<body class="min-h-screen text-white font-outfit p-4 md:p-8 relative selection:bg-acid-green selection:text-black">
+    <div class="scanlines"></div>
 
-    <!-- Background Blobs -->
-    <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[120px] animate-float pointer-events-none z-0"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/15 blur-[120px] animate-float-delayed pointer-events-none z-0"></div>
+    <div class="relative z-10 max-w-4xl mx-auto pb-24">
 
-    <!-- Main Container -->
-    <div class="max-w-2xl mx-auto relative z-10 w-full">
-
-        <!-- Header -->
-        <header class="text-center mb-10 pt-4">
-            <a href="index.html" class="inline-flex items-center gap-1.5 text-text-light text-sm mb-4 hover:text-dusty-rose transition-colors font-medium">
-                <iconify-icon icon="lucide:arrow-left" class="text-base"></iconify-icon> 返回重新选择
+        <!-- Top Header -->
+        <header class="flex justify-between items-center mb-8 pt-4">
+            <a href="index.html" class="px-4 py-2 rounded-full border border-cyber-border bg-cyber-card/40 hover:bg-cyber-card/80 hover:border-acid-purple transition-all text-xs font-grotesk flex items-center gap-1.5 hover-neon">
+                <iconify-icon icon="lucide:arrow-left" class="text-acid-purple"></iconify-icon>
+                <span>重新扫描灵魂</span>
             </a>
-            <h1 class="font-serif text-3xl md:text-4xl text-charcoal font-bold mb-2 flex items-center justify-center gap-2">
-                <span>🍽️</span> 今日定制推荐
-            </h1>
-            <p class="text-text-light text-sm" id="subContext">智能分析你此刻的饥饿与心情...</p>
+            <div class="flex items-center gap-2">
+                <span class="font-grotesk font-bold tracking-widest text-xs uppercase text-acid-green">[DECISION_ALIGNED]</span>
+            </div>
         </header>
 
-        <!-- Loading State -->
-        <div id="loader" class="bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-12 shadow-glass text-center min-h-[350px] flex flex-col items-center justify-center transition-all duration-500">
-            <div class="text-6xl mb-6 animate-bounce-soft" id="loaderEmoji">🍜</div>
-            <h2 class="font-serif text-2xl font-bold text-charcoal mb-3" id="loaderTitle">正在为你寻找慰藉...</h2>
-            <p class="text-text-light text-base mb-8 leading-relaxed max-w-sm" id="loaderSubtitle">让美食治愈此刻的你</p>
-            <div class="flex flex-col items-center gap-3">
-                <div class="w-10 h-10 border-4 border-sage-green/30 border-t-sage-green rounded-full animate-spin"></div>
-                <span class="text-xs font-bold text-sage-green-dark tracking-widest uppercase animate-pulse-soft">正在智能配餐中</span>
-            </div>
-        </div>
-
-        <!-- Result State (Hidden initially) -->
-        <div id="result-state" class="hidden space-y-8">
-            <!-- 推荐菜品列表 -->
-            <div id="recommendations-container" class="space-y-6">
-                <!-- 动态生成 5 个推荐卡片 -->
-            </div>
-
-            <!-- 换换口味备选 -->
-            <div id="alternatives-box" class="hidden bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-6 sm:p-8 shadow-glass space-y-4">
-                <h3 class="font-serif text-lg font-bold text-charcoal flex items-center gap-2">
-                    <iconify-icon icon="lucide:sparkles" class="text-dusty-rose"></iconify-icon>
-                    如果上面的不合胃口，还可以试试：
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="alternatives-container">
-                    <!-- 动态生成 2 个备选卡片 -->
+        <!-- Loader State -->
+        <div id="loader" class="flex flex-col items-center justify-center py-20 text-center">
+            <div class="relative w-24 h-24 mb-8">
+                <div class="absolute inset-0 rounded-full border-4 border-dashed border-acid-green animate-[spin_8s_linear_infinite] shadow-acid-green"></div>
+                <div class="absolute inset-4 rounded-full border-2 border-dashed border-acid-purple animate-[spin_4s_linear_infinite_reverse]"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <iconify-icon icon="lucide:bot" class="text-3xl text-acid-green animate-pulse"></iconify-icon>
                 </div>
             </div>
+            <h2 class="font-syne font-extrabold text-2xl tracking-tight mb-2" id="loading-title">正在调谐对冲引擎...</h2>
+            <p class="text-xs text-cyber-text font-grotesk tracking-widest uppercase" id="loading-subtitle">
+                [CONNECTING_DECISION_GATEWAY...]
+            </p>
+        </div>
 
-            <!-- 控制按钮 -->
-            <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                <button onclick="reRecommend()" class="flex-1 py-4.5 rounded-full bg-white border border-[#ebdcd8] text-text-light font-bold text-base shadow-sm hover:shadow-md hover:border-dusty-rose/30 transition-all flex items-center justify-center gap-2">
-                    <iconify-icon icon="lucide:refresh-cw" class="text-lg"></iconify-icon>
-                    <span>换一批试试</span>
-                </button>
-                <a href="index.html" class="flex-1 py-4.5 rounded-full bg-dusty-rose hover:bg-dusty-rose-dark text-white font-bold text-base shadow-bubble hover:shadow-bubble-hover hover:-translate-y-0.5 transition-all text-center flex items-center justify-center gap-2">
-                    <iconify-icon icon="lucide:rotate-ccw" class="text-lg"></iconify-icon>
-                    <span>重新做决策</span>
-                </a>
+        <!-- Beaker Countdown Buffer Overlay (Charlie Munger Water Buffer) -->
+        <div id="water-buffer-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian/95 backdrop-blur-md">
+            <div class="glass-panel p-8 rounded-[2.5rem] border border-cyber-border shadow-acid-green max-w-md w-full text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-acid-green/5 rounded-full blur-xl"></div>
+                
+                <h3 class="font-syne font-extrabold text-2xl text-acid-green mb-2 flex items-center justify-center gap-2">
+                    <iconify-icon icon="lucide:droplet" class="animate-bounce"></iconify-icon> 查理·芒格的温水减速带
+                </h3>
+                <p class="text-xs text-cyber-text font-grotesk tracking-wider uppercase mb-6">
+                    [00s_INVERSION_THERAPY // 逆向思维生物克制]
+                </p>
+
+                <!-- The Cyber Beaker -->
+                <div class="w-28 h-40 bg-[#161622] border-4 border-cyber-border rounded-b-3xl rounded-t-lg mx-auto relative overflow-hidden flex items-end justify-center mb-6">
+                    <!-- Beaker markings -->
+                    <div class="absolute left-1 top-4 w-3 h-0.5 bg-cyber-border"></div>
+                    <div class="absolute left-1 top-12 w-4 h-0.5 bg-cyber-border"></div>
+                    <div class="absolute left-1 top-20 w-3 h-0.5 bg-cyber-border"></div>
+                    <div class="absolute left-1 top-28 w-4 h-0.5 bg-cyber-border"></div>
+                    
+                    <!-- Water fluid -->
+                    <div class="w-full bg-gradient-to-t from-acid-green/40 to-acid-green/10 water-fill relative" id="water-fluid">
+                        <!-- Bubbles inside beaker -->
+                        <div class="bubble-elm w-2 h-2 left-6 bottom-4" style="animation-delay: 0.1s;"></div>
+                        <div class="bubble-elm w-1.5 h-1.5 left-12 bottom-2" style="animation-delay: 0.5s;"></div>
+                        <div class="bubble-elm w-3 h-3 left-18 bottom-6" style="animation-delay: 0.9s;"></div>
+                    </div>
+                    
+                    <!-- Beaker label -->
+                    <div class="absolute inset-0 flex items-center justify-center z-10">
+                        <span class="font-grotesk font-bold text-3xl text-white shadow-md" id="buffer-timer">10</span>
+                    </div>
+                </div>
+
+                <div class="bg-cyber-card/60 border border-cyber-border p-4 rounded-2xl text-left text-sm space-y-2 mb-6">
+                    <p class="font-bold text-white flex items-center gap-1.5">
+                        <iconify-icon icon="lucide:shield-alert" class="text-acid-orange"></iconify-icon>
+                        <span>认知偏差警报：道德许可效应</span>
+                    </p>
+                    <p class="text-xs text-cyber-text leading-relaxed">
+                        侦测到高热量放纵配餐！为了防止你产生“反正有养生对冲，我可以多吃点”的借口，**请喝下一杯温开水并冷静 10 秒**。水分能物理稀释胃酸、提前提供饱腹感，从而让决策回归理性。
+                    </p>
+                </div>
+
+                <p class="font-grotesk text-[10px] text-acid-green uppercase tracking-widest font-bold" id="buffer-status">
+                    [HYDRO_MOLECULES_INJECTING // 水分子注入中...]
+                </p>
             </div>
         </div>
 
-        <!-- Error State (Hidden initially) -->
-        <div id="error-state" class="hidden bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-12 shadow-glass text-center py-16">
-            <span class="material-symbols-outlined text-6xl text-dusty-rose animate-pulse">sentiment_dissatisfied</span>
-            <h2 class="font-serif text-2xl font-bold text-charcoal mt-4 mb-2">获取推荐遇到问题</h2>
-            <p id="error-msg" class="text-text-light text-sm mb-8">可能服务器开小差了，请稍后再试</p>
-            <button onclick="location.href='index.html'" class="px-8 py-3.5 rounded-full bg-dusty-rose text-white font-bold shadow-bubble hover:shadow-bubble-hover transition-all">重新开始</button>
+        <!-- Result Content State -->
+        <div id="result-state" class="hidden">
+            <!-- Hero Selection summary -->
+            <section class="mb-10 p-6 glass-panel rounded-[2rem] border border-cyber-border relative overflow-hidden flex flex-wrap gap-4 items-center justify-between">
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-acid-purple/5 rounded-full blur-xl"></div>
+                <div>
+                    <span class="font-grotesk text-[10px] tracking-widest uppercase text-cyber-text block mb-1">CURRENT_SOUL_FREQUENCY // 调谐波</span>
+                    <div class="flex flex-wrap gap-2 text-xs font-grotesk">
+                        <span class="bg-cyber-card border border-cyber-border px-3 py-1 rounded-full text-acid-purple" id="sum-time">白天</span>
+                        <span class="bg-cyber-card border border-cyber-border px-3 py-1 rounded-full text-acid-pink" id="sum-mood">压力山大</span>
+                        <span class="bg-cyber-card border border-cyber-border px-3 py-1 rounded-full text-acid-orange" id="sum-hunger">想被治愈</span>
+                        <span class="bg-cyber-card border border-cyber-border px-3 py-1 rounded-full text-acid-green" id="sum-exercise">狠狠流汗</span>
+                        <span class="bg-cyber-card border border-cyber-border px-3 py-1 rounded-full text-yellow-400" id="sum-budget">正常消费</span>
+                    </div>
+                </div>
+
+                <!-- Replace Batch Button -->
+                <button onclick="reRecommend()" class="px-5 py-3 rounded-xl bg-acid-purple hover:bg-acid-purple/80 hover:shadow-acid-purple border border-transparent transition-all text-xs font-grotesk font-bold tracking-wider flex items-center gap-1.5 active:scale-95">
+                    <iconify-icon icon="lucide:refresh-cw" class="animate-spin" style="animation-duration: 5s;"></iconify-icon>
+                    <span>换一批惊喜配餐</span>
+                </button>
+            </section>
+
+            <!-- Recommendations Grid -->
+            <section class="space-y-8">
+                <div class="flex justify-between items-end border-b border-cyber-border pb-3">
+                    <h2 class="font-syne font-extrabold text-xl tracking-tight text-white">✨ AI 精选情绪对冲配餐</h2>
+                    <span class="font-grotesk text-[10px] text-cyber-text uppercase tracking-widest">[5_OPTIMAL_RESULTS]</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="recommendations-container">
+                    <!-- Recommendation Cards dynamically injected here -->
+                </div>
+            </section>
+
+            <!-- Alternatives Section -->
+            <section class="mt-12 hidden" id="alternatives-box">
+                <div class="flex justify-between items-end border-b border-cyber-border pb-3 mb-6">
+                    <h2 class="font-syne font-extrabold text-lg tracking-tight text-white">📦 极简备选盲盒</h2>
+                    <span class="font-grotesk text-[10px] text-cyber-text uppercase tracking-widest">[2_DECISION_ESCAPE_ALTS]</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="alternatives-container">
+                    <!-- Alternatives injected here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- Offline/Error Alert panel -->
+        <div id="error-state" class="hidden glass-panel p-8 rounded-[2rem] border border-[#ff3e83]/30 shadow-acid-pink text-center my-10 max-w-lg mx-auto">
+            <iconify-icon icon="lucide:alert-triangle" class="text-5xl text-acid-pink mb-4"></iconify-icon>
+            <h3 class="font-syne font-extrabold text-xl mb-2">引擎对齐失真 (Failed to Fetch)</h3>
+            <p class="text-sm text-cyber-text font-grotesk mb-6">
+                公网数据库服务休眠。我们建议你启动本地 Python 后台网关以自动开启完美的本地离线测试通道！
+            </p>
+            <button onclick="fetchRecommendations()" class="px-6 py-3 rounded-xl bg-acid-pink text-white font-bold text-xs tracking-wider font-grotesk active:scale-95 transition-all">
+                重新调谐对齐
+            </button>
         </div>
 
     </div>
 
     <!-- Script Block -->
     <script>
+        // Supabase dynamic offline-proxy configuration
         const SUPABASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? window.location.origin
             : 'https://lqqdhlxcfmdgxdayxxsi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxcWRobHhjZm1kZ3hkYXl4eHNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2OTQzNzAsImV4cCI6MjA4NTI3MDM3MH0.TkFKzi_UgHjvzgK1zH4thEjQ3fuuotAPwjfkwptdvqU';
 
+        // Retrieve local variables
         const userChoices = JSON.parse(sessionStorage.getItem('userChoices') || '{}');
         const choiceLabels = JSON.parse(sessionStorage.getItem('choiceLabels') || '{}');
 
-        // 情感等待文案
-        const copyTemplates = {
-            'nighttime_stressed': { emoji: '🌙', title: '夜深了，你还在默默坚持', subtitle: '放下那些沉重，让一份暖胃的美食在这个深夜拥抱你。', loader: '正在为你寻找最能解压的烟火气...' },
-            'nighttime_homesick': { emoji: '🏠', title: '思念家乡的深夜', subtitle: '虽然山高水长，但那些带有家乡印记的味道，能瞬间拉近你的思绪。', loader: '正在寻找能唤醒家乡记忆的温暖味道...' },
-            'nighttime_finished_work': { emoji: '🎉', title: '终于大功告成了！', subtitle: '属于你自己的狂欢时间已到，用一份极致美味，为今天的辛劳画上句点！', loader: '正在为你挑选最畅快的庆功美食...' },
-            'nighttime_lonely': { emoji: '🌃', title: '一个人，也要静静享受', subtitle: '食物是最好的陪伴，在这个宁静的夜晚，它会温柔地温暖你的身心。', loader: '正在挑选适合一人享用的暖心宵夜...' },
-            'daytime_stressed': { emoji: '😮‍💨', title: '今天有些辛苦吧', subtitle: '深呼吸一下，暂时按下工作的暂停键，用美食给自己的大脑放个假。', loader: '正在寻找能让你喘口气的舒适味道...' },
-            'daytime_homesick': { emoji: '🥘', title: '突然好想吃那口家常菜', subtitle: '一碗热气腾腾的家常饭，是抚平思乡之情最直接的良药。', loader: '正在寻找最还原妈妈手艺的家常小馆...' },
-            'daytime_finished_work': { emoji: '✨', title: '忙完了，一身轻松！', subtitle: '是时候去吃一顿好吃的，好好犒劳一下这个辛苦但饱满的自己了！', loader: '正在搜罗极具诱惑的美味犒劳选项...' },
-            'daytime_lonely': { emoji: '🍽️', title: '舒适的一人食时光', subtitle: '独处本就是一种美妙的滋味，慢慢品味这顿不被打扰的美好一餐。', loader: '正在挑选精美的一人食套餐...' },
-            'default': { emoji: '🍜', title: '正在为你量身推荐', subtitle: '让美食治愈此刻的你，享受生活的每一口香甜。', loader: '正在智能计算最契合你当前状态的美食...' }
-        };
-
+        // Target Delivery platform schema mapper
         const PLATFORMS = {
-            meituan: { name: '美团外卖', emoji: '🛵', bg: 'bg-[#FFD000]/10', border: 'border-[#FFD000]/30', text: 'text-[#5C3A00]', scheme: (kw) => `waimai://search?keyword=${encodeURIComponent(kw)}`, web: (kw) => `https://waimai.meituan.com/search?keyword=${encodeURIComponent(kw)}` },
-            eleme: { name: '饿了么', emoji: '💙', bg: 'bg-[#008CFF]/10', border: 'border-[#008CFF]/30', text: 'text-[#004A8C]', scheme: (kw) => `eleme://search?keyword=${encodeURIComponent(kw)}`, web: (kw) => `https://h5.ele.me/msite/search?keyword=${encodeURIComponent(kw)}` },
-            jd: { name: '京东秒送', emoji: '🍎', bg: 'bg-[#DF2D2D]/10', border: 'border-[#DF2D2D]/30', text: 'text-[#8A1414]', scheme: (kw) => `openapp.jdmobile://virtual?params=${encodeURIComponent(JSON.stringify({ category: 'jump', des: 'jdMartHome' }))}`, web: (kw) => `https://jdmart.jd.com/search?keyword=${encodeURIComponent(kw)}` }
+            meituan: {
+                name: '美团外卖',
+                emoji: '🥬',
+                bg: 'bg-yellow-400/10 border-yellow-400/20 text-yellow-400',
+                border: 'border-yellow-400/30',
+                scheme: (k) => `meituanwaimai://waimai/c/search?keyword=${encodeURIComponent(k)}`,
+                web: (k) => `https://i.meituan.com/s/${encodeURIComponent(k)}`
+            },
+            eleme: {
+                name: '饿了么',
+                emoji: '🍜',
+                bg: 'bg-blue-400/10 border-blue-400/20 text-blue-400',
+                border: 'border-blue-400/30',
+                scheme: (k) => `eleme://search?keyword=${encodeURIComponent(k)}`,
+                web: (k) => `https://h5.ele.me/msite/search/#/result?keyword=${encodeURIComponent(k)}`
+            },
+            jd: {
+                name: '京东秒送',
+                emoji: '⚡',
+                bg: 'bg-red-400/10 border-red-400/20 text-red-400',
+                border: 'border-red-400/30',
+                scheme: (k) => `openApp.jdMobile://virtual?params=${encodeURIComponent(JSON.stringify({category:'jump',des:'search',keyWord:k}))}`,
+                web: (k) => `https://so.m.jd.com/ware/search.action?keyword=${encodeURIComponent(k)}`
+            }
         };
 
-        // 获取匿名用户 Token
-        function getOrGenerateToken() {
-            let token = localStorage.getItem('user_token');
-            if (!token) {
-                token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('user_token', token);
-            }
-            return token;
-        }
+        const loadingTitles = [
+            "正在搜寻打工人的深夜解压方案...",
+            "正在检索高热量油脂对冲指标...",
+            "正在分析你的认知失调补偿路径...",
+            "正在加载 BeautifulSoup4 本地真实爬取商户..."
+        ];
 
-        // 页面提示文案设置
         function updateLoadingTexts() {
-            const time = userChoices.time_of_day || 'daytime';
-            const mood = userChoices.mood || 'stressed';
-            const key = `${time}_${mood}`;
-            const copy = copyTemplates[key] || copyTemplates['default'];
-
-            document.getElementById('loaderEmoji').textContent = copy.emoji;
-            document.getElementById('loaderTitle').textContent = copy.title;
-            document.getElementById('loaderSubtitle').textContent = copy.subtitle;
-            document.getElementById('subContext').textContent = `${choiceLabels.time || '此刻'} · ${choiceLabels.mood || '正常情绪'} · 预算${choiceLabels.budget || '日常'}`;
+            let idx = 0;
+            const t = document.getElementById('loading-title');
+            setInterval(() => {
+                idx = (idx + 1) % loadingTitles.length;
+                if (t) t.innerText = loadingTitles[idx];
+            }, 1000);
         }
 
-        // 复制剪贴板
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                showToast('📋 已自动复制商家与菜品名！');
+        // Haptics & Clipboard copy utility
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+                showToast('📋 关键词已复制！直接去下单搜索', true);
                 return true;
-            } catch (err) {
+            } else {
                 const textarea = document.createElement('textarea');
                 textarea.value = text;
                 textarea.style.position = 'fixed';
@@ -237,21 +341,19 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                showToast('📋 已自动复制商家与菜品名！');
+                showToast('📋 关键词已复制！直接去下单搜索', true);
                 return true;
             }
         }
 
-        // 显示 Toast 提示
         function showToast(message, isSuccess = true) {
             const toast = document.createElement('div');
-            toast.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3.5 rounded-2xl shadow-xl z-50 text-sm font-bold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-4 opacity-0 ${
-                isSuccess ? 'bg-[#c8d5c4] text-[#4f594d] border border-[#a4bca0]' : 'bg-red-50 text-red-700 border border-red-200'
+            toast.className = `fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3.5 rounded-2xl shadow-xl z-50 text-xs font-grotesk font-bold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-4 opacity-0 ${
+                isSuccess ? 'bg-[#00ff66]/15 text-[#00ff66] border border-[#00ff66]/30' : 'bg-[#ff3e83]/15 text-[#ff3e83] border border-[#ff3e83]/30'
             }`;
-            toast.innerHTML = `<iconify-icon icon="${isSuccess ? 'lucide:check-circle' : 'lucide:alert-circle'}" class="text-lg"></iconify-icon><span>${message}</span>`;
+            toast.innerHTML = `<iconify-icon icon="${isSuccess ? 'lucide:check-circle' : 'lucide:alert-circle'}" class="text-base"></iconify-icon><span>${message}</span>`;
             document.body.appendChild(toast);
             
-            // Trigger animation
             setTimeout(() => {
                 toast.classList.remove('-translate-y-4', 'opacity-0');
             }, 50);
@@ -262,31 +364,33 @@
             }, 3000);
         }
 
-        // 跳转外卖平台与复制
+        // Token generator
+        function getOrGenerateToken() {
+            let token = localStorage.getItem('user_token');
+            if (!token) {
+                token = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('user_token', token);
+            }
+            return token;
+        }
+
+        // Action: Platform orders copy & open app
         function goToOrder(platformKey, keyword) {
             const plat = PLATFORMS[platformKey] || PLATFORMS.meituan;
             copyToClipboard(keyword);
 
-            // Set a flag to show feedback section on return
-            sessionStorage.setItem('pendingOrder', JSON.stringify({ keyword, timestamp: Date.now() }));
-
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            
             if (isMobile) {
-                // Try launching app
                 window.location.href = plat.scheme(keyword);
-                
-                // Fallback to web link if app doesn't open
                 setTimeout(() => {
                     window.location.href = plat.web(keyword);
                 }, 1800);
             } else {
-                // On desktop open in new tab
                 window.open(plat.web(keyword), '_blank');
             }
         }
 
-        // 我已下单：直接存库
+        // Action: I ordered (Database writing either local or remote)
         async function confirmOrdered(foodName, estimatedPrice, regretScore, restaurant, platform) {
             const userToken = getOrGenerateToken();
 
@@ -294,10 +398,10 @@
                 user_token: userToken,
                 food_name: foodName,
                 price: parseFloat(estimatedPrice) || 0,
-                fullness: 2, // 刚好
-                mood: 'satisfied', // 满足
+                fullness: 2, // Just right
+                mood: 'satisfied',
                 regret_score: regretScore || 2,
-                note: `通过饮食觉察智能下单: ${restaurant || '未知商家'} (${platform === 'meituan' ? '美团' : platform === 'eleme' ? '饿了么' : '京东秒送'})`,
+                note: `通过2.0情绪觉察下单: ${restaurant || '未知商家'} (${platform === 'meituan' ? '美团' : platform === 'eleme' ? '饿了么' : '京东秒送'})`,
                 created_at: new Date().toISOString()
             };
 
@@ -314,19 +418,18 @@
                 });
 
                 if (response.ok) {
-                    showToast('🎉 下单成功，记录已存入复盘数据！');
-                    // 清除缓存的备选食品列表
+                    showToast('🎉 下单成功，记录已保存云端复盘！');
                     sessionStorage.removeItem('excludedFoods');
                     setTimeout(() => {
                         window.location.href = 'review-history.html';
                     }, 1200);
                 } else {
-                    throw new Error('Save failed');
+                    throw new Error('Database response not OK');
                 }
             } catch (e) {
-                console.warn('Network error or paused Supabase, saving to local history:', e);
+                console.warn('Paused Supabase, writing to local reviews database:', e);
                 
-                // Fallback to local storage history
+                // Backup to client local storage & let history page read it
                 const history = JSON.parse(localStorage.getItem('selection_history') || '[]');
                 history.push({
                     ...orderData,
@@ -335,14 +438,14 @@
                 });
                 localStorage.setItem('selection_history', JSON.stringify(history));
 
-                showToast('💡 线上服务休眠中，下单已成功存入本地数据！');
+                showToast('💡 线上休眠，数据已成功存入本地数据库！');
                 setTimeout(() => {
                     window.location.href = 'review-history.html';
                 }, 1200);
             }
         }
 
-        // 智能构建推荐卡片
+        // Render food recommendation cards
         function renderRecommendations(data) {
             const container = document.getElementById('recommendations-container');
             container.innerHTML = '';
@@ -351,59 +454,59 @@
             recs.forEach((rec, index) => {
                 const plat = PLATFORMS[rec.platform] || PLATFORMS.meituan;
                 
-                // 渲染后悔指数的星星
+                // Draw regret stars in Fluorescent colors
                 let starsHtml = '';
                 for (let i = 1; i <= 5; i++) {
                     const active = i <= rec.regret_score;
-                    starsHtml += `<iconify-icon icon="lucide:star" class="text-sm ${active ? 'text-dusty-rose fill-dusty-rose' : 'text-gray-200'}" style="margin-right: 2px;"></iconify-icon>`;
+                    starsHtml += `<iconify-icon icon="lucide:star" class="text-sm ${active ? 'text-acid-pink shadow-acid-pink fill-acid-pink' : 'text-gray-700'}" style="margin-right: 2px;"></iconify-icon>`;
                 }
 
-                // 排除重合关键字以便下一次过滤
                 const jumpKeyword = rec.jump_keyword || `${rec.restaurant} ${rec.food_name}`;
 
                 const card = document.createElement('div');
-                card.className = `recommendation-card bg-white rounded-[2rem] border border-[#f5ecea] p-6 shadow-card-soft hover-lift delay-${(index + 1) * 100}`;
+                card.className = `glass-panel rounded-[2rem] border border-cyber-border p-6 hover-neon animate-fade-in-up delay-${(index + 1) * 100} relative overflow-hidden group`;
                 card.innerHTML = `
                     <div class="flex flex-col gap-4">
-                        <!-- Top header -->
+                        <!-- Card Header -->
                         <div class="flex justify-between items-start gap-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl ${plat.bg} ${plat.border} border flex items-center justify-center text-2xl shrink-0">
+                                <div class="w-12 h-12 rounded-2xl ${plat.bg} flex items-center justify-center text-2xl shrink-0 font-bold border border-white/5">
                                     ${plat.emoji}
                                 </div>
                                 <div>
-                                    <h3 class="font-serif text-lg md:text-xl font-bold text-charcoal leading-tight">${rec.food_name}</h3>
-                                    <p class="text-xs text-text-light mt-0.5">${rec.restaurant || '推荐商家'}</p>
+                                    <h3 class="font-syne text-base md:text-lg font-extrabold text-white leading-tight group-hover:text-acid-green transition-colors">${rec.food_name}</h3>
+                                    <p class="text-[10px] text-cyber-text mt-0.5 font-grotesk">${rec.restaurant || '热门店铺'}</p>
                                 </div>
                             </div>
                             <div class="text-right shrink-0">
-                                <span class="font-serif text-xl font-bold text-dusty-rose-dark font-sans">¥${rec.estimated_price}</span>
-                                <span class="block text-[10px] text-text-light mt-0.5 bg-gray-50 border border-gray-100 px-1.5 py-0.5 rounded-full font-bold uppercase">${plat.name}</span>
+                                <span class="font-grotesk text-lg font-bold text-acid-green">¥${rec.estimated_price}</span>
+                                <span class="block text-[8px] text-cyber-text mt-0.5 font-grotesk uppercase border border-cyber-border px-1.5 py-0.5 bg-cyber-card rounded-md font-bold">${plat.name}</span>
                             </div>
                         </div>
 
-                        <!-- Reason -->
-                        <p class="text-sm text-charcoal/85 leading-relaxed bg-[#fbf8f5] p-3 rounded-2xl border border-gray-50">
-                            ✨ <span class="italic text-charcoal font-medium">推荐原因：</span>${rec.reason || '契合你当下的状态'}
-                        </p>
+                        <!-- Analysis Recommendation Reason -->
+                        <div class="text-xs text-cyber-text leading-relaxed bg-cyber-card/50 p-4 rounded-2xl border border-cyber-border/40">
+                            📢 <span class="font-bold text-white font-grotesk">身心契合原因：</span>
+                            <span class="block mt-1 text-white/90">${rec.reason || '契合你当下的心理与身体状态。'}</span>
+                        </div>
 
-                        <!-- Regret info & buttons -->
-                        <div class="flex flex-col gap-3 pt-2 border-t border-dashed border-gray-100">
+                        <!-- Regret indices and interactive CTA buttons -->
+                        <div class="flex flex-col gap-3 pt-3 border-t border-dashed border-cyber-border/60">
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                                <div class="flex items-center gap-1.5 text-text-light font-medium">
-                                    <span>明日后悔指数：</span>
+                                <div class="flex items-center gap-1.5 text-cyber-text font-grotesk uppercase font-bold text-[10px]">
+                                    <span>明日后悔度：</span>
                                     <span class="flex items-center">${starsHtml}</span>
                                 </div>
-                                ${rec.regret_reason ? `<span class="text-text-light/90 italic font-medium">👉 ${rec.regret_reason}</span>` : ''}
+                                ${rec.regret_reason ? `<span class="text-cyber-text/80 text-[10px] italic">💡 ${rec.regret_reason}</span>` : ''}
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 mt-1.5">
-                                <button onclick="goToOrder('${rec.platform}', '${jumpKeyword.replace(/'/g, "\\'")}')" class="py-3 rounded-xl bg-sage-green hover:bg-sage-green-dark text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 hover:-translate-y-0.5">
-                                    <iconify-icon icon="lucide:shopping-cart" class="text-base"></iconify-icon>
+                            <div class="grid grid-cols-2 gap-3 mt-1" id="btn-group-${index}">
+                                <button onclick="goToOrder('${rec.platform}', '${jumpKeyword.replace(/'/g, "\\'")}')" class="order-btn-link py-3 rounded-xl bg-acid-green text-black font-extrabold text-xs shadow-acid-green hover:bg-white hover:shadow-none transition-all flex items-center justify-center gap-1.5 tracking-wider font-grotesk active:scale-95">
+                                    <iconify-icon icon="lucide:shopping-bag" class="text-sm"></iconify-icon>
                                     <span>去下单</span>
                                 </button>
-                                <button onclick="confirmOrdered('${rec.food_name.replace(/'/g, "\\'")}', ${rec.estimated_price}, ${rec.regret_score}, '${(rec.restaurant || '').replace(/'/g, "\\'")}', '${rec.platform}')" class="py-3 rounded-xl bg-white border border-[#c8d5c4] text-sage-green-dark hover:bg-sage-green-light/20 font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 hover:-translate-y-0.5">
-                                    <iconify-icon icon="lucide:check-circle" class="text-base"></iconify-icon>
+                                <button onclick="confirmOrdered('${rec.food_name.replace(/'/g, "\\'")}', ${rec.estimated_price}, ${rec.regret_score}, '${(rec.restaurant || '').replace(/'/g, "\\'")}', '${rec.platform}')" class="py-3 rounded-xl bg-cyber-card/80 border border-cyber-border text-white hover:border-acid-purple hover:bg-cyber-card font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 tracking-wider font-grotesk active:scale-95">
+                                    <iconify-icon icon="lucide:check-circle" class="text-sm"></iconify-icon>
                                     <span>我已下单</span>
                                 </button>
                             </div>
@@ -413,7 +516,7 @@
                 container.appendChild(card);
             });
 
-            // 渲染备选
+            // Alternatives rendering
             const alts = data.alternatives || [];
             const altContainer = document.getElementById('alternatives-container');
             const altBox = document.getElementById('alternatives-box');
@@ -426,16 +529,16 @@
 
                     const btn = document.createElement('button');
                     btn.onclick = () => goToOrder(alt.platform, jumpKeyword);
-                    btn.className = "flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-100 hover:border-dusty-rose/40 hover:bg-cream transition-all duration-300 text-left w-full shadow-sm group";
+                    btn.className = "flex items-center justify-between p-4 bg-cyber-card/60 rounded-2xl border border-cyber-border hover:border-acid-purple/40 hover:bg-cyber-card transition-all w-full text-left group hover-neon";
                     btn.innerHTML = `
                         <div class="flex items-center gap-3">
-                            <span class="text-xl shrink-0">${plat.emoji}</span>
+                            <span class="text-2xl shrink-0">${plat.emoji}</span>
                             <div>
-                                <h4 class="font-bold text-sm text-charcoal leading-tight">${alt.food_name}</h4>
-                                <span class="text-[10px] text-text-light block mt-0.5 font-medium">${alt.restaurant || plat.name}</span>
+                                <h4 class="font-bold text-xs text-white leading-tight">${alt.food_name}</h4>
+                                <span class="text-[9px] text-cyber-text block mt-0.5 font-grotesk">${alt.restaurant || plat.name}</span>
                             </div>
                         </div>
-                        <iconify-icon icon="lucide:arrow-right" class="text-dusty-rose text-base opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></iconify-icon>
+                        <iconify-icon icon="lucide:arrow-right" class="text-acid-purple text-base opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></iconify-icon>
                     `;
                     altContainer.appendChild(btn);
                 });
@@ -443,19 +546,71 @@
             } else {
                 altBox.classList.add('hidden');
             }
+
+            // Check if any high regret food is present, trigger Charlie Munger Water Buffer Modal
+            const hasHighRegret = recs.some(r => r.regret_score >= 3);
+            if (hasHighRegret) {
+                triggerWaterBuffer();
+            }
         }
 
-        // 调用推荐接口
+        // Charlie Munger Water Buffer Trigger (Countdown)
+        function triggerWaterBuffer() {
+            const modal = document.getElementById('water-buffer-modal');
+            const timerEl = document.getElementById('buffer-timer');
+            const statusEl = document.getElementById('buffer-status');
+            const fluid = document.getElementById('water-fluid');
+            
+            // Disable order buttons during countdown
+            const orderBtns = document.querySelectorAll('.order-btn-link');
+            orderBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-40', 'cursor-not-allowed');
+                btn.classList.remove('bg-acid-green');
+                btn.classList.add('bg-cyber-card', 'border', 'border-cyber-border', 'text-cyber-text');
+            });
+
+            modal.classList.remove('hidden');
+            fluid.classList.add('water-fill');
+
+            let countdown = 10;
+            const timer = setInterval(() => {
+                countdown--;
+                timerEl.innerText = countdown;
+                if (countdown === 7) {
+                    statusEl.innerText = "[WATER_CELLS_ABSORBING // 温水吸收，胃酸稀释中...]";
+                } else if (countdown === 4) {
+                    statusEl.innerText = "[GLUCOSE_SPIKE_SUPPRESSED // 血糖飙升冲动抑制中...]";
+                } else if (countdown === 1) {
+                    statusEl.innerText = "[SOUL_COOLING_COMPLETE // 大脑冷静完成！]";
+                } else if (countdown <= 0) {
+                    clearInterval(timer);
+                    modal.classList.add('hidden');
+                    
+                    // Unlock order buttons with glowing flash
+                    orderBtns.forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-40', 'cursor-not-allowed', 'bg-cyber-card', 'border', 'border-cyber-border', 'text-cyber-text');
+                        btn.classList.add('bg-acid-green', 'text-black');
+                        btn.classList.add('animate-pulse');
+                        setTimeout(() => btn.classList.remove('animate-pulse'), 1500);
+                    });
+
+                    showToast('🎉 温水理疗成功！精神控制力提升，去下单吧！', true);
+                }
+            }, 1000);
+        }
+
+        // Fetch Recommendations Core
         async function fetchRecommendations() {
-            // Loading show
             document.getElementById('loader').style.display = 'flex';
             document.getElementById('result-state').classList.add('hidden');
             document.getElementById('error-state').classList.add('hidden');
 
-            try {
-                // 获取已经生成推荐但用户拒绝的关键词列表
-                const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
+            // Excluded keywords
+            const excludedFoods = JSON.parse(sessionStorage.getItem('excludedFoods') || '[]');
 
+            try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/recommend`, {
                     method: 'POST',
                     headers: {
@@ -471,30 +626,24 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // 将本次推荐菜品名称存入 excludedFoods 缓存，方便换一批时过滤
+                    // Excludes buffering
                     const currentExcludes = data.recommendations?.map(r => r.food_name) || [];
                     const newExcludes = [...new Set([...excludedFoods, ...currentExcludes])];
                     sessionStorage.setItem('excludedFoods', JSON.stringify(newExcludes));
 
-                    // 渲染页面
                     setTimeout(() => {
                         document.getElementById('loader').style.display = 'none';
                         document.getElementById('result-state').classList.remove('hidden');
                         renderRecommendations(data);
                     }, 800);
                 } else {
-                    const errTxt = await response.text();
-                    console.error('API Error details:', errTxt);
-                    throw new Error('API Error');
+                    throw new Error('Edge Function API Error');
                 }
             } catch (error) {
-                console.warn('Fetch recommendations online failed, triggering offline/crawled fallback:', error);
-                
-                // Show a helpful warning toast
-                showToast('💡 线上服务休眠中，已自动开启本地离线测试模式！');
+                console.warn('Online fetch failed, running local/crawled offline database flow:', error);
+                showToast('💡 线上服务休眠中，已智能接入本地离线对冲引擎！', true);
 
                 try {
-                    // Try to fetch our locally crawled real food data!
                     const localResponse = await fetch('real_foods.json');
                     if (localResponse.ok) {
                         const localData = await localResponse.json();
@@ -506,10 +655,10 @@
                         return;
                     }
                 } catch (localErr) {
-                    console.error('Local JSON fetch failed:', localErr);
+                    console.error('Local real foods JSON read failed:', localErr);
                 }
 
-                // If local JSON is missing or fails, generate a rich high-quality fallback based on report categories
+                // High fidelity rule-based fallback if JSON read fails
                 const localFallbackData = {
                     recommendations: [
                         {
@@ -517,47 +666,47 @@
                             restaurant: "杨国福麻辣烫 (中关村店)",
                             platform: "meituan",
                             estimated_price: 32.8,
-                            reason: "辛辣饱腹释放压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻，降低明日负罪感！",
+                            reason: "【💥 解压发泄型】辛辣饱腹释放压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解油腻，降火又降压！",
                             jump_keyword: "杨国福麻辣烫 招牌骨汤麻辣烫",
                             regret_score: 2,
-                            regret_reason: "已搭配无糖绿茶，对冲高热量负罪感"
+                            regret_reason: "已默认搭配无糖绿茶，对冲高油高盐"
                         },
                         {
                             food_name: "经典秘制烤肉串大份 (10支)",
                             restaurant: "丰茂烤串 (知春路店)",
                             platform: "eleme",
                             estimated_price: 45.0,
-                            reason: "油脂焦香带来多巴胺极速释放。💡 朋克养生对冲：建议搭配无糖金银花茶以防上火！",
+                            reason: "【💥 解压发泄型】油脂焦香带来多巴胺释放。💡 朋克养生对冲：建议默认搭配【金银花露】以降燥火！",
                             jump_keyword: "丰茂烤串 知春路店",
                             regret_score: 3,
-                            regret_reason: "已默认搭配金银花茶，解腻又防火"
-                        },
-                        {
-                            food_name: "黄金脆皮炸鸡半只+可乐",
-                            restaurant: "麦当劳麦乐送 (中关村店)",
-                            platform: "meituan",
-                            estimated_price: 29.9,
-                            reason: "咔嚓酥脆的物理咀嚼感，治愈疲惫。💡 朋克养生对冲：建议睡前对冲一片【护肝片】！",
-                            jump_keyword: "麦当劳 炸鸡 东方树叶",
-                            regret_score: 2,
-                            regret_reason: "已进行护肝片 risk-hedging 对冲"
+                            regret_reason: "已搭配防上火金银花茶，养生对冲"
                         },
                         {
                             food_name: "温润滋补砂锅皮蛋瘦肉粥",
                             restaurant: "三顾粥铺 (海淀店)",
                             platform: "meituan",
                             estimated_price: 19.8,
-                            reason: "【自我补偿型】清淡温热，深夜一人食，极低脂，暖胃更暖心，无任何发胖压力。",
+                            reason: "【🥬 自我补偿型】清淡温热。深夜一人食，极低脂，暖胃更暖心，无任何发胖压力与认知悔恨。",
                             jump_keyword: "三顾粥铺 皮蛋瘦肉粥",
                             regret_score: 1,
                             regret_reason: "极致低脂肪流食，完全无悔恨感"
+                        },
+                        {
+                            food_name: "黄金脆皮炸鸡半只特配装",
+                            restaurant: "麦当劳麦乐送 (中关村店)",
+                            platform: "meituan",
+                            estimated_price: 29.9,
+                            reason: "【💊 朋克养生型】咔嚓酥脆的物理嚼感。💡 朋克养生对冲：默认建议搭配【无糖大麦茶/黑咖啡】降解油腻！",
+                            jump_keyword: "麦当劳 炸鸡 东方树叶",
+                            regret_score: 2,
+                            regret_reason: "已配无糖大麦茶助胃动力，加速代谢"
                         },
                         {
                             food_name: "深夜解压经典麻辣拌单人餐",
                             restaurant: "张亮麻辣烫 (海淀黄庄店)",
                             platform: "jd",
                             estimated_price: 28.5,
-                            reason: "麻辣拌的爆爽口感完美解压。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+                            reason: "【💥 解压发泄型】麻辣拌爽口完美释放压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解油腻！",
                             jump_keyword: "张亮麻辣烫 经典麻辣拌",
                             regret_score: 2,
                             regret_reason: "已默认搭配东方树叶，对冲油腻感"
@@ -570,13 +719,6 @@
                             platform: "meituan",
                             estimated_price: 15.0,
                             jump_keyword: "便利蜂 关东煮"
-                        },
-                        {
-                            food_name: "新鲜时令果切拼盘500g",
-                            restaurant: "百果园 (海淀黄庄店)",
-                            platform: "eleme",
-                            estimated_price: 22.0,
-                            jump_keyword: "百果园 果切"
                         }
                     ]
                 };
@@ -589,19 +731,25 @@
             }
         }
 
-        // 重新推荐（换一批）
+        // Re-recommend (refresh)
         function reRecommend() {
-            showToast('🔄 正在为你搜罗其他惊喜菜品...');
+            showToast('🔄 正在为你重新扫描，搜寻其他惊喜...', true);
             fetchRecommendations();
         }
 
-        // 初始化
+        // DOM Initializer
         document.addEventListener('DOMContentLoaded', () => {
             if (!userChoices.time_of_day) {
-                // 如果没有数据，回退到主页
                 window.location.href = 'index.html';
                 return;
             }
+
+            // Sync overview tag labels
+            document.getElementById('sum-time').innerText = choiceLabels.time || '夜晚';
+            document.getElementById('sum-mood').innerText = choiceLabels.mood || '压力大';
+            document.getElementById('sum-hunger').innerText = choiceLabels.hunger || '求治愈';
+            document.getElementById('sum-exercise').innerText = choiceLabels.exercise || '没运动';
+            document.getElementById('sum-budget').innerText = choiceLabels.budget || '白领标配';
 
             updateLoadingTexts();
             fetchRecommendations();

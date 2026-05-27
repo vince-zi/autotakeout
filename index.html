@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         name="viewport" />
-    <title>今天吃点啥？</title>
-    <!-- Dependencies -->
+    <title>今天吃点啥？ | 饮食觉察 2.0</title>
+    <!-- Modern Y2K / Acid Fonts & Iconography -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,500,700&f[]=pally@400,500,700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
 
     <script>
@@ -17,67 +17,61 @@
             theme: {
                 extend: {
                     colors: {
-                        cream: '#fffcf8',
-                        dusty: {
-                            rose: '#d9a59d',
-                            'rose-light': '#f4e4e1',
-                            'rose-dark': '#b57b72',
+                        obsidian: '#08080c',
+                        acid: {
+                            green: '#00ff66',
+                            green_dark: '#00cc52',
+                            purple: '#a12cff',
+                            pink: '#ff3e83',
+                            orange: '#ff8800'
                         },
-                        sage: {
-                            green: '#c8d5c4',
-                            'green-light': '#e8f0e6',
-                            'green-dark': '#8a9a85',
-                        },
-                        charcoal: '#5c5552',
-                        'text-light': '#948c89'
+                        cyber: {
+                            card: '#12121a',
+                            border: '#1a1a26',
+                            text: '#8a8a9e'
+                        }
                     },
                     fontFamily: {
-                        serif: ['Zodiak', 'serif'],
-                        sans: ['Pally', 'sans-serif'],
+                        syne: ['Syne', 'sans-serif'],
+                        grotesk: ['Space Grotesk', 'monospace'],
+                        outfit: ['Outfit', 'sans-serif'],
                     },
                     boxShadow: {
-                        'bubble': '0 8px 24px -6px rgba(217, 165, 157, 0.25)',
-                        'bubble-hover': '0 12px 32px -8px rgba(217, 165, 157, 0.4)',
-                        'inner-soft': 'inset 0 2px 6px 0 rgba(255, 255, 255, 0.8)',
-                        'glass': '0 8px 32px 0 rgba(217, 165, 157, 0.15)',
-                        'card-soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 6s ease-in-out 3s infinite',
-                        'bounce-soft': 'bounce-soft 2s infinite',
-                        'wiggle': 'wiggle 1s ease-in-out infinite',
-                        'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        'bounce-soft': {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-5px)' },
-                        },
-                        wiggle: {
-                            '0%, 100%': { transform: 'rotate(-3deg)' },
-                            '50%': { transform: 'rotate(3deg)' },
-                        },
-                        pop: {
-                            '0%': { transform: 'scale(0.9)' },
-                            '100%': { transform: 'scale(1)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
+                        'acid-green': '0 0 20px rgba(0, 255, 102, 0.25)',
+                        'acid-purple': '0 0 20px rgba(161, 44, 255, 0.25)',
+                        'acid-pink': '0 0 20px rgba(255, 62, 131, 0.25)',
+                        'neon-scan': '0 0 35px rgba(0, 255, 102, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
                     }
                 }
             }
         }
     </script>
+    
     <style>
-        /* Custom Range Slider Styling */
+        body {
+            background-color: #08080c;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(161, 44, 255, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 255, 102, 0.05) 0px, transparent 50%);
+            overflow-x: hidden;
+        }
+
+        /* Y2K Acid Scanline Pattern */
+        .scanlines {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 99;
+            opacity: 0.3;
+        }
+
+        /* Custom Acid Range Slider */
         input[type=range] {
             -webkit-appearance: none;
             background: transparent;
@@ -86,401 +80,295 @@
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 28px;
-            width: 28px;
+            height: 24px;
+            width: 24px;
             border-radius: 50%;
-            background: #d9a59d;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 10px rgba(217, 165, 157, 0.5);
+            background: #00ff66;
+            border: 3px solid #08080c;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.8);
             cursor: pointer;
-            margin-top: -12px;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: -9px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         input[type=range]::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-        }
-
-        input[type=range]:active::-webkit-slider-thumb {
-            transform: scale(0.95);
-            background: #b57b72;
+            transform: scale(1.2);
+            background: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 1);
         }
 
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 6px;
             cursor: pointer;
-            background: linear-gradient(to right, #e8f0e6, #d9a59d);
+            background: #1a1a26;
             border-radius: 99px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Staggered Animation Delays */
-        .delay-100 {
-            animation-delay: 100ms;
+        /* Glassmorphism custom standard */
+        .glass-panel {
+            background: rgba(18, 18, 26, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .delay-200 {
-            animation-delay: 200ms;
+        /* Long press scanning animation */
+        @keyframes scan-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 102, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 102, 0.6); }
         }
 
-        .delay-300 {
-            animation-delay: 300ms;
+        .scanning-active {
+            animation: scan-glow 1.5s infinite;
+            border-color: #00ff66 !important;
         }
 
-        .delay-400 {
-            animation-delay: 400ms;
+        /* Custom cursor styling for interactive elements */
+        .hover-neon {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .delay-500 {
-            animation-delay: 500ms;
-        }
-
-        .card-enter {
-            opacity: 0;
-            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        /* Hover interactions */
-        .hover-lift {
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-4px) scale(1.02);
-        }
-
-        /* Keyframes Definitions (Moved from Tailwind Config for Reliability) */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        @keyframes bounce-soft {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-5px);
-            }
-        }
-
-        @keyframes wiggle {
-
-            0%,
-            100% {
-                transform: rotate(-3deg);
-            }
-
-            50% {
-                transform: rotate(3deg);
-            }
-        }
-
-        @keyframes pop {
-            0% {
-                transform: scale(0.9);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Utility classes matching the Tailwind config names for convenience */
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-float-delayed {
-            animation: float 6s ease-in-out 3s infinite;
-        }
-
-        .animate-bounce-soft {
-            animation: bounce-soft 2s infinite;
-        }
-
-        .animate-wiggle {
-            animation: wiggle 1s ease-in-out infinite;
-        }
-
-        .animate-pop {
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
+        .hover-neon:hover {
+            border-color: rgba(161, 44, 255, 0.4);
+            box-shadow: 0 0 15px rgba(161, 44, 255, 0.15);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 
-<body
-    class="min-h-screen bg-cream text-charcoal font-sans p-6 md:p-12 relative overflow-x-hidden selection:bg-dusty-rose selection:text-white">
+<body class="min-h-screen text-white font-outfit p-4 md:p-8 relative selection:bg-acid-green selection:text-black">
+    <!-- Retro CRT scanlines -->
+    <div class="scanlines"></div>
 
-    <!-- Animated Background Blobs -->
-    <div
-        class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-sage-green/20 blur-[100px] animate-float pointer-events-none z-0">
-    </div>
-    <div
-        class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-dusty-rose/10 blur-[100px] animate-float-delayed pointer-events-none z-0">
-    </div>
+    <!-- Background Blobs -->
+    <div class="fixed top-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-acid-purple/10 blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-acid-green/5 blur-[120px] pointer-events-none z-0"></div>
 
-    <div class="relative z-10 max-w-4xl mx-auto pb-32">
+    <div class="relative z-10 max-w-4xl mx-auto pb-24">
 
-        <!-- Header -->
-        <header class="flex flex-col items-center justify-center mb-12 card-enter delay-100">
-            <div class="mb-6 relative group cursor-pointer"
-                onclick="this.classList.add('animate-pop'); setTimeout(() => this.classList.remove('animate-pop'), 300)">
-                <div class="absolute inset-0 bg-dusty-rose/20 rounded-full blur-xl scale-150 animate-pulse"></div>
-                <div
-                    class="relative p-6 rounded-full bg-white shadow-bubble text-dusty-rose transition-transform group-hover:scale-110 duration-300 group-hover:rotate-12">
-                    <iconify-icon icon="lucide:utensils" class="text-4xl"></iconify-icon>
+        <!-- Top Navigation -->
+        <header class="flex justify-between items-center mb-10 pt-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-acid-green flex items-center justify-center text-black font-syne font-bold text-lg shadow-acid-green">
+                    🥬
                 </div>
+                <span class="font-grotesk font-bold tracking-widest text-xs uppercase text-acid-green">DIET_AWARENESS // 2.0</span>
             </div>
-            <h1
-                class="font-serif text-4xl md:text-[3.5rem] leading-none text-charcoal font-bold text-center mb-3 tracking-tight">
-                今天 <span class="italic text-dusty-rose relative inline-block transform -rotate-2">
-                    吃点啥？
-                    <iconify-icon icon="lucide:sparkles"
-                        class="text-2xl absolute -top-4 -right-6 text-sage-green animate-bounce-soft"></iconify-icon>
-                </span>
-            </h1>
-            <p
-                class="text-text-light font-medium tracking-wide text-sm bg-white/60 backdrop-blur-sm px-6 py-2 rounded-full border border-white/50 shadow-sm mt-2">
-                别纠结啦，让肚子做决定 ✨
-            </p>
+            
+            <a href="review-history.html" 
+               class="px-4 py-2 rounded-full border border-cyber-border bg-cyber-card/40 hover:bg-cyber-card/80 hover:border-acid-purple transition-all text-xs font-grotesk flex items-center gap-1.5 hover-neon">
+                <iconify-icon icon="lucide:bar-chart-2" class="text-acid-purple"></iconify-icon>
+                <span>历史复盘看板</span>
+            </a>
         </header>
 
-        <!-- Main Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-
-            <!-- 1. Time Selector -->
-            <div
-                class="p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-200 hover:bg-white/50 transition-colors duration-500">
-                <h2
-                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
-                    <iconify-icon icon="lucide:clock" class="text-sage-green-dark"></iconify-icon> 饭点时刻
-                </h2>
-                <div class="grid grid-cols-2 gap-4" id="time-options">
-                    <button
-                        class="choice-btn h-16 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-base border border-transparent hover-lift flex items-center justify-center gap-2 group"
-                        onclick="selectOption('time_of_day', 'daytime', this)">
-                        <span>阳光正好</span>
-                    </button>
-                    <button
-                        class="choice-btn h-16 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-base border border-transparent hover-lift flex items-center justify-center gap-2 group"
-                        onclick="selectOption('time_of_day', 'nighttime', this)">
-                        <span>月色温柔</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 2. Exercise -->
-            <div
-                class="p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-300 hover:bg-white/50 transition-colors duration-500">
-                <h2
-                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
-                    <iconify-icon icon="lucide:activity" class="text-sage-green-dark"></iconify-icon> 动没动呀
-                </h2>
-                <div class="bg-white p-5 rounded-[2rem] shadow-glass flex flex-col justify-between h-36 cursor-pointer hover-lift relative overflow-hidden group"
-                    id="exercise-card" onclick="toggleExercise()">
-                    <!-- Decorative blob -->
-                    <div
-                        class="absolute -right-8 -bottom-8 w-24 h-24 bg-sage-green/10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700">
-                    </div>
-
-                    <div class="flex justify-between items-start relative z-10">
-                        <div class="w-12 h-12 rounded-2xl bg-sage-green/10 flex items-center justify-center text-sage-green-dark transition-all duration-300 group-hover:rotate-12"
-                            id="exercise-icon-bg">
-                            <iconify-icon icon="lucide:dumbbell" class="text-2xl"></iconify-icon>
-                        </div>
-                        <div class="w-8 h-8 rounded-full border-2 border-sage-green flex items-center justify-center transition-all bg-transparent"
-                            id="exercise-check">
-                            <iconify-icon icon="lucide:check"
-                                class="text-white text-lg opacity-0 transition-opacity scale-50"
-                                id="exercise-check-icon"></iconify-icon>
-                        </div>
-                    </div>
-                    <div class="relative z-10 pl-1">
-                        <span class="block font-serif text-xl text-charcoal tracking-tight"
-                            id="exercise-text">今天没动弹</span>
-                        <span class="text-xs text-text-light font-medium mt-1 block" id="exercise-subtext">做一个快乐的小土豆
-                            🥔</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Mood -->
-            <div
-                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-400 hover:bg-white/50 transition-colors duration-500">
-                <h2
-                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
-                    <iconify-icon icon="lucide:smile" class="text-sage-green-dark"></iconify-icon> 心情咋样
-                </h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="mood-options">
-                    <button
-                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
-                        onclick="selectOption('mood', 'stressed', this)">
-                        <span>脑壳疼</span>
-                    </button>
-                    <button
-                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
-                        onclick="selectOption('mood', 'homesick', this)">
-                        <span>想家了</span>
-                    </button>
-                    <button
-                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
-                        onclick="selectOption('mood', 'finished_work', this)">
-                        <span>自由啦!</span>
-                    </button>
-                    <button
-                        class="choice-btn h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm border border-transparent hover-lift flex flex-col items-center justify-center gap-1 group"
-                        onclick="selectOption('mood', 'lonely', this)">
-                        <span>有点emo</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- 4. Body Status -->
-            <div
-                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500 hover:bg-white/50 transition-colors duration-500">
-                <h2
-                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
-                    <iconify-icon icon="lucide:heart-pulse" class="text-sage-green-dark"></iconify-icon> 身体想要...
-                </h2>
-                <div
-                    class="bg-white p-2 rounded-full shadow-inner-soft flex flex-col md:flex-row w-full relative h-auto md:h-16 overflow-hidden md:overflow-visible hover:shadow-inner transition-shadow duration-300">
-                    <!-- Buttons Container -->
-                    <div class="flex w-full flex-col md:flex-row relative z-10" id="body-options">
-                        <button
-                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
-                            onclick="selectBodyOption('hunger_level', 'culinary_hug', this)">
-                            求安慰
-                        </button>
-                        <button
-                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
-                            onclick="selectBodyOption('hunger_level', 'crunch', this)">
-                            嘴巴寂寞
-                        </button>
-                        <button
-                            class="choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-text-light hover:text-dusty-rose transition-all relative group"
-                            onclick="selectBodyOption('hunger_level', 'energy_needed', this)">
-                            极速充电
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. Budget -->
-            <div
-                class="md:col-span-2 p-6 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500 hover:bg-white/50 transition-colors duration-500">
-                <h2
-                    class="text-xs uppercase tracking-widest text-text-light mb-5 flex items-center gap-2 font-bold opacity-80 pl-1">
-                    <iconify-icon icon="lucide:wallet" class="text-sage-green-dark"></iconify-icon> 钱包余额
-                </h2>
-                <div
-                    class="bg-white p-8 rounded-[2rem] shadow-glass flex flex-col justify-between relative overflow-hidden group">
-                    <!-- Dynamic BG Emoji -->
-                    <div class="absolute -right-4 -bottom-4 text-[8rem] opacity-[0.03] group-hover:opacity-[0.06] transition-opacity select-none pointer-events-none"
-                        id="budget-emoji-bg">
-                        💸
-                    </div>
-
-                    <div class="flex justify-between items-center px-1 mb-6 relative z-10">
-                        <span class="text-sm font-bold text-charcoal">预计花多少?</span>
-                        <div class="flex items-center gap-2">
-                            <span id="budget-emoji-small" class="text-base animate-bounce-soft">💸</span>
-                            <span id="budget-display"
-                                class="text-xs font-bold text-dusty-rose bg-dusty-rose/10 px-4 py-1.5 rounded-full transition-all">
-                                拖拖看 ->
-                            </span>
-                        </div>
-                    </div>
-                    <div class="px-2 pb-2 relative z-10">
-                        <input type="range" min="1" max="5" value="3" class="w-full focus:outline-none"
-                            id="budget-slider" oninput="updateBudget(this.value)">
-                        <div
-                            class="flex justify-between text-[10px] text-text-light font-bold mt-4 uppercase tracking-wide px-1 opacity-60">
-                            <span>吃土</span>
-                            <span></span>
-                            <span>日常</span>
-                            <span></span>
-                            <span>豪华</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 6. Submit Button -->
-            <div
-                class="md:col-span-2 p-8 border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-md shadow-card-soft card-enter delay-500">
-                <button id="submit-btn" onclick="submitChoices()" disabled
-                    class="w-full py-6 rounded-full bg-white text-text-light font-serif text-xl tracking-wide shadow-sm transition-all duration-500 flex items-center justify-center gap-3 group overflow-hidden relative cursor-not-allowed opacity-60 hover:shadow-md">
-                    <span
-                        class="absolute inset-0 bg-gradient-to-r from-dusty-rose to-[#e6b2aa] translate-y-full transition-transform duration-500 rounded-full z-0"
-                        id="btn-bg"></span>
-                    <span class="relative z-10 transition-colors duration-300">告诉我吃啥!</span>
-                    <iconify-icon icon="lucide:send"
-                        class="relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-500 text-2xl"></iconify-icon>
-                </button>
-            </div>
-
-        </div>
-
-        <!-- Family Meal Entry (Subtle) -->
-        <div class="mt-12 text-center card-enter delay-500">
-            <div class="p-8 border border-sage-green/30 rounded-[2.5rem] bg-sage-green-light/30 backdrop-blur-sm">
-                <p class="text-charcoal font-medium text-lg mb-4">不知道今晚吃什么？ 🤔</p>
-                <a href="family.html"
-                    class="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-sage-green text-white font-bold text-base shadow-bubble hover:shadow-bubble-hover hover:-translate-y-1 transition-all duration-300 group">
-                    <iconify-icon icon="lucide:home" class="text-xl"></iconify-icon>
-                    <span>帮我配一顿家常饭</span>
-                    <iconify-icon icon="lucide:arrow-right"
-                        class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
-                </a>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="mt-12 flex items-center justify-center opacity-40">
-            <div class="flex-1 h-px bg-gradient-to-r from-transparent via-dusty-rose/50 to-transparent"></div>
-            <iconify-icon icon="lucide:sparkles" class="mx-4 text-dusty-rose text-sm"></iconify-icon>
-            <div class="flex-1 h-px bg-gradient-to-l from-transparent via-dusty-rose/50 to-transparent"></div>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-12 text-center opacity-70 card-enter delay-500">
-            <p class="font-serif text-charcoal italic text-lg leading-snug max-w-[260px] mx-auto">
-                "人如其食，拒绝速成、廉价与虚假。"
+        <!-- Brand Hero -->
+        <section class="text-center mb-10">
+            <h1 class="font-syne font-extrabold text-4xl md:text-[3.8rem] leading-none tracking-tighter mb-4">
+                今天 <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-acid-green to-acid-purple relative">吃点啥？</span>
+            </h1>
+            <p class="font-grotesk text-cyber-text text-sm uppercase tracking-wider max-w-md mx-auto">
+                打通情绪对冲的朋克养生引擎，彻底克服深夜决策悔恨与认知失调。🛡️
             </p>
-            <div class="mt-6 w-16 h-1 bg-sage-green/30 rounded-full mx-auto"></div>
-        </div>
+        </section>
+
+        <!-- Main Form Grid -->
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12">
+
+            <!-- 1. TIME OF DAY (TIME) -->
+            <div class="glass-panel p-6 rounded-[2rem] hover-neon relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-acid-purple/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
+                <h2 class="font-grotesk text-xs uppercase tracking-widest text-acid-purple mb-4 flex items-center gap-2 font-bold">
+                    <iconify-icon icon="lucide:clock" class="text-base"></iconify-icon> [01_饭点时刻 / PERIOD]
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-purple hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-2"
+                        onclick="selectOption('time_of_day', 'daytime', this)">
+                        <iconify-icon icon="lucide:sun" class="text-xl opacity-60 group-hover:opacity-100"></iconify-icon>
+                        <span>阳光正好 (白天)</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-purple hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-2"
+                        onclick="selectOption('time_of_day', 'nighttime', this)">
+                        <iconify-icon icon="lucide:moon" class="text-xl opacity-60 group-hover:opacity-100"></iconify-icon>
+                        <span>月色温柔 (夜晚)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. EXERCISE (EXERCISE) -->
+            <div class="glass-panel p-6 rounded-[2rem] hover-neon relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-acid-green/5 rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
+                <h2 class="font-grotesk text-xs uppercase tracking-widest text-acid-green mb-4 flex items-center gap-2 font-bold">
+                    <iconify-icon icon="lucide:activity" class="text-base"></iconify-icon> [02_动没动呀 / METABOLISM]
+                </h2>
+                <div class="bg-cyber-card/40 border border-cyber-border p-4 rounded-2xl flex items-center justify-between h-20 cursor-pointer transition-all hover:bg-cyber-card/85"
+                    id="exercise-card" onclick="toggleExercise()">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyber-card border border-cyber-border flex items-center justify-center text-xl text-cyber-text"
+                            id="exercise-icon-bg">
+                            🥔
+                        </div>
+                        <div>
+                            <span class="block font-bold text-sm" id="exercise-text">今天没动弹</span>
+                            <span class="text-[10px] text-cyber-text font-grotesk uppercase block" id="exercise-subtext">做一个快乐的小土豆</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Neon switch indicator -->
+                    <div class="w-12 h-6 rounded-full bg-cyber-card border border-cyber-border relative p-0.5 transition-all" id="exercise-switch">
+                        <div class="w-4.5 h-4.5 rounded-full bg-cyber-text transition-all transform translate-x-0" id="exercise-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MOOD PILLS (MOOD) -->
+            <div class="md:col-span-2 glass-panel p-6 rounded-[2rem] hover-neon relative">
+                <h2 class="font-grotesk text-xs uppercase tracking-widest text-acid-pink mb-5 flex items-center gap-2 font-bold">
+                    <iconify-icon icon="lucide:smile" class="text-base"></iconify-icon> [03_心情咋样 / DOPOAMINE_STATE]
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-pink hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectOption('mood', 'stressed', this)">
+                        <span class="text-xl">🧠</span>
+                        <span class="font-bold">脑壳疼</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Stressed</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-pink hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectOption('mood', 'homesick', this)">
+                        <span class="text-xl">🏡</span>
+                        <span class="font-bold">想家了</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Homesick</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-pink hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectOption('mood', 'finished_work', this)">
+                        <span class="text-xl">🍻</span>
+                        <span class="font-bold">开摆啦!</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Free</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-pink hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectOption('mood', 'lonely', this)">
+                        <span class="text-xl">🥀</span>
+                        <span class="font-bold">有点emo</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Lonely</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. HUG LEVEL (HUNGER) -->
+            <div class="md:col-span-2 glass-panel p-6 rounded-[2rem] hover-neon">
+                <h2 class="font-grotesk text-xs uppercase tracking-widest text-acid-orange mb-5 flex items-center gap-2 font-bold">
+                    <iconify-icon icon="lucide:heart" class="text-base"></iconify-icon> [04_身体想要什么慰藉 / CATHARSIS_TYPE]
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="body-options">
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-orange hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectBodyOption('hunger_level', 'culinary_hug', this)">
+                        <span class="text-xl">💖</span>
+                        <span class="font-bold">情绪安慰 (求抚慰)</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Culinary Hug</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-orange hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectBodyOption('hunger_level', 'crunch', this)">
+                        <span class="text-xl">🍿</span>
+                        <span class="font-bold">嘴巴寂寞 (咀嚼解压)</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Nibbles / Chewing</span>
+                    </button>
+                    <button class="choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-acid-orange hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1"
+                        onclick="selectBodyOption('hunger_level', 'energy_needed', this)">
+                        <span class="text-xl">⚡</span>
+                        <span class="font-bold">极速充电 (物理空腹)</span>
+                        <span class="text-[9px] text-cyber-text uppercase">Full Charge</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5. BUDGET SLIDER -->
+            <div class="md:col-span-2 glass-panel p-6 rounded-[2rem] hover-neon relative overflow-hidden group">
+                <div class="absolute -right-6 -bottom-6 text-[7rem] opacity-[0.03] select-none pointer-events-none group-hover:opacity-[0.06] transition-opacity"
+                    id="budget-emoji-bg">
+                    🥗
+                </div>
+                
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="font-grotesk text-xs uppercase tracking-widest text-acid-green flex items-center gap-2 font-bold">
+                        <iconify-icon icon="lucide:wallet" class="text-base"></iconify-icon> [05_钱包额度限制 / BUDGET_LIMIT]
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <span id="budget-emoji-small" class="text-base">🥗</span>
+                        <span id="budget-display" class="font-grotesk font-bold text-xs px-3 py-1 rounded-full bg-acid-green/10 border border-acid-green/20 text-acid-green transition-all">
+                            预计花费
+                        </span>
+                    </div>
+                </div>
+
+                <div class="px-2 pb-2">
+                    <input type="range" min="1" max="5" value="3" class="w-full focus:outline-none"
+                        id="budget-slider" oninput="updateBudget(this.value)">
+                    <div class="flex justify-between text-[10px] text-cyber-text font-grotesk font-bold mt-3 uppercase tracking-wider px-1">
+                        <span>吃土 🥬</span>
+                        <span>凑合 🍜</span>
+                        <span>日常 🥗</span>
+                        <span>奢侈 🥩</span>
+                        <span>富贵 🦞</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- 6. THE SOUL SCANNER INTERACTIVE PORTAL (JOBS DESIGN) -->
+        <section class="flex flex-col items-center justify-center p-8 glass-panel rounded-[2.5rem] border border-cyber-border shadow-glass text-center relative overflow-hidden group">
+            <!-- Pulsing neon green portal orb inside -->
+            <div class="absolute inset-0 bg-gradient-to-t from-acid-green/5 via-transparent to-transparent pointer-events-none"></div>
+            
+            <h3 class="font-syne font-extrabold text-xl mb-2 tracking-tight">🧬 深夜对冲决策激活器</h3>
+            <p class="text-xs text-cyber-text font-grotesk mb-6 uppercase tracking-wider">
+                长按下方圆盘 2.5 秒，调谐精神电磁波以触发智能对冲引擎。
+            </p>
+
+            <!-- Dynamic Scan Sweep Line (shows during scanning) -->
+            <div class="absolute left-0 right-0 h-0.5 bg-acid-green shadow-acid-green z-20 pointer-events-none opacity-0 transition-opacity" id="scan-line" style="top: 0%"></div>
+
+            <!-- Glowing scanner pad -->
+            <div class="relative w-44 h-44 md:w-48 md:h-48 rounded-full bg-cyber-card border-4 border-cyber-border flex flex-col items-center justify-center cursor-pointer transition-all duration-300 select-none shadow-[inset_0_4px_12px_rgba(0,0,0,0.6)]"
+                 id="scanner-pad"
+                 onmousedown="startScanning()"
+                 onmouseup="stopScanning()"
+                 onmouseleave="stopScanning()"
+                 ontouchstart="startScanning(event)"
+                 ontouchend="stopScanning()">
+                
+                <!-- Circular pulsing scanner core -->
+                <div class="absolute inset-4 rounded-full border border-cyber-border flex items-center justify-center bg-[#151522]/30 transition-all group-hover:scale-105 duration-500" id="scanner-core">
+                    <iconify-icon icon="lucide:fingerprint" class="text-[5rem] text-cyber-text transition-all duration-300" id="scanner-icon"></iconify-icon>
+                </div>
+                
+                <!-- Orbit ring indicator -->
+                <div class="absolute inset-0 rounded-full border-2 border-dashed border-cyber-border animate-[spin_20s_linear_infinite]" id="scanner-ring"></div>
+            </div>
+
+            <!-- Loading status text (changes dynamically during press) -->
+            <div class="mt-6 h-6">
+                <span class="font-grotesk text-xs tracking-widest text-cyber-text uppercase font-bold" id="scanner-status">
+                    [WAITING_FOR_SOUL_SCAN // 待扫描]
+                </span>
+            </div>
+        </section>
+
+        <!-- Dynamic Micro-Interventions Footer (Munger Quote) -->
+        <footer class="mt-12 text-center opacity-60">
+            <p class="font-grotesk text-[10px] text-cyber-text tracking-widest uppercase">
+                "We try to fail less than other people, not to be brilliant." — Charlie Munger
+            </p>
+            <div class="mt-4 w-12 h-[1px] bg-cyber-border mx-auto"></div>
+        </footer>
 
     </div>
 
+    <!-- Script Block -->
     <script>
-        // State
+        // Form Choices State
         const userChoices = {
             time_of_day: null,
             mood: null,
@@ -490,38 +378,45 @@
         };
 
         const budgetData = {
-            1: { label: "15元以下 (省钱小分队)", emoji: "🥬" },
-            2: { label: "15-25元 (凑合吃点)", emoji: "🍜" },
-            3: { label: "25-40元 (对自己好点)", emoji: "🥗" },
-            4: { label: "40-80元 (小小奢侈)", emoji: "🥩" },
-            5: { label: "80元+ (富贵迷人眼)", emoji: "🦞" }
+            1: { label: "15元以下 (吃土套餐)", emoji: "🥬" },
+            2: { label: "15-25元 (平民拼好货)", emoji: "🍜" },
+            3: { label: "25-40元 (打工人标配)", emoji: "🥗" },
+            4: { label: "40-80元 (大口吃肉肉)", emoji: "🥩" },
+            5: { label: "80元+ (小富贵一把)", emoji: "🦞" }
         };
 
         const choiceLabels = {
             time_of_day: { daytime: '白天', nighttime: '夜晚' },
-            mood: { stressed: '压力山大', homesick: '有点想家', finished_work: '终于忙完了', lonely: '有些孤单' },
-            hunger_level: { culinary_hug: '想被美食治愈', crunch: '想嚼点什么', energy_needed: '急需能量' },
-            exercised_today: { true: '运动了', false: '没运动' },
-            budget_level: { 1: '5-15元', 2: '15-25元', 3: '25-40元', 4: '40-80元', 5: '80元以上' }
+            mood: { stressed: '压力山大', homesick: '想家了', finished_work: '开摆犒劳', lonely: 'emo孤单' },
+            hunger_level: { culinary_hug: '求情绪安慰', crunch: '嘴巴很寂寞', energy_needed: '极速充电' },
+            exercised_today: { true: '狠狠流汗', false: '快乐土豆' },
+            budget_level: { 1: '吃土套餐', 2: '平民温饱', 3: '白领标配', 4: '吃顿肉肉', 5: '富贵人家' }
         };
 
-        // --- Interaction Functions ---
+        // --- Selections Handler ---
 
         function selectOption(field, value, element) {
             userChoices[field] = value;
 
             const parent = element.parentElement;
-            const siblings = parent.querySelectorAll('.choice-btn');
+            const siblings = parent.querySelectorAll('button');
 
             siblings.forEach(btn => {
-                // Reset to default playful style
-                btn.className = "choice-btn h-16 md:h-20 rounded-3xl bg-white text-text-light hover:text-dusty-rose hover:shadow-bubble transition-all font-medium text-sm md:text-base border border-transparent hover-lift flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 group opacity-60 hover:opacity-100 scale-95 hover:scale-100";
+                // Reset to default dark style
+                btn.className = "choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-cyber-text hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-2 opacity-65 scale-95";
             });
 
-            // Active visual: Pop out, fill color
-            element.className = "choice-btn h-16 md:h-20 rounded-3xl bg-dusty-rose text-white shadow-bubble-hover font-bold text-sm md:text-base relative overflow-hidden group transform scale-100 ring-4 ring-dusty-rose/20 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 animate-pop transition-all";
+            // Set glowing neon active style based on categories
+            let activeBorderClass = "border-acid-purple shadow-acid-purple text-white font-bold bg-[#1b122e]/40 scale-100 opacity-100";
+            if (field === 'mood') {
+                activeBorderClass = "border-acid-pink shadow-acid-pink text-white font-bold bg-[#2e1222]/40 scale-100 opacity-100";
+            }
+            
+            element.className = `choice-btn py-4 rounded-2xl border ${activeBorderClass} transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-2 animate-[pulse_1.5s_infinite]`;
 
-            checkCompletion();
+            // Play a small click haptic feeling
+            triggerLightHaptic();
+            checkScannerAbility();
         }
 
         function selectBodyOption(field, value, element) {
@@ -531,12 +426,13 @@
             const siblings = parent.querySelectorAll('button');
 
             siblings.forEach(btn => {
-                btn.className = "choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-medium text-text-light hover:text-dusty-rose transition-colors relative z-10 opacity-70 hover:opacity-100";
+                btn.className = "choice-btn py-4 rounded-2xl bg-cyber-card/60 border border-cyber-border hover:border-cyber-text hover:bg-cyber-card transition-all font-grotesk text-sm flex flex-col items-center justify-center gap-1 opacity-65 scale-95";
             });
 
-            element.className = "choice-btn flex-1 py-4 md:py-0 rounded-full text-sm font-bold text-white bg-dusty-rose shadow-md transition-all relative z-10 transform scale-105";
+            element.className = "choice-btn py-4 rounded-2xl border border-acid-orange shadow-acid-orange text-white font-bold bg-[#2e1d12]/40 scale-100 opacity-100 flex flex-col items-center justify-center gap-1 transition-all";
 
-            checkCompletion();
+            triggerLightHaptic();
+            checkScannerAbility();
         }
 
         function toggleExercise() {
@@ -546,35 +442,41 @@
                 userChoices.exercised_today = !userChoices.exercised_today;
             }
             updateExerciseVisuals();
-            checkCompletion();
+            checkScannerAbility();
         }
 
         function updateExerciseVisuals() {
             const iconBg = document.getElementById('exercise-icon-bg');
-            const checkIcon = document.getElementById('exercise-check-icon');
             const mainText = document.getElementById('exercise-text');
             const subText = document.getElementById('exercise-subtext');
-            const checkContainer = document.getElementById('exercise-check');
+            const card = document.getElementById('exercise-card');
+            const sw = document.getElementById('exercise-switch');
+            const swDot = document.getElementById('exercise-dot');
 
             if (userChoices.exercised_today === true) {
-                // Active (Yes)
-                checkContainer.className = "w-8 h-8 rounded-full border-2 border-sage-green bg-sage-green flex items-center justify-center transition-all shadow-sm";
-                checkIcon.classList.remove('opacity-0', 'scale-50');
-                checkIcon.classList.add('scale-100');
+                // Active (Yes, exercised)
+                card.className = "bg-[#122e1b]/40 border border-acid-green shadow-acid-green p-4 rounded-2xl flex items-center justify-between h-20 cursor-pointer transition-all";
                 mainText.innerText = "💦 狠狠流汗了";
-                subText.innerText = "多吃点好的补一补！";
-                subText.className = "text-xs text-sage-green-dark font-bold mt-1 block animate-bounce-soft";
-                iconBg.className = "w-12 h-12 rounded-2xl bg-sage-green text-white flex items-center justify-center transition-colors rotate-12 shadow-inner";
+                subText.innerText = "对冲高油高盐高爽外卖！";
+                subText.className = "text-[10px] text-acid-green font-grotesk uppercase block font-bold";
+                iconBg.innerText = "💦";
+                iconBg.className = "w-10 h-10 rounded-xl bg-acid-green text-black flex items-center justify-center text-xl shadow-acid-green";
+                
+                sw.className = "w-12 h-6 rounded-full bg-acid-green/20 border border-acid-green relative p-0.5 transition-all";
+                swDot.className = "w-4.5 h-4.5 rounded-full bg-acid-green transition-all transform translate-x-6";
             } else {
-                // Inactive (No)
-                checkContainer.className = "w-8 h-8 rounded-full border-2 border-sage-green bg-transparent flex items-center justify-center transition-all";
-                checkIcon.classList.add('opacity-0', 'scale-50');
-                checkIcon.classList.remove('scale-100');
+                // Inactive (No, potato)
+                card.className = "bg-cyber-card/40 border border-cyber-border p-4 rounded-2xl flex items-center justify-between h-20 cursor-pointer transition-all hover:bg-cyber-card/85";
                 mainText.innerText = "🥔 今天当个土豆";
-                subText.innerText = "不动怎么了？吃饱了才有力气动";
-                subText.className = "text-xs text-text-light font-medium mt-1 block";
-                iconBg.className = "w-12 h-12 rounded-2xl bg-sage-green/10 text-sage-green-dark flex items-center justify-center transition-colors shadow-none";
+                subText.innerText = "做一个快乐的小土豆";
+                subText.className = "text-[10px] text-cyber-text font-grotesk uppercase block";
+                iconBg.innerText = "🥔";
+                iconBg.className = "w-10 h-10 rounded-xl bg-cyber-card border border-cyber-border flex items-center justify-center text-xl text-cyber-text";
+                
+                sw.className = "w-12 h-6 rounded-full bg-cyber-card border border-cyber-border relative p-0.5 transition-all";
+                swDot.className = "w-4.5 h-4.5 rounded-full bg-cyber-text transition-all transform translate-x-0";
             }
+            triggerLightHaptic();
         }
 
         function updateBudget(value) {
@@ -589,42 +491,141 @@
             emojiSmall.innerText = data.emoji;
             emojiBg.innerText = data.emoji;
 
-            checkCompletion();
+            checkScannerAbility();
         }
 
-        // Init
-        updateBudget(3);
+        // --- Long Press Soul Scanner Engine (Steve Jobs Philosophy) ---
 
-        function checkCompletion() {
-            const isTimeSet = userChoices.time_of_day !== null;
-            const isMoodSet = userChoices.mood !== null;
-            const isBodySet = userChoices.hunger_level !== null;
-            const isExerciseSet = userChoices.exercised_today !== null;
+        let scanTimer = null;
+        let scanStartTime = 0;
+        let isScanning = false;
+        let progressInterval = null;
 
-            const btn = document.getElementById('submit-btn');
-            const btnBg = document.getElementById('btn-bg');
+        const scannerMessages = [
+            "[DETECTING_BRAIN_DOPAMINE // 正在测定脑部多巴胺浓度...]",
+            "[ALIGNING_NIGHT_PSYCHE // 正在对齐深夜精神失调波动...]",
+            "[CALIBRATING_COGNITIVE_HEDGE // 正在抓取真实配送对冲配置...]",
+            "[ACTIVATING_DECISION_PORTAL // 正在冲破决策疲劳防火墙...]",
+            "[SCAN_COMPLETE_LAUNCHING_ENGINES // 扫描匹配成功！正在装载...]"
+        ];
 
-            if (isTimeSet && isMoodSet && isBodySet && isExerciseSet) {
-                btn.disabled = false;
-                btn.classList.remove('cursor-not-allowed', 'opacity-60');
-                btn.classList.add('hover:-translate-y-1', 'active:translate-y-0', 'shadow-bubble');
-                btnBg.classList.remove('translate-y-full'); // Fill color
+        function checkScannerAbility() {
+            const pad = document.getElementById('scanner-pad');
+            const icon = document.getElementById('scanner-icon');
+            const isCompleted = userChoices.time_of_day !== null && 
+                                userChoices.mood !== null && 
+                                userChoices.hunger_level !== null && 
+                                userChoices.exercised_today !== null;
+
+            if (isCompleted) {
+                pad.classList.remove('opacity-45', 'cursor-not-allowed');
+                pad.classList.add('border-white/20', 'hover:border-acid-green');
+                icon.className = "text-[5rem] text-acid-green opacity-90 transition-all duration-300 animate-pulse";
             } else {
-                btn.disabled = true;
-                btn.classList.add('cursor-not-allowed', 'opacity-60');
-                btn.classList.remove('hover:-translate-y-1', 'active:translate-y-0', 'shadow-bubble');
-                btnBg.classList.add('translate-y-full');
+                pad.classList.add('opacity-45', 'cursor-not-allowed');
+                pad.classList.remove('border-white/20', 'hover:border-acid-green');
+                icon.className = "text-[5rem] text-cyber-text opacity-40 transition-all duration-300";
             }
         }
 
-        function submitChoices() {
-            if (document.getElementById('submit-btn').disabled) return;
+        function startScanning(event) {
+            // Check form completion
+            const isCompleted = userChoices.time_of_day !== null && 
+                                userChoices.mood !== null && 
+                                userChoices.hunger_level !== null && 
+                                userChoices.exercised_today !== null;
 
-            // Animate out
-            document.querySelector('.max-w-4xl').style.transform = 'scale(0.95) translateY(-20px)';
-            document.querySelector('.max-w-4xl').style.opacity = '0';
-            document.querySelector('.max-w-4xl').style.transition = 'all 0.5s ease-in';
+            if (!isCompleted) {
+                showFeedbackToast("💡 扫兴！请先完成上面的 4 个基础觉察选项...", false);
+                return;
+            }
 
+            if (event && event.cancelable) event.preventDefault(); // Prevents touch scrolling while pressing
+
+            isScanning = true;
+            scanStartTime = Date.now();
+            
+            // Visual changes
+            const pad = document.getElementById('scanner-pad');
+            const icon = document.getElementById('scanner-icon');
+            const ring = document.getElementById('scanner-ring');
+            const scanLine = document.getElementById('scan-line');
+            const core = document.getElementById('scanner-core');
+
+            pad.classList.add('scanning-active', 'scale-105');
+            icon.className = "text-[5.5rem] text-[#fff] shadow-[0_0_20px_rgba(255,255,255,0.8)] transition-all";
+            ring.className = "absolute inset-0 rounded-full border-4 border-acid-green border-dashed animate-[spin_2s_linear_infinite]";
+            core.className = "absolute inset-2 rounded-full border border-acid-green flex items-center justify-center bg-acid-green/10 transition-all scale-100 duration-100";
+            scanLine.classList.remove('opacity-0');
+            
+            // Sweep scan animation in JS for absolute speed control
+            let scanDir = 1;
+            let scanPos = 0;
+            progressInterval = setInterval(() => {
+                scanPos += 4 * scanDir;
+                if (scanPos >= 100) { scanPos = 100; scanDir = -1; }
+                if (scanPos <= 0) { scanPos = 0; scanDir = 1; }
+                scanLine.style.top = scanPos + '%';
+            }, 30);
+
+            // Change messaging every 500ms
+            let messageIdx = 0;
+            const statusNode = document.getElementById('scanner-status');
+            statusNode.className = "font-grotesk text-xs tracking-widest text-acid-green uppercase font-bold animate-pulse";
+            statusNode.innerText = scannerMessages[0];
+
+            scanTimer = setInterval(() => {
+                messageIdx++;
+                if (messageIdx < scannerMessages.length) {
+                    statusNode.innerText = scannerMessages[messageIdx];
+                    // Sound/Haptic feedback trigger
+                    triggerHeavyHaptic();
+                } else {
+                    // Fully done, autoredirect
+                    clearInterval(scanTimer);
+                    clearInterval(progressInterval);
+                    executeRedirect();
+                }
+            }, 550);
+        }
+
+        function stopScanning() {
+            if (!isScanning) return;
+            isScanning = false;
+            
+            clearInterval(scanTimer);
+            clearInterval(progressInterval);
+
+            // Reset scanner visuals
+            const pad = document.getElementById('scanner-pad');
+            const icon = document.getElementById('scanner-icon');
+            const ring = document.getElementById('scanner-ring');
+            const scanLine = document.getElementById('scan-line');
+            const core = document.getElementById('scanner-core');
+            const statusNode = document.getElementById('scanner-status');
+
+            pad.classList.remove('scanning-active', 'scale-105');
+            icon.className = "text-[5rem] text-acid-green opacity-90 transition-all duration-300 animate-pulse";
+            ring.className = "absolute inset-0 rounded-full border-2 border-dashed border-cyber-border animate-[spin_20s_linear_infinite]";
+            core.className = "absolute inset-4 rounded-full border border-cyber-border flex items-center justify-center bg-[#151522]/30 transition-all group-hover:scale-105 duration-500";
+            scanLine.classList.add('opacity-0');
+            scanLine.style.top = '0%';
+
+            const elapsed = Date.now() - scanStartTime;
+            if (elapsed < 2500) {
+                statusNode.className = "font-grotesk text-xs tracking-widest text-cyber-text uppercase font-bold";
+                statusNode.innerText = "[SCAN_INTERRUPTED_HOLD_3S // 扫描中断，请持续按住大圆盘]";
+                showFeedbackToast("⚠️ 扫描中断！请持续按住圆盘 3 秒以对齐脑电波...", false);
+            }
+        }
+
+        function executeRedirect() {
+            // Flash screen effect
+            const flash = document.createElement('div');
+            flash.className = "fixed inset-0 bg-[#fff] z-[999] opacity-90 transition-opacity duration-300";
+            document.body.appendChild(flash);
+            
+            // Set choice labels
             sessionStorage.setItem('userChoices', JSON.stringify(userChoices));
             sessionStorage.setItem('choiceLabels', JSON.stringify({
                 time: choiceLabels.time_of_day[userChoices.time_of_day],
@@ -635,9 +636,48 @@
             }));
 
             setTimeout(() => {
-                window.location.href = 'result.html';
-            }, 600);
+                flash.style.opacity = '0';
+                setTimeout(() => {
+                    flash.remove();
+                    window.location.href = 'result.html';
+                }, 300);
+            }, 250);
         }
+
+        // Haptic feedback simulations
+        function triggerLightHaptic() {
+            if (navigator.vibrate) navigator.vibrate(15);
+        }
+
+        function triggerHeavyHaptic() {
+            if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+        }
+
+        // Feedback toast notification
+        function showFeedbackToast(message, isSuccess = true) {
+            const existToast = document.querySelector('.feedback-toast');
+            if (existToast) existToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `feedback-toast fixed top-6 left-1/2 -translate-x-1/2 px-6 py-3.5 rounded-2xl shadow-neon-scan z-[999] text-xs font-grotesk font-bold flex items-center gap-2.5 transition-all duration-300 transform -translate-y-4 opacity-0 ${
+                isSuccess ? 'bg-[#00ff66]/15 text-[#00ff66] border border-[#00ff66]/30' : 'bg-[#ff3e83]/15 text-[#ff3e83] border border-[#ff3e83]/30'
+            }`;
+            toast.innerHTML = `<iconify-icon icon="${isSuccess ? 'lucide:check-circle' : 'lucide:alert-circle'}" class="text-base"></iconify-icon><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('-translate-y-4', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('-translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize state defaults
+        updateBudget(3);
+        checkScannerAbility();
     </script>
 </body>
 
