@@ -1,0 +1,44 @@
+{
+  "recommendations": [
+    {
+      "food_name": "招牌骨汤麻辣烫单人豪华餐",
+      "restaurant": "杨国福麻辣烫 (中关村店)",
+      "platform": "meituan",
+      "estimated_price": 32.8,
+      "reason": "美味解压，释放今日压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+      "jump_keyword": "杨国福麻辣烫 (中关村店) 招牌骨汤麻辣烫单人豪华餐",
+      "regret_score": 2,
+      "regret_reason": "已默认搭配无糖绿茶，对冲油腻感"
+    },
+    {
+      "food_name": "经典麻辣拌对冲套餐",
+      "restaurant": "杨国福麻辣烫 (中关村店)",
+      "platform": "meituan",
+      "estimated_price": 28.5,
+      "reason": "美味解压，释放今日压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+      "jump_keyword": "杨国福麻辣烫 (中关村店) 经典麻辣拌对冲套餐",
+      "regret_score": 2,
+      "regret_reason": "已默认搭配无糖绿茶，对冲油腻感"
+    },
+    {
+      "food_name": "经典红油麻辣烫经典大份",
+      "restaurant": "张亮麻辣烫 (海淀黄庄店)",
+      "platform": "meituan",
+      "estimated_price": 29.9,
+      "reason": "美味解压，释放今日压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+      "jump_keyword": "张亮麻辣烫 (海淀黄庄店) 经典红油麻辣烫经典大份",
+      "regret_score": 2,
+      "regret_reason": "已默认搭配无糖绿茶，对冲油腻感"
+    },
+    {
+      "food_name": "汁汁双层嫩牛堡单人餐",
+      "restaurant": "肯德基宅急送 (中关村店)",
+      "platform": "meituan",
+      "estimated_price": 39.9,
+      "reason": "美味解压，释放今日压力。💡 朋克养生对冲：默认搭配【无糖茶/东方树叶】解腻防上火！",
+      "jump_keyword": "肯德基宅急送 (中关村店) 汁汁双层嫩牛堡单人餐",
+      "regret_score": 2,
+      "regret_reason": "已默认搭配无糖绿茶，对冲油腻感"
+    }
+  ]
+}
